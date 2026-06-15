@@ -21,7 +21,6 @@ export function renderHeader(activePage = 'home') {
   if (!header) return;
 
   const announcement = getAnnouncement();
-  const categories = getCategories();
   const cartCount = getCartCount();
 
   const announcementHTML =
@@ -34,20 +33,35 @@ export function renderHeader(activePage = 'home') {
         </div>`
       : '';
 
-  const categoryLinks = categories
-    .map(
-      (cat) =>
-        `<a href="/?category=${encodeURIComponent(cat)}" class="category-nav-link">${cat}</a>`
-    )
-    .join('');
-
   header.innerHTML = `
     ${announcementHTML}
+
+    <div class="top-bar">
+      <div class="top-bar-inner container">
+        <div class="top-bar-left">
+          <a href="#">Sell on Jumia</a>
+        </div>
+        <div class="top-bar-center">
+          <a href="#">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            JUMIA PAY
+          </a>
+          <a href="#">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22"/></svg>
+            JUMIA DELIVERY
+          </a>
+          <a href="#">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            LUXE
+          </a>
+        </div>
+      </div>
+    </div>
+
     <header class="main-header">
       <div class="header-inner container">
         <a href="/" class="logo" id="logo-link">
-          <span class="logo-icon">🛍️</span>
-          <span class="logo-text">Jumia</span>
+          <span class="logo-text">JUMIA</span><span class="logo-star">★</span>
         </a>
 
         <div class="header-search" id="header-search">
@@ -55,31 +69,50 @@ export function renderHeader(activePage = 'home') {
             type="text"
             class="search-input"
             id="search-input"
-            placeholder="Search products, brands, categories..."
+            placeholder="Search products, brands and categories"
             autocomplete="off"
           />
-          <button class="search-btn btn-primary" id="search-btn" aria-label="Search">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <button class="search-btn" id="search-btn" aria-label="Search">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <span class="search-btn-text">Search</span>
           </button>
           <div class="search-results" id="search-results"></div>
         </div>
 
         <div class="header-actions">
+          <div class="header-action" id="account-action">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="header-action-text">Account</span>
+            <svg class="chevron-down" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            <div class="header-dropdown">
+              <a href="#">My Account</a>
+              <a href="#">Orders</a>
+              <a href="#">Saved Items</a>
+              <a href="#">Recently Viewed</a>
+            </div>
+          </div>
+
+          <div class="header-action" id="help-action">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span class="header-action-text">Help</span>
+            <svg class="chevron-down" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            <div class="header-dropdown">
+              <a href="#">Help Center</a>
+              <a href="#">Place an Order</a>
+              <a href="#">Track an Order</a>
+              <a href="#">Returns & Refunds</a>
+              <a href="#">Contact Us</a>
+            </div>
+          </div>
+
           <a href="/cart.html" class="cart-link" id="cart-link" aria-label="Cart">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span class="cart-link-text">Cart</span>
             <span class="cart-badge" id="cart-badge">${cartCount}</span>
           </a>
         </div>
       </div>
     </header>
-
-    <nav class="category-nav" id="category-nav">
-      <div class="category-nav-inner container">
-        <a href="/" class="category-nav-link ${activePage === 'home' ? 'active' : ''}">🏠 Home</a>
-        ${categoryLinks}
-      </div>
-    </nav>
   `;
 
   // --- Event Listeners ---
@@ -185,8 +218,7 @@ export function renderFooter() {
       <div class="footer-top container">
         <div class="footer-col">
           <div class="footer-logo">
-            <span class="logo-icon">🛍️</span>
-            <span class="logo-text">Jumia</span>
+            <span class="logo-text">JUMIA</span><span class="logo-star" style="color: var(--accent-primary); font-size: 1rem; margin-left: 1px;">★</span>
           </div>
           <p class="footer-about">
             Jumia is your one-stop online shop for the best deals in Kenya. Quality products, fast delivery, and unbeatable prices.
@@ -323,19 +355,19 @@ export function renderCategorySection(categoryName, products) {
       <div class="category-section-header container">
         <h2 class="category-section-title">${categoryName}</h2>
         <a href="/?category=${encodeURIComponent(categoryName)}" class="category-section-see-all">
-          See All
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          SEE ALL
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
         </a>
       </div>
       <div class="category-section-row-wrap container">
         <button class="scroll-arrow scroll-arrow-left" aria-label="Scroll left" data-section="${sectionId}">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <div class="category-section-row" id="${sectionId}-row">
           ${cardsHTML}
         </div>
         <button class="scroll-arrow scroll-arrow-right" aria-label="Scroll right" data-section="${sectionId}">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
     </section>
