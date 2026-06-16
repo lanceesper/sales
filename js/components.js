@@ -55,6 +55,7 @@ export function renderHeader(activePage = 'home') {
             LUXE
           </a>
         </div>
+        <div class="top-bar-right"></div>
       </div>
     </div>
 

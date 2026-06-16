@@ -232,8 +232,6 @@ function renderHeroSection() {
           ${dotsHTML}
         </div>
       </div>
-
-      ${sideCardsHTML}
     </section>
   `;
 
