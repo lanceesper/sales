@@ -39,7 +39,10 @@ export function renderHeader(activePage = 'home') {
     <div class="top-bar">
       <div class="top-bar-inner container">
         <div class="top-bar-left">
-          <a href="#">Sell on Jumia</a>
+          <a href="#">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#FEC20C"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            Sell on Jumia
+          </a>
         </div>
         <div class="top-bar-center">
           <a href="#">
@@ -61,8 +64,9 @@ export function renderHeader(activePage = 'home') {
 
     <header class="main-header">
       <div class="header-inner container">
+        <button class="hamburger-btn" aria-label="Menu" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-primary); margin-right: -8px;">☰</button>
         <a href="/" class="logo" id="logo-link">
-          <span class="logo-text">JUMIA</span><span class="logo-star">★</span>
+          <img src="https://cdn.brandfetch.io/idDVEIJONY/w/2800/h/469/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1668154920215" alt="Jumia" class="logo-img" style="height: 20px; width: auto;" />
         </a>
 
         <div class="header-search" id="header-search">
@@ -83,7 +87,7 @@ export function renderHeader(activePage = 'home') {
         <div class="header-actions">
           <div class="header-action" id="account-action">
             <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span class="header-action-text">Account</span>
+            <span class="header-action-text">My Account</span>
             <svg class="chevron-down" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
             <div class="header-dropdown">
               <a href="#">My Account</a>

@@ -1,0 +1,1076 @@
+[
+  {
+    "county": "Nairobi",
+    "town": "Lower Kabete / Kangemi/Mountain View",
+    "pickup_station": "Fortify Kangemi Station",
+    "location": "The Green Stalls, Along Waiyaki way next to Ingoo Dishes and Butchery, stall No 31"
+  },
+  {
+    "county": "Nairobi",
+    "town": "CBD - GPO/City Market/Nation Centre",
+    "pickup_station": "Jumia Kloss Kimathi Street Station",
+    "location": "Kimathi Street Eagle House 2nd Floor Shop No. 6"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Parklands/Highridge",
+    "pickup_station": "Jumia Lakeland Highridge Station",
+    "location": "Mayfair Massoinet court along Mpaka Road Opposite Fedha plaza."
+  },
+  {
+    "county": "Nairobi",
+    "town": "Bunyala Road/Mater Hospital/ South B/Hazina Estate/Likoni Road",
+    "pickup_station": "Jumia Lakeland South B Station",
+    "location": "Mariakani RoadLinks Arcade, next to jamii sacco offices,Shop no 5."
+  },
+  {
+    "county": "Nairobi",
+    "town": "Buruburu / Hamza / Harambee",
+    "pickup_station": "Kloss Buruburu Station",
+    "location": "Opposite Rubis Petrol Station, Jaza mini mart near Bidii Primary School Buruburu Phase 2"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Adams Arcade / Dagoretti Corner, Nairobi",
+    "pickup_station": "Jumia Adams Arcade",
+    "location": "Adams Arcade Behind Tuskys supermarket off loading gate godown no 2"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Adams Arcade / Dagoretti Corner, Nairobi",
+    "pickup_station": "Jumia Kloss Dagoretti Station",
+    "location": "Dagoretti Corner Shop No. 4, 1st Floor Shell Containers Complex"
+  },
+  {
+    "county": "Nairobi",
+    "town": "CBD - Luthuli/Afya Centre/ R. Ngala, Nairobi",
+    "pickup_station": "Jumia Kloss Ronald Ngala Station",
+    "location": "Shop No. B6 Ground Floor Starware Building Opposite Posta Ronald Ngala Street"
+  },
+  {
+    "county": "Nairobi",
+    "town": "CBD - Luthuli/Afya Centre/ R. Ngala, Nairobi",
+    "pickup_station": "Kloss CBD Station",
+    "location": "Development House Second Floor New wing Room 212"
+  },
+  {
+    "county": "Nairobi",
+    "town": "CBD - Luthuli/Afya Centre/ R. Ngala, Nairobi",
+    "pickup_station": "Lakeland CBD Station",
+    "location": "Gaborone Rd, Nairobi, Comfort 5 1st floor Rm F2 Gaberone Road adjacent to Nairobi Textile Center Building opposite Galaxy Photo Studio"
+  },
+  {
+    "county": "Nairobi",
+    "town": "CBD - UON/Globe/Koja/River Road, Nairobi",
+    "pickup_station": "Jumia CBD Kantaria Station",
+    "location": "Kantaria House Ground Floor Along Muindi Mbingu Street Opposite Jevanjee Gardens"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi - Fedha/Tasia, Nairobi",
+    "pickup_station": "Cossim Fedha Station",
+    "location": "Aviators Business Park 1st Floor Room No B22 Next to Nyayo Estate Gate B"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi - Fedha/Tasia, Nairobi",
+    "pickup_station": "Kloss Fedha Station",
+    "location": "Patron business park shop no 18, opposite Quickmark supermarket Fedha road."
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi East -Cabanas stage/kyang'ombe/Southfield Mall, Nairobi",
+    "pickup_station": "Jumia Warehouse Station",
+    "location": "Tuskys Supermarket offices, Cabanas bus station"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi East-Donholm/Greenfields/Kayole/Nasra, Nairobi",
+    "pickup_station": "Cossim Shujaa Mall Station",
+    "location": "Shujaa Mall Ground Floor Kayole along Spine Road after Bee Center next to Soisan Estate Main Gate"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi East-GSU/Mihango/Utawala/Benedicta/Githunguri/Airways, Nairobi",
+    "pickup_station": "JBN Express Utawala Station",
+    "location": "Utawala Station Kwa Chief, Nairobi Nairobi Stalls next to Quick Mart supermarket along eastern bypass road Utawala room number 7"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi East-GSU/Mihango/Utawala/Benedicta/Githunguri/Airways, Nairobi",
+    "pickup_station": "Kloss Utawala Pickup Station",
+    "location": "Kimson Annex Utawala Benedicta stage, Eastern Bypass, Nairobi, Stalls Shop C6 Benedicta stage"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi East-Pipeline/Transami/Airport North Rd, Nairobi",
+    "pickup_station": "Kloss Transami Station",
+    "location": "Next to Muhindi Mweusi Supermarket & Caribbean Food Court Kepler house, Ground floor"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Embakasi South - Mombasa Road/Sameer Park/General Motors/ICD, Nairobi",
+    "pickup_station": "Jumia Lakeland Mombasa rd Station",
+    "location": "Mombasa Rd near GM, Ideal Ceramics Opposite Sameer. Embakasi South - Mombasa Road/Sameer Park/General Motors/ICD"
+  },
+  {
+    "county": "Nairobi",
+    "town": "Garden Estate/Thome/Marurui, Nairobi",
+    "pickup_station": "Jumia JBN Roasters -Station",
+    "location": "Roasters, Grey stalls adjacent to Naivas mountain mall"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Gatundu Town, Kiambu",
+    "pickup_station": "G4S Gatundu Town Station",
+    "location": "Landmark Building, 1st Floor, Room Number - A3, Gatundu Gatundu TownKiambu Kenya"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Githunguri/Ndumberi, Kiambu",
+    "pickup_station": "Lakoches Githunguri Station",
+    "location": "Neema house opposite Guthunguri Main Stage 1st floor room 109"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Juja/highpoint/Witeithie, Kiambu",
+    "pickup_station": "JBN Express Juja-Station",
+    "location": "Cross road Plaza few metres from Juja square Muchatha, Juja square"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Juja/highpoint/Witeithie, Kiambu",
+    "pickup_station": "Jumia Cossim Witeithie Station",
+    "location": "Witeithie, Thika road,Pegra Plaza,1st Floor, Room No.B1, Opposite Zetech University Technology Park"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Kiambu town/Kirigiti, Kiambu",
+    "pickup_station": "JUMIA TRD KIAMBU Station",
+    "location": "PONGEZI PLAZA NEXT TO CLEANSHELF SUPERMARKET"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Kiambu town/Kirigiti, Kiambu",
+    "pickup_station": "Jumia Kiambu Station",
+    "location": "Rumathi House ,Ground Floor,Biashara Street,Opposite Oil Libya,Kiambu town Kiambu town/Kirigiti"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Kikuyu/Gitaru/Kanyariri/Muguga, Kiambu",
+    "pickup_station": "Lakoches Kikuyu Station",
+    "location": "May House Kikuyu Across cleanshself supermarket Directly opposite bata First Floor Room A"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Kinoo/87/Muthiga/rugiri/Nyadhuna, Kiambu",
+    "pickup_station": "JBN Express Kinoo Station",
+    "location": "Shamata stalls near shamata flats kinoo stage opposite mama ngina primary kinoo Kinoo / Muthiga/Nyadhuna"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Limuru, Kiambu",
+    "pickup_station": "Lakoches Limuru Station",
+    "location": "Kimushu House Between Total Petrol station and Equity Bank along Manguo Road"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruaka/Two rivers, Kiambu",
+    "pickup_station": "Jumia Ruaka Station",
+    "location": "Jumia Ruaka Station - Ruaka town, Ruaka Square directly opposite Cleanshelf, Fifth floor Ruaka/Two rivers"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruiru town/Kimbo, Kiambu",
+    "pickup_station": "Lakoches Ruiru Station",
+    "location": "Sanfred bis center next to KCB bank, ground floor KCB bank"
+  },
+  {
+    "county": "Kiambu",
+    "town": "Ruiru town/Kimbo, Kiambu",
+    "pickup_station": "TRD Kimbo Station",
+    "location": "Trd kimbo Rays Garden Next to Lexo petrol station near Lexo supermarket"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Isinya, Kajiado",
+    "pickup_station": "Jumia Lakoches Isinya Station",
+    "location": "GENESIS HARDWARE BUILDING, NEAR POLICE STATION AND ACROSS SAFARICOM CARE SHOP"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kajiado Town, Kajiado",
+    "pickup_station": "Jumia Lakoches Kajiado Station",
+    "location": "Emerald Business centre Ground floor, next to Coop bank"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kiserian, Kajiado",
+    "pickup_station": "Fortify Kiserian Station",
+    "location": "BE energy petrol station, Ground floor, Room No.A12 Along magadi road,Kiserian Town"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela, Kajiado",
+    "pickup_station": "Lakeland Kitengela Station",
+    "location": "Lakeland Kitengela Station, Next to National Oil opposite Moran trading center off Kitengela Namanga road Room No 1 Kitengela Kajiado Kenya."
+  },
+  {
+    "county": "Kajiado",
+    "town": "Kitengela, Kajiado",
+    "pickup_station": "Lakoches Enterprises Pickup Station - Kitengela",
+    "location": "Block 1014/12 Milele Centre Along Nairobi Namanga Road Behind Equity Bank"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Loitoktok, Kajiado",
+    "pickup_station": "Jumia Skyveshop Loitoktok Station",
+    "location": "Opposite Equity Bank, next to Mololine offices, ground floor, Room No. 3,Along Loitoktok Highway."
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ngong, Kajiado",
+    "pickup_station": "Fortify Solutions",
+    "location": "Ngong Town, Junction of Ololua Rd & Ngong Rd,New Shade Butchery Building - GF shop no.25 Opp Co-op Bank"
+  },
+  {
+    "county": "Kajiado",
+    "town": "Ongata Rongai, Kajiado",
+    "pickup_station": "Kloss Rongai Pickup Station",
+    "location": "Kloss Rongai PUS - Muungano Women Group Building Ground Floor Room No.(G8) ,next to KCB Bank"
+  },
+  {
+    "county": "Machakos",
+    "town": "Athiriver/Daystar university/KMTC, Machakos",
+    "pickup_station": "Jumia Lakoches AthiRiver Station",
+    "location": "Villa Park Stores opposite Makadara Health care, Ground Floor Shop No 13"
+  },
+  {
+    "county": "Machakos",
+    "town": "Joska, Machakos",
+    "pickup_station": "Jumia JBN Express Joska Station",
+    "location": "Kangundo Rd, African Driving School building, Next to JAYRIC Highway Hotel opposite WAECON Supermarket"
+  },
+  {
+    "county": "Machakos",
+    "town": "Kangundo, Machakos",
+    "pickup_station": "Jumia JBN Express Kangundo Station",
+    "location": "Kangundo town SIVA Block building opposite Posta Kenya ground floor SIVA Block building opposite Posta Kenya ground floor"
+  },
+  {
+    "county": "Machakos",
+    "town": "Machakos Town, Machakos",
+    "pickup_station": "Jumia Lakoches Machakos University Station",
+    "location": "Machakos, Opposite Machakos hospital Emergency gate, Room no. 5"
+  },
+  {
+    "county": "Machakos",
+    "town": "Masii, Machakos",
+    "pickup_station": "Jumia Lakoches Masii Station",
+    "location": "GCRM+H8P, Masii, Kwa Makumbi, Opposite CK petrol station"
+  },
+  {
+    "county": "Mombasa",
+    "town": "Bombolulu, Mombasa",
+    "pickup_station": "Jumia Cossim Kisimani Station",
+    "location": "Fair deal business center , Kisimani , next to mass petrol station"
+  },
+  {
+    "county": "Mombasa",
+    "town": "Changamwe – Migadini/ Magongo/ Portries, Mombasa",
+    "pickup_station": "Flexcom Changamwe Station",
+    "location": "opposite Airport Center Building Along Magongo (mainland) road near Nuru Mosque"
+  },
+  {
+    "county": "Mombasa",
+    "town": "Changamwe- Mikindani/Jomvu, Mombasa",
+    "pickup_station": "Flexcom Mikindani Station",
+    "location": "Mikindani Kijiweni, Opposite Crown Petrol Station, Near Bestway Supermarket."
+  },
+  {
+    "county": "Mombasa",
+    "town": "Ganjoni/Docks, Mombasa",
+    "pickup_station": "Jumia Ganjoni Station",
+    "location": "Archbishop Makarios Road Metric Annex building Opposite Ganjoni Primary School"
+  },
+  {
+    "county": "Mombasa",
+    "town": "Kisauni/bamburi/Mtopanga, Mombasa",
+    "pickup_station": "Flexcom Kisauni Station",
+    "location": "Old Malindi Rd near Mlaleo dispensary next to Mavueni properties door no 4"
+  },
+  {
+    "county": "Mombasa",
+    "town": "Kongowea/Nyali Links Road City, Mombasa",
+    "pickup_station": "Skyveshop Kongowea Station",
+    "location": "Opposite China Furnitures Kongowea/ Nyali links road, Next to Fayaz Bakery, Room No. 3."
+  },
+  {
+    "county": "Mombasa",
+    "town": "Likoni, Mombasa",
+    "pickup_station": "Skyveshop Likoni Station",
+    "location": "ukunda road lankasta house 1st floor opposite total petrol station near rafiki bank"
+  },
+  {
+  "Mombasa": [
+    {
+      "town": "Migadini",
+      "pickup_station": "Jumia BeeJohns Migadini Station",
+      "location": "Migadini mwisho stage next to big mama"
+    },
+    {
+      "town": "Miritini",
+      "pickup_station": "Jumia BeeJohns Miritini Station",
+      "location": "Miritini shop just before Equity Afia hospital opposite KPC estate gate miritini staff housing estate road."
+    },
+    {
+      "town": "Mshomoroni/Vikwatani/Kiembeni",
+      "pickup_station": "Skyveshop Mshomoroni Station",
+      "location": "Mishomoroni Falcon Opposite junda police post Door no 6 Opposite junda police post, Door no.6"
+    },
+    {
+      "town": "Mvita-Mwembe Tayri/Majengo/Tononoka",
+      "pickup_station": "Flexcom Mombasa Station",
+      "location": "Haile Selasie Rd Mombasa Turkana Street close to Blue Room opposite Pwani Dishes Behind A1 Supermarket Blue Room"
+    },
+    {
+      "town": "Mvita-Mwembe Tayri/Majengo/Tononoka",
+      "pickup_station": "Jumia Mombasa",
+      "location": "Kenyatta Avenue at Gulshan Next to National Oil Opposite Badar Pharmacy"
+    },
+    {
+      "town": "Mvita-Mwembe Tayri/Majengo/Tononoka",
+      "pickup_station": "Jumia Skyve Station",
+      "location": "Naivas Mwembe Tayari 2nd floor door no 1 Next to coast bus booking office"
+    },
+    {
+      "town": "Mvita-Tudor/Shimanzi",
+      "pickup_station": "Skyveshop Tudor Station",
+      "location": "Next to Tudor County government offices Tudor hospital"
+    },
+    {
+      "town": "Nyali",
+      "pickup_station": "Flexcom Nyali Station",
+      "location": "Ground Floor Shop No. P4 Next to City Mall, Msa Malindi Road, Nyali Gupta Complex"
+    },
+    {
+      "town": "Shanzu/Mtwapa/Utange",
+      "pickup_station": "Jumia Mtwapa Station",
+      "location": "Mombasa maize miller building Along malindi road Near mtwapa mall and next to total petrol station."
+    }
+  ],
+  "Nakuru": [
+    {
+      "town": "Gilgil",
+      "pickup_station": "Jumia Cossim Gilgil Station",
+      "location": "Crossroads Plaza Building, Ground Floor, Room No. 2 Opposite Total Petrol Station."
+    },
+    {
+      "town": "Kabarak University",
+      "pickup_station": "Jumia pickup station at Fortity Kabarak Station",
+      "location": "Rafiki center Kabarak Room No 5 along Rafiki road opposite smartzone bookshop."
+    },
+    {
+      "town": "Lanet/Pipeline/Barnabas",
+      "pickup_station": "Fortify Barnabas station",
+      "location": "VIJ Complex, 1st floor, Room No. 22, opposite Total Petrol Station, along Nakuru-Nairobi Highway."
+    },
+    {
+      "town": "Molo",
+      "pickup_station": "Jumia Fortify Molo Station",
+      "location": "Junction of Mtoni polisi, next to JMK Electricals opposite Budget supermarket & Dubai Expo/Musoni Microfinance"
+    },
+    {
+      "town": "Naivasha",
+      "pickup_station": "Cossim Naivasha Station",
+      "location": "Cedar Complex, Opposite Naivasha Sub County Government Referral Hospital"
+    },
+    {
+      "town": "Naivasha",
+      "pickup_station": "G4S Njambini Station",
+      "location": "Magumu Rd Opp Tulaga Service Station Ground floor Tulaga Service Station"
+    },
+    {
+      "town": "Nakuru CBD",
+      "pickup_station": "Flexcom Vikers House Station",
+      "location": "Vikers House 2nd floor room S2 Kenyatta Avenue opposite West side Mall"
+    },
+    {
+      "town": "Nakuru CBD",
+      "pickup_station": "Cossim Nakuru Station",
+      "location": "Prime Plaza Mburu Gichua Road Nakuru Ground Floor office No 109"
+    },
+    {
+      "town": "Nakuru CBD",
+      "pickup_station": "Flexcom Nakuru Downtown Station",
+      "location": "Signature Club Building, Ground Floor, Shop No. 17, Next to Chillis Opposite Naivas Downtown."
+    },
+    {
+      "town": "Nakuru CBD",
+      "pickup_station": "Jumia Nakuru",
+      "location": "Lydia Arcade Kenyatta Avenue opposite Equity Bank ground floor Room GF04/GF05 Nakuru"
+    },
+    {
+      "town": "Njoro",
+      "pickup_station": "3PL-Fortify Njoro-Station",
+      "location": "Janda Plaza, Ground floor, Room No. 2 next to Treza fashions, along Njoro-Narok Road Opposite Njoro Canning Company."
+    }
+  ]
+}{
+  "Kisumu": [
+    {
+      "town": "Awasi",
+      "pickup_station": "Jumia Cossim Awasi Station",
+      "location": "Spurs Driving School Building, Room No. 3 Opposite Kisumu Stage."
+    },
+    {
+      "town": "Kaloleni/Nyalenda B/Railways",
+      "pickup_station": "Jumia Lakeland Kisumu Mega City Station",
+      "location": "Jumia Lakeland Kisumu Mega City Station inside Mega City Mall ground floor"
+    },
+    {
+      "town": "Kisumu CBD",
+      "pickup_station": "Flexcom Kisumu Station",
+      "location": "Tuffom Mall Ground floor Next to APA Insurance Along Achieng Oneko Rd"
+    },
+    {
+      "town": "Kisumu CBD",
+      "pickup_station": "Lakeland Kisumu Station",
+      "location": "Quinten mall opposite the old fire station ground floor room G005 next to the lift"
+    },
+    {
+      "town": "Kondele/Migosi/Lolwe/Carwash/Kibos",
+      "pickup_station": "Jumia Lakeland Kondele Station",
+      "location": "Kondele along Kibos Road next to Sunspot Club"
+    },
+    {
+      "town": "Maseno",
+      "pickup_station": "Cossim Maseno Station",
+      "location": "Maseno next to Yakongo Medical Laboratory Room No 1"
+    }
+  ],
+  "Uasin Gishu": [
+    {
+      "town": "Eldoret Town",
+      "pickup_station": "Cossim Eldoret Station",
+      "location": "Dalsa Centre, ground floor, Room No. 5, Next to LetSheGo."
+    },
+    {
+      "town": "Eldoret Town",
+      "pickup_station": "Flexcom Eldoret Station",
+      "location": "Eldoret - Webuye - Malaba Rd, Eldoret, Uganda rd/street at Kings Mall next to Khetias supermarket."
+    },
+    {
+      "town": "Eldoret Town",
+      "pickup_station": "Jumia Kebian Soy Station",
+      "location": "Behind Matatu bus stage directly opposite Neematt supermarket, Police station road."
+    },
+    {
+      "town": "Eldoret Town",
+      "pickup_station": "Kebian Eldoret Station",
+      "location": "First Floor Room No:3 EldoMart Medical Plaza opposite School Depot Bank Line street (Opposite TransMatt Supermarket lane)"
+    },
+    {
+      "town": "Huruma/Road Block/Maili Nne",
+      "pickup_station": "Jumia Kebian Eldoret_Uganda St Station",
+      "location": "Eldoret - Webuye - Malaba Rd, Eldoret, Uganda rd/street at Kings Mall next to Khetias supermarket."
+    },
+    {
+      "town": "Kesses/Moi University Main Campus",
+      "pickup_station": "KE-3PL-Kebian Moi University-Station",
+      "location": "At Kesses junction (Kwa booster) opposite Emrofa fuel station."
+    },
+    {
+      "town": "Maili Tisa/Juakali/Soi/Nangili",
+      "pickup_station": "Jumia Kebian Soy Station",
+      "location": "Behind Matatu bus stage directly opposite Neematt supermarket, Police station road."
+    }
+  ],
+  "Baringo": [
+    {
+      "town": "Eldama Ravine",
+      "pickup_station": "G4S Eldama Ravine Station",
+      "location": "Opposite Chemtany Agrovet building, Ground floor Chemtany Agrovet building"
+    },
+    {
+      "town": "Kabarnet Town",
+      "pickup_station": "G4S Kabarnet Station",
+      "location": "Elijah Chelagat Street, Stadium View Building, Ground floor"
+    },
+    {
+      "town": "Marigat Town",
+      "pickup_station": "Jumia G4S Marigat Station",
+      "location": "Karani business centre near Sochigaa Agrovet/KWFT Bank/KCB Bank, Marigat Nakuru-Sigor Road"
+    }
+  ],
+  "Bomet": [
+    {
+      "town": "Bomet Town",
+      "pickup_station": "Jumia Fortify Bomet Station",
+      "location": "KOMA PLAZA Along KIPCHAMBA ST. NEXT TO FAMILY BANK Opposite KENYA WOMEN FINANCE TRUST, BOMET TOWN"
+    },
+    {
+      "town": "Sotik",
+      "pickup_station": "Jumia Fortify Sotik Station",
+      "location": "Sansora Building, Shop No. 3, Next to Shabee Super uniforms Opposite Kenya Commercial Bank - Sotik Branch."
+    }
+  ]
+}{
+  "Bungoma": [
+    {
+      "town": "Bungoma Town",
+      "pickup_station": "Jumia Amison Bungoma Station",
+      "location": "Waluch Bungoma Station Mwalimu House In between Jay Maharaj hardware and G4S office opposite Earthlink Hotel"
+    },
+    {
+      "town": "Kimilili",
+      "pickup_station": "Jumia Amison Kimilili Station",
+      "location": "Mwalimu House/Plaza Kimilili Main Bus/Matatu Stage Kimilili At Lower Entry/Exit Opposite Cooperative Bank."
+    },
+    {
+      "town": "Webuye",
+      "pickup_station": "Jumia Amison Webuye Station",
+      "location": "Along Webuye-Kitale road at T-Junction, next to Quick Shuttle Webuye Office"
+    }
+  ],
+  "Busia": [
+    {
+      "town": "Busia Town",
+      "pickup_station": "Jumia Amison Busia Station",
+      "location": "Next to Florida Guest House Busia Town Opposite Busia ABSA Bank close to Florida Guest House along Kisumu Busia Road"
+    },
+    {
+      "town": "Malaba Town",
+      "pickup_station": "Jumia Amison Malaba Station",
+      "location": "Malaba Town along Bungoma-Malaba road directly opposite Shell petrol station opposite Shivling Supermarket near JAMIA MOSQUE"
+    }
+  ],
+  "Elgeyo-Marakwet": [
+    {
+      "town": "Iten",
+      "pickup_station": "G4S Iten Station",
+      "location": "G4S Iten Station Co-op Bank Iten Ground floor"
+    }
+  ],
+  "Embu": [
+    {
+      "town": "Embu Town",
+      "pickup_station": "Skyveshop Embu Station",
+      "location": "Wanyaga building next to Kindaruma hardware, opposite Emco house Kenyatta rd, Meru Nairobi highway Embu Town"
+    }
+  ],
+  "Homa Bay": [
+    {
+      "town": "Homa Bay Town",
+      "pickup_station": "Cossim Homabay Station",
+      "location": "Garage road Odongo Investment opposite club 28 next to TOBBY'S TEXTILE next to Wa-wa Fashions training center"
+    },
+    {
+      "town": "Mbita",
+      "pickup_station": "Jumia Cossim Mbita Station",
+      "location": "Between KWF and Platinum Credit Ltd, near Mbita Police Station Mbita-Homabay Rd, Room No. 2"
+    },
+    {
+      "town": "Oyugis",
+      "pickup_station": "Jumia Cossim Oyugis Station",
+      "location": "Blue Pharmacy, opposite Rachuonyo District Hospital, Room No. 2"
+    }
+  ]
+}{
+  "Isiolo": [
+    {
+      "town": "Isiolo Town",
+      "pickup_station": "Jumia Flexcom Isiolo Station",
+      "location": "A2, Isiolo, Waso Emporiam Building opposite Davis and Shirtlif Isiolo town"
+    }
+  ],
+  "Kakamega": [
+    {
+      "town": "Kakamega Town",
+      "pickup_station": "Cossim Kakamega Station",
+      "location": "Mega Mall 2nd Floor Room No 14 Along Kakamega-Kisumu Road"
+    },
+    {
+      "town": "Kakamega Town",
+      "pickup_station": "Fortify Kakamega Station",
+      "location": "Ayuku house, ground floor, Room No. 2, along Mumias road, Opposite Hotel Franka Kakamega"
+    },
+    {
+      "town": "Mumias",
+      "pickup_station": "Kebian Mumias Station",
+      "location": "Mumias shopping mall (Room 20) opposite Mumias Muslim Girls"
+    },
+    {
+      "town": "Sabatia",
+      "pickup_station": "Jumia Amison Sabatia Station",
+      "location": "Sabatia Town Junction/Roundabout near Sabatia Matatu Stage opposite Lake Oil petrol station."
+    }
+  ],
+  "Kericho": [
+    {
+      "town": "Kericho Town",
+      "pickup_station": "Fortify Kericho Station",
+      "location": "Container City, Shop No.16, along Kericho-Nairobi highway, next to Kula Poa opposite National Bank of Kenya"
+    },
+    {
+      "town": "Litein",
+      "pickup_station": "Jumia Fortify Litein Station",
+      "location": "Along Litein-Kericho Road next to Red Sea service station"
+    }
+  ],
+  "Kilifi": [
+    {
+      "town": "Kilifi",
+      "pickup_station": "Jumia Kilifi Station",
+      "location": "CK building Sokoni next to Posta Kilifi, Posta road"
+    },
+    {
+      "town": "Malindi",
+      "pickup_station": "Jumia Malindi Station",
+      "location": "Barani complex next to SGA Security and SMEP Bank opposite Towfiq Hospital behind Malindi Mall"
+    },
+    {
+      "town": "Mariakani",
+      "pickup_station": "Jumia Mariakani Station",
+      "location": "Mariakani Royal Plaza next to Borabora Hardware opposite Total Petrol Station off Nairobi-Mombasa Highway"
+    },
+    {
+      "town": "Mazeras",
+      "pickup_station": "Skyveshop Mazeras Station",
+      "location": "Kwa Muki opposite Police Post next to Muki Hardware, 1st Floor Shop Number 5"
+    },
+    {
+      "town": "Vipingo",
+      "pickup_station": "Jumia Vipingo Station",
+      "location": "Vipingo Open Gate, EAGOL Petrol Station, opposite Vipingo Market along Mombasa-Malindi Road"
+    },
+    {
+      "town": "Watamu",
+      "pickup_station": "Jumia Watamu Station",
+      "location": "Next to Watamu Safari Tour & Travel and opposite Barracuda Inn Resort, Watamu Beach Road"
+    }
+  ],
+  "Kirinyaga": [
+    {
+      "town": "Kagio",
+      "pickup_station": "Jumia Skyveshop Kagio Station",
+      "location": "Along Sagana-Kutus road opposite Huhi Petrol Station, Room No. 8"
+    },
+    {
+      "town": "Kagumo",
+      "pickup_station": "Jumia Elegant Kagumo Station",
+      "location": "Kagumo shop opposite the main market along the main road"
+    },
+    {
+      "town": "Kerugoya Town",
+      "pickup_station": "Jumia Flexcom Kerugoya Station",
+      "location": "Kerugoya Mall (Cabanas) opposite Jeevanjee Gardens, Ground floor, shop number 3"
+    },
+    {
+      "town": "Kutus",
+      "pickup_station": "Jumia TRD Kutus Station",
+      "location": "Terrace Villa building Ground Floor Room A7 along Kutus Mjini road near Family Bank Kutus"
+    },
+    {
+      "town": "Mwea",
+      "pickup_station": "Jumia JBN Express Mwea Station",
+      "location": "Mwea highway, opposite Pettans Driving School next to Eastmart supermarket"
+    },
+    {
+      "town": "Sagana",
+      "pickup_station": "Jumia JBN Sagana Station",
+      "location": "Kirinyaga, new shops opposite Central Star Hotel, first floor Shop number 4"
+    }
+  ]
+}{
+  "Kisii": [
+    {
+      "town": "Keroka",
+      "pickup_station": "Fortify Keroka Station",
+      "location": "Along Keroka-Kisii Road, next to Regnol petrol station, Ground floor, Room No. 3"
+    },
+    {
+      "town": "Kisii Town",
+      "pickup_station": "Cossim Kisii Station",
+      "location": "Ouru Towers Along Kisii-Sotik Road next to Aga Khan Hospital, Above KWFT 2nd Floor, Below Club 7Cs the Fish Palace"
+    },
+    {
+      "town": "Kisii Town",
+      "pickup_station": "Jumia Lakeland Kisii Station",
+      "location": "Dankar building, Ouru Power Headquarters building Kisumu Road, opposite Kisii Hotel"
+    },
+    {
+      "town": "Ogembo",
+      "pickup_station": "G4S Ogembo Station",
+      "location": "Ogembo Tabaka route opposite Wakenya Pamoja Sacco, Ground floor next to Ogembo Law Court"
+    }
+  ],
+  "Kitui": [
+    {
+      "town": "Kitui",
+      "pickup_station": "Jumia Skyveshop Kitui Station",
+      "location": "Muli Mall, 1st Floor Room No 83 opposite Quickmart Supermarket"
+    },
+    {
+      "town": "Mwingi",
+      "pickup_station": "Jumia Skyveshop Mwingi Station",
+      "location": "Opposite Azzo Cocacola distributor near Wells Fargo, Room No. 16"
+    }
+  ],
+  "Kwale": [
+    {
+      "town": "Diani/Ukunda",
+      "pickup_station": "Flexcom Diani Station",
+      "location": "Matuga Plaza, Diani Beach Road, Diani Ukunda, 1st floor Room No 3 near Family Bank"
+    },
+    {
+      "town": "Kwale Town",
+      "pickup_station": "Jumia Flexcom Kwale Station",
+      "location": "Kwale Stage, next to Genesis Booking station"
+    },
+    {
+      "town": "Lunga Lunga",
+      "pickup_station": "Jumia Flexcom Lungalunga Station",
+      "location": "Opposite Lexo Filling Station, alongside Ramisi Ukunda highway, beside Sun King solar offices"
+    }
+  ],
+  "Laikipia": [
+    {
+      "town": "Nanyuki Town",
+      "pickup_station": "Flexcom Nanyuki Station",
+      "location": "Answer Plaza (Hot Sun supplies), opposite Ukumbusho Market next to Equator Chalet Hotel"
+    },
+    {
+      "town": "Nyahururu",
+      "pickup_station": "Jumia TRD Nyahururu Station",
+      "location": "Mbaria Complex, Ground floor shop F78"
+    }
+  ],
+  "Lamu": [
+    {
+      "town": "Lamu",
+      "pickup_station": "G4S-Lamu Station",
+      "location": "Paradise Building, opposite Mangrove Jetty"
+    },
+    {
+      "town": "Mpeketoni",
+      "pickup_station": "Jumia G4S Mpeketoni Station",
+      "location": "Place Kimwa Digital Building opposite Pambazuko shop"
+    }
+  ]
+}[
+  {
+    "county": "Makueni",
+    "town": "Emali Town",
+    "pickup_station": "Jumia KimCindy Emali Station",
+    "location": "Along Mombasa Road next to Edenmart Supermarket and Shell Petrol Station ground floor."
+  },
+  {
+    "county": "Makueni",
+    "town": "Kibwezi",
+    "pickup_station": "Jumia KimCindy Kibwezi Station",
+    "location": "Kibwezi Town opposite Wells Fargo"
+  },
+  {
+    "county": "Makueni",
+    "town": "Mtito Andei",
+    "pickup_station": "G4S Mtito Andei Station",
+    "location": "Mtito Lukenya Road, Maghonyi Plaza Ground Floor"
+  },
+  {
+    "county": "Makueni",
+    "town": "Wote",
+    "pickup_station": "Jumia Cossim Wote Station",
+    "location": "Directly opposite St. Peter Optical, Dental and Post Bank"
+  },
+  {
+    "county": "Meru",
+    "town": "Makutano",
+    "pickup_station": "Jumia Skyveshop Makutano Station",
+    "location": "Mugo Building, Makutano Maua Rd Opposite Mega Supermarket Next to Makutano Mosque"
+  },
+  {
+    "county": "Meru",
+    "town": "Maua",
+    "pickup_station": "G4S Maua Station",
+    "location": "Opposite Maua Police Station, Robins Healthcare Building"
+  },
+  {
+    "county": "Meru",
+    "town": "Maua",
+    "pickup_station": "Jumia Skyveshop Maua Station",
+    "location": "At National Oil Petrol Station, Opposite Family Bank Ground Floor, Room No. 6"
+  },
+  {
+    "county": "Meru",
+    "town": "Meru Town",
+    "pickup_station": "Jumia Flexcom Meru Downtown Station",
+    "location": "CANAAN PLAZA Njuri, Ncheke Road, Meru Town"
+  },
+  {
+    "county": "Meru",
+    "town": "Meru Town",
+    "pickup_station": "Jumia Flexcom Meru Station",
+    "location": "Along Meru Makutano Road Next to Khetia Supermarket"
+  },
+  {
+    "county": "Meru",
+    "town": "Nkubu",
+    "pickup_station": "Jumia Skyveshop Nkubu Station",
+    "location": "Next to Kinoti G.K House, Meru Road Nkubu"
+  },
+  {
+    "county": "Meru",
+    "town": "Timau",
+    "pickup_station": "Jumia Flexcom Timau Station",
+    "location": "Along Nanyuki Isiolo Highway, Next to Capital Sacco, Opposite St Rita Hospital"
+  },
+  {
+    "county": "Migori",
+    "town": "Awendo",
+    "pickup_station": "Jumia TRD Awendo Station",
+    "location": "Kodede Building housing G4S, 1st Floor PAM Driving School, along Awendo-Ulanda Road"
+  },
+  {
+    "county": "Migori",
+    "town": "Isebania",
+    "pickup_station": "Jumia Flexcom Isebania Station",
+    "location": "Mairi Complex 1st Floor, Shop #2 Near Rubis Petrol Station"
+  },
+  {
+    "county": "Migori",
+    "town": "Kehancha",
+    "pickup_station": "Jumia TRD Kehancha Station",
+    "location": "Ranya House, next to TVS Sales Center and Cooperative Bank ATM"
+  },
+  {
+    "county": "Migori",
+    "town": "Migori Town",
+    "pickup_station": "Flexcom Migori Station",
+    "location": "Along Migori-Rongo Highway, near Texas Energy Petrol Station next to Imperial Driving School"
+  },
+  {
+    "county": "Migori",
+    "town": "Rongo",
+    "pickup_station": "Jumia TRD Rongo Station",
+    "location": "Makutano Junction Next to Rongo Primary School Along Rongo-Homabay Highway"
+  },
+  {
+    "county": "Murang'a",
+    "town": "Kenol",
+    "pickup_station": "JBN Express Kenol Station",
+    "location": "Kabati Bishop Nganga Arahuka Building, Kenol opposite County Supermarket along Kenol Murang'a Road"
+  },
+  {
+    "county": "Murang'a",
+    "town": "Murang'a Town",
+    "pickup_station": "Jumia JBN Express Muranga Station",
+    "location": "Muranga Town, Uhuru Highway, Ngeka Center Ground Floor opposite G4S Region - Muranga"
+  }
+][
+  {
+    "county": "Nandi",
+    "town": "Kapsabet Town",
+    "pickup_station": "Fortify Kapsabet Station",
+    "location": "Kipsigak Business Centre 2nd Floor Room No. 16 above Naivas Supermarket"
+  },
+  {
+    "county": "Nandi",
+    "town": "Nandi Hills",
+    "pickup_station": "Fortify Nandi Hills Station",
+    "location": "Along Koskey Street, Opposite Imarisha Sacco, Ground Floor, Room Number 1"
+  },
+  {
+    "county": "Narok",
+    "town": "Kilgoris",
+    "pickup_station": "G4S Kilgolis Station",
+    "location": "Bank Street Next to Equity Bank Opp. KWFT"
+  },
+  {
+    "county": "Narok",
+    "town": "Narok Town",
+    "pickup_station": "Flexcom Narok Station",
+    "location": "Sidai Plaza Ground Floor Shop No. 5 Opposite Shell Petrol Station along Narok/Bomet Road"
+  },
+  {
+    "county": "Nyamira",
+    "town": "Nyamira Town",
+    "pickup_station": "Jumia Lakeland Nyamira Station",
+    "location": "Along Konate-Miruka Highway Opposite Shivling Supermarket Next to Victory Farms LTD"
+  },
+  {
+    "county": "Nyandarua",
+    "town": "Ol Kalou",
+    "pickup_station": "G4S Olkalou Station",
+    "location": "Mutanga Town Tewan Guest House Ground Floor next to Equity Bank"
+  },
+  {
+    "county": "Nyeri",
+    "town": "Chaka",
+    "pickup_station": "Jumia Flexcom Chaka Station",
+    "location": "Next to Shell Chaka, near Equity Bank, Nyeri-Nanyuki Highway"
+  },
+  {
+    "county": "Nyeri",
+    "town": "Karatina/Iria-ini/Konyu/Magutu/Ngorano",
+    "pickup_station": "Jumia Skyveshop Karatina Station",
+    "location": "Wamithi Building Opposite Muthokinju Paints Next to Wanjau Merchants"
+  },
+  {
+    "county": "Nyeri",
+    "town": "Nyeri Town",
+    "pickup_station": "Skyveshop Nyeri Station",
+    "location": "Hamwa Building Gakere Rd Opposite Naivas Supermarket Next to Hass Petrol Station"
+  },
+  {
+    "county": "Nyeri",
+    "town": "Othaya",
+    "pickup_station": "Jumia Skyveshop Othaya Station",
+    "location": "Co-operative Bank Building, Opposite Box to Box Lounge, First Floor, Room No. 16"
+  },
+  {
+    "county": "Samburu",
+    "town": "Maralal",
+    "pickup_station": "G4S Maralal Station",
+    "location": "Jovena Building Opposite Maralal Safaris Booking Office"
+  },
+  {
+    "county": "Siaya",
+    "town": "Bondo",
+    "pickup_station": "Jumia TRD Bondo Station",
+    "location": "JOHARI PLAZA, Room 1 Along Bondo-Kisumu Highway"
+  },
+  {
+    "county": "Siaya",
+    "town": "Siaya Town",
+    "pickup_station": "Jumia Kebian Siaya Station",
+    "location": "Opposite G4S at Kenya Women (KWFT) along Equity Afia Street, Kenyatta Street"
+  },
+  {
+    "county": "Siaya",
+    "town": "Ugunja",
+    "pickup_station": "Jumia Kebian Ugunja Station",
+    "location": "Ugunja Town near Co-operative Bank, Kisumu-Busia Highway"
+  }
+][
+  {
+    "county": "Taita-Taveta",
+    "town": "Mwatate",
+    "pickup_station": "Jumia KimCindy Mwatate Station",
+    "location": "Mwatate along Mwatate Taveta road opposite Wundanyi Road, next to Mwatete Afya Centre."
+  },
+  {
+    "county": "Taita-Taveta",
+    "town": "Taveta",
+    "pickup_station": "G4S Taveta Station",
+    "location": "Challa Hotel Next to Barclays Bank Ground Floor"
+  },
+  {
+    "county": "Taita-Taveta",
+    "town": "Voi",
+    "pickup_station": "Jumia Voi Station",
+    "location": "Blue Building Opposite Magonyi Hotel & Ajab Depot, Magonyi Street Below I'N'T Lounge."
+  },
+  {
+    "county": "Taita-Taveta",
+    "town": "Wundanyi",
+    "pickup_station": "G4S Wundanyi Station",
+    "location": "Wundanyi Road next to Lavender Hotel Ground Floor"
+  },
+  {
+    "county": "Tana River",
+    "town": "Hola",
+    "pickup_station": "G4S Hola Station",
+    "location": "Hospital Road Opposite NHIF Ground Floor"
+  },
+  {
+    "county": "Tharaka-Nithi",
+    "town": "Chogoria",
+    "pickup_station": "Jumia JBN Express Chogoria Station",
+    "location": "Opposite Chogoria Boys and Chogoria Main Stage adjacent to the county stalls"
+  },
+  {
+    "county": "Tharaka-Nithi",
+    "town": "Chuka Town",
+    "pickup_station": "Jumia Skyveshop Chuka Station",
+    "location": "Equity Chuka Building Opposite Captain Plaza, next to Rubis Petrol Station"
+  },
+  {
+    "county": "Trans-Nzoia",
+    "town": "Kiminini",
+    "pickup_station": "Jumia Amison Kiminini Station",
+    "location": "Kiminini County Council Market Stall No. 30 along Kitale-Webuye Road"
+  },
+  {
+    "county": "Trans-Nzoia",
+    "town": "Kitale",
+    "pickup_station": "Jumia Amison Kitale Station",
+    "location": "Vision Gate Hotel Building Ground Floor Room 2 Wing B, along KCB Bank Road near Unique Blossom Limited"
+  },
+  {
+    "county": "Trans-Nzoia",
+    "town": "Kitale",
+    "pickup_station": "Jumia Lakeland Kitale Station",
+    "location": "UAM - BEST LADY PLAZA First Floor Room SBC 21"
+  },
+  {
+    "county": "Trans-Nzoia",
+    "town": "Kitale",
+    "pickup_station": "Kebian Kitale Station",
+    "location": "Yes Plaza Building, 1st Floor, Room No. 25"
+  },
+  {
+    "county": "Trans-Nzoia",
+    "town": "Moi's Bridge",
+    "pickup_station": "Jumia Fortify MOIs BRIDGE Station",
+    "location": "A.C.K Church opposite Hass Petrol Station, Moisbridge, Shop No. 4"
+  },
+  {
+    "county": "Turkana",
+    "town": "Kakuma",
+    "pickup_station": "Jumia G4S Kakuma Station",
+    "location": "Kakuma Lokichoggio Highway"
+  },
+  {
+    "county": "Turkana",
+    "town": "Lodwar",
+    "pickup_station": "G4S Lodwar Station",
+    "location": "Mashallah Building behind Rubis Midtown Petrol Station, Lorugum Road"
+  },
+  {
+    "county": "Turkana",
+    "town": "Lodwar",
+    "pickup_station": "Jumia G4S Lokichar Station",
+    "location": "Kanaiki Building - Kitale Lodwar Road"
+  },
+  {
+    "county": "Vihiga",
+    "town": "Luanda",
+    "pickup_station": "Jumia Cossim Luanda Station",
+    "location": "Behind Big Ben Plaza, Opposite Rael's Green Groceries, 1st Floor Shop Number 5"
+  },
+  {
+    "county": "Vihiga",
+    "town": "Majengo",
+    "pickup_station": "Jumia Kebian Majengo Station",
+    "location": "SOLISUM Shopping Centre, Kisumu-Kakamega Road on the highway adjacent to Quick Shuttle offices"
+  },
+  {
+    "county": "Vihiga",
+    "town": "Mbale",
+    "pickup_station": "Kebian Mbale Station",
+    "location": "At Quick Shuttle office, along Kisumu Kakamega Highway next to LakeOil Petrol Station"
+  },
+  {
+    "county": "West Pokot",
+    "town": "Kapenguria",
+    "pickup_station": "Jumia Amison Kapenguria Station",
+    "location": "Toror Centre Plaza Ground Floor Room 15, located at Toror Junction"
+  },
+  {
+    "county": "Wajir",
+    "town": "Wajir",
+    "pickup_station": "Jumia G4S Wajir Station",
+    "location": "Garissa-Mado-Gashi-Wajir Road next to Equity Bank Wajir"
+  }
+]

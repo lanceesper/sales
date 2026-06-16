@@ -1,4 +1,4 @@
-import{i as U,g as w,a as f,b as D,c as T,u as V,s as c,d as R,e as O,f as z,h as J,j as K,k as E,l as Y,r as Q,m as W}from"./components-B4wW-AAZ.js";let x="dashboard",p="",g="";document.addEventListener("DOMContentLoaded",()=>{U(),u()});function u(){const t=document.getElementById("admin-app");t.innerHTML=`
+import{i as U,g as w,a as f,b as D,c as T,u as V,s as c,d as R,e as O,f as z,h as J,j as K,k as E,l as Y,r as Q,m as W}from"./components-BVa7C6sI.js";let x="dashboard",p="",g="";document.addEventListener("DOMContentLoaded",()=>{U(),u()});function u(){const t=document.getElementById("admin-app");t.innerHTML=`
     <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
     <div class="admin-layout">

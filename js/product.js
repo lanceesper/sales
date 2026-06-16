@@ -9,7 +9,10 @@ import {
   addToCart,
   getDeliveryStations,
   formatPrice,
-  calculateDiscount
+  calculateDiscount,
+  getCart,
+  updateCartQuantity,
+  removeFromCart
 } from '/js/store.js';
 
 import {
@@ -236,12 +239,7 @@ function buildProductInfo() {
       <span class="rating-count" id="scroll-to-reviews">(${currentProduct.reviewCount} verified ratings)</span>
     </div>
 
-    <div class="product-cart-section">
-      <button class="add-to-cart-btn" id="add-to-cart-btn" ${outOfStock ? 'disabled' : ''}>
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-        <span>${outOfStock ? 'Out of Stock' : 'Add to cart'}</span>
-      </button>
-    </div>
+    <div class="product-cart-section" id="product-cart-container"></div>
 
     <div class="product-promotions">
       <h3>PROMOTIONS</h3>
@@ -268,19 +266,9 @@ function buildProductInfo() {
       });
     }
 
-    // Add to cart
-    const addBtn = info.querySelector('#add-to-cart-btn');
-    if (addBtn) {
-      addBtn.addEventListener('click', () => {
-        if (outOfStock) return;
-        addToCart(currentProduct.id);
-        updateCartBadge();
-        showToast('Added to cart!');
-        // Button animation
-        addBtn.style.transform = 'scale(0.95)';
-        setTimeout(() => { addBtn.style.transform = ''; }, 150);
-      });
-    }
+    // Render cart control
+    const cartContainer = info.querySelector('#product-cart-container');
+    renderCartControl(cartContainer);
 
     // Wishlist button
     const wishlistBtn = info.querySelector('#wishlist-btn');
@@ -302,12 +290,94 @@ function buildProductInfo() {
   return info;
 }
 
+function renderCartControl(container) {
+  if (!container) return;
+
+  const cart = getCart();
+  const cartItem = cart.find(item => item.productId === currentProduct.id);
+  const qty = cartItem ? cartItem.quantity : 0;
+  const outOfStock = currentProduct.unitsAvailable === 0;
+
+  if (outOfStock) {
+    container.innerHTML = `
+      <button class="add-to-cart-btn" disabled>
+        <span>Out of Stock</span>
+      </button>
+    `;
+    return;
+  }
+
+  if (qty > 0) {
+    container.innerHTML = `
+      <div class="cart-qty-selector">
+        <button class="cart-qty-btn" id="cart-qty-minus" aria-label="Decrease quantity">−</button>
+        <span class="cart-qty-val" id="cart-qty-value">${qty}</span>
+        <button class="cart-qty-btn" id="cart-qty-plus" aria-label="Increase quantity">+</button>
+      </div>
+    `;
+
+    const minusBtn = container.querySelector('#cart-qty-minus');
+    const plusBtn = container.querySelector('#cart-qty-plus');
+
+    minusBtn.addEventListener('click', () => {
+      const newQty = qty - 1;
+      updateCartQuantity(currentProduct.id, newQty);
+      updateCartBadge();
+      renderCartControl(container);
+    });
+
+    plusBtn.addEventListener('click', () => {
+      if (qty >= currentProduct.unitsAvailable) {
+        showToast('Cannot add more items. Stock limit reached!', 'error');
+        return;
+      }
+      const newQty = qty + 1;
+      updateCartQuantity(currentProduct.id, newQty);
+      updateCartBadge();
+      renderCartControl(container);
+    });
+  } else {
+    container.innerHTML = `
+      <button class="add-to-cart-btn" id="add-to-cart-btn">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span>Add to cart</span>
+      </button>
+    `;
+
+    const addBtn = container.querySelector('#add-to-cart-btn');
+    addBtn.addEventListener('click', () => {
+      addBtn.disabled = true;
+      addBtn.innerHTML = `
+        <span class="btn-spinner"></span>
+        <span>Adding...</span>
+      `;
+
+      setTimeout(() => {
+        addToCart(currentProduct.id, 1);
+        updateCartBadge();
+        renderCartControl(container);
+      }, 500);
+    });
+  }
+}
+
 // --- Delivery & Returns Sidebar (Right Column) ---
 function buildSidebar() {
   const sidebar = document.createElement('div');
   sidebar.className = 'product-sidebar';
 
   const stations = getDeliveryStations();
+
+  // Extract unique counties from stations
+  const counties = [...new Set(stations.map(s => s.county || 'Nairobi'))].sort();
+  const initialRegion = counties.includes('Nairobi') ? 'Nairobi' : counties[0];
+  const filteredStations = stations.filter(s => s.county === initialRegion);
+
+  const regionOptionsHTML = counties.map(c => `<option value="${c}" ${c === initialRegion ? 'selected' : ''}>${c}</option>`).join('');
+  const stationOptionsHTML = filteredStations.map((s) => {
+    const globalIdx = stations.indexOf(s);
+    return `<option value="${globalIdx}">${s.name} (${s.town})</option>`;
+  }).join('');
 
   // Delivery & Returns card
   const deliveryCard = document.createElement('div');
@@ -327,20 +397,16 @@ function buildSidebar() {
       <div class="delivery-location-label">Choose your location</div>
       <div class="delivery-selects">
         <select id="delivery-region" class="delivery-select">
-          <option value="nairobi">Nairobi</option>
-          <option value="mombasa">Mombasa</option>
-          <option value="kisumu">Kisumu</option>
-          <option value="nakuru">Nakuru</option>
-          <option value="eldoret">Eldoret</option>
+          ${regionOptionsHTML}
         </select>
         <select id="delivery-station" class="delivery-select">
-          ${stations.map((s, i) => `<option value="${i}">${s.name}</option>`).join('')}
+          ${stationOptionsHTML}
         </select>
       </div>
     </div>
 
     <div class="delivery-options" id="delivery-options">
-      ${renderDeliveryOptions(stations[0], estDateStr, estDateStr2)}
+      ${renderDeliveryOptions(filteredStations[0] || stations[0], estDateStr, estDateStr2)}
     </div>
   `;
 
@@ -384,18 +450,44 @@ function buildSidebar() {
 
   // Event handlers
   requestAnimationFrame(() => {
+    const regionSelect = deliveryCard.querySelector('#delivery-region');
     const stationSelect = deliveryCard.querySelector('#delivery-station');
+    const optionsEl = deliveryCard.querySelector('#delivery-options');
+
+    regionSelect.addEventListener('change', (e) => {
+      const selectedCounty = e.target.value;
+      const newFiltered = stations.filter(s => s.county === selectedCounty);
+      
+      // Update station select options
+      stationSelect.innerHTML = newFiltered.map((s) => {
+        const globalIdx = stations.indexOf(s);
+        return `<option value="${globalIdx}">${s.name} (${s.town})</option>`;
+      }).join('');
+
+      // Select first station of new county
+      const firstStation = newFiltered[0] || stations[0];
+      const globalIdx = stations.indexOf(firstStation);
+      stationSelect.value = globalIdx;
+
+      // Update delivery options
+      updateDeliveryOptions(firstStation);
+    });
+
     stationSelect.addEventListener('change', (e) => {
-      selectedStationIndex = parseInt(e.target.value);
-      const optionsEl = deliveryCard.querySelector('#delivery-options');
+      const selectedIndex = parseInt(e.target.value);
+      const station = stations[selectedIndex];
+      updateDeliveryOptions(station);
+    });
+
+    function updateDeliveryOptions(station) {
       const newDate = new Date();
       newDate.setDate(newDate.getDate() + 2 + Math.floor(Math.random() * 3));
       const newDate2 = new Date();
       newDate2.setDate(newDate2.getDate() + 4 + Math.floor(Math.random() * 3));
       const dateStr = newDate.toLocaleDateString('en-KE', { day: 'numeric', month: 'long' });
       const dateStr2 = newDate2.toLocaleDateString('en-KE', { day: 'numeric', month: 'long' });
-      optionsEl.innerHTML = renderDeliveryOptions(stations[selectedStationIndex], dateStr, dateStr2);
-    });
+      optionsEl.innerHTML = renderDeliveryOptions(station, dateStr, dateStr2);
+    }
 
     // Follow button
     const followBtn = sellerCard.querySelector('.seller-follow-btn');
@@ -411,6 +503,7 @@ function buildSidebar() {
 }
 
 function renderDeliveryOptions(station, estDate, estDate2) {
+  if (!station) return '';
   return `
     <div class="delivery-option">
       <div class="delivery-option-icon">
@@ -420,6 +513,7 @@ function renderDeliveryOptions(station, estDate, estDate2) {
         <div class="delivery-option-title">Pickup Station</div>
         <div class="delivery-option-detail">Delivery Fees <strong>${formatPrice(station.fee)}</strong></div>
         <div class="delivery-option-date">Ready for pickup between <strong>${estDate}</strong> and <strong>${estDate2}</strong></div>
+        ${station.location ? `<div class="delivery-option-location" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; line-height: 1.3;">Location: ${station.location}</div>` : ''}
       </div>
       <a href="#" class="delivery-option-details-link">Details</a>
     </div>

@@ -2,6 +2,8 @@
 // Jumia — Seed Data
 // ============================================
 
+import pickupStations from '../pickupstations_clean.json';
+
 export function seedData() {
   // --- Categories ---
   const categories = [
@@ -889,13 +891,23 @@ export function seedData() {
   localStorage.setItem('jumia_products', JSON.stringify(products));
 
   // --- Delivery Stations ---
-  const stations = [
-    { name: 'CBD - Moi Avenue', area: 'Nairobi CBD', fee: 171 },
-    { name: 'Westlands Mall', area: 'Westlands', fee: 200 },
-    { name: 'Garden City', area: 'Thika Road', fee: 250 },
-    { name: 'Junction Mall', area: 'Ngong Road', fee: 220 },
-  ];
-  localStorage.setItem('jumia_stations', JSON.stringify(stations));
+  const mappedStations = pickupStations.map(station => {
+    let fee = 250;
+    const c = station.county.toLowerCase();
+    if (c.includes('nairobi')) fee = 150;
+    else if (c.includes('kiambu') || c.includes('kajiado') || c.includes('machakos')) fee = 180;
+    else if (c.includes('mombasa') || c.includes('nakuru') || c.includes('kisumu') || c.includes('uasin gishu')) fee = 220;
+    
+    return {
+      name: station.pickup_station,
+      county: station.county,
+      town: station.town,
+      location: station.location,
+      fee: fee
+    };
+  });
+  localStorage.setItem('jumia_stations', JSON.stringify(mappedStations));
+  localStorage.setItem('jumia_stations_v2_loaded', 'true');
 
   // --- Default Announcement ---
   const announcement = {
