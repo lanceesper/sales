@@ -31,7 +31,7 @@ function save(key, data) {
 // ==========================================
 
 export function initStore() {
-  if (!localStorage.getItem(KEYS.products) || !localStorage.getItem('jumia_stations_v2_loaded')) {
+  if (!localStorage.getItem(KEYS.products) || !localStorage.getItem('jumia_stations_v3_loaded')) {
     seedData();
   }
 }

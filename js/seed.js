@@ -20,7 +20,7 @@ export function seedData() {
 
   // --- Products ---
   const products = [
-    // ===== Electronics (5) =====
+    // ===== Electronics (9) =====
     {
       id: crypto.randomUUID(),
       name: 'Samsung 43" Smart LED TV Full HD',
@@ -135,8 +135,92 @@ export function seedData() {
       ],
       createdAt: '2025-10-12T08:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'Sony HT-S20R 5.1ch Home Theatre Soundbar',
+      category: 'Electronics',
+      brand: 'Sony',
+      originalPrice: 29999,
+      discountedPrice: 24499,
+      unitsAvailable: 15,
+      description: 'Experience 5.1 channels of real surround sound. Wired rear speakers, a 3ch soundbar, and a wired external subwoofer combine to produce powerful cinematic sound.',
+      images: [
+        'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500',
+        'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500'
+      ],
+      rating: 4.6,
+      reviewCount: 92,
+      reviews: [
+        { author: 'Peter O.', rating: 5, text: 'Sound is very clean and the bass is deep.', date: '2026-02-12' },
+        { author: 'Judy M.', rating: 4, text: 'Great soundbar for my living room.', date: '2026-03-01' },
+      ],
+      createdAt: '2025-10-15T09:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: '10" Ring Light with Tripod Stand',
+      category: 'Electronics',
+      brand: 'Generic',
+      originalPrice: 2500,
+      discountedPrice: 1499,
+      unitsAvailable: 110,
+      description: 'Dimmable 10" Ring Light with 3 color lighting modes (warm, cool, daylight) and 10 brightness levels. Perfect for makeup, streaming, photography, and recording.',
+      images: [
+        'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500',
+        'https://images.unsplash.com/photo-1619840518884-219cb1f1c7d6?w=500'
+      ],
+      rating: 4.1,
+      reviewCount: 228,
+      reviews: [
+        { author: 'Sarah N.', rating: 5, text: 'Bright light, tripod is sturdy enough.', date: '2026-01-05' },
+        { author: 'Ken A.', rating: 4, text: 'Great for my TikTok videos. Excellent product.', date: '2026-02-10' },
+      ],
+      createdAt: '2025-10-20T11:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Xiaomi Mi Box S 4K Android TV',
+      category: 'Electronics',
+      brand: 'Xiaomi',
+      originalPrice: 8500,
+      discountedPrice: 6499,
+      unitsAvailable: 35,
+      description: 'Powered by Android TV for superior functionality. Easy to use and supports voice search and Chromecast. Access tons of content with built-in Wi-Fi.',
+      images: [
+        'https://images.unsplash.com/photo-1586210579191-33b45e38fa2c?w=500',
+        'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=500'
+      ],
+      rating: 4.4,
+      reviewCount: 185,
+      reviews: [
+        { author: 'Dennis K.', rating: 5, text: 'Turned my old normal TV into a smart TV instantly.', date: '2026-01-20' },
+        { author: 'Alex M.', rating: 4, text: 'Streaming is very smooth. Highly recommended.', date: '2026-02-14' },
+      ],
+      createdAt: '2025-10-22T08:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Syinix 43" Frameless Android Smart TV',
+      category: 'Electronics',
+      brand: 'Syinix',
+      originalPrice: 32000,
+      discountedPrice: 25999,
+      unitsAvailable: 18,
+      description: 'Syinix 43-inch frameless Android smart TV. Inbuilt Wi-Fi, Netflix, YouTube, Prime Video, Google Assistant, Dolby Audio, and built-in free-to-air decoder.',
+      images: [
+        'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500',
+        'https://images.unsplash.com/photo-1552975084-6e027cd345c2?w=500'
+      ],
+      rating: 4.3,
+      reviewCount: 78,
+      reviews: [
+        { author: 'Martin O.', rating: 5, text: 'Picture quality is perfect, very nice design.', date: '2026-02-28' },
+        { author: 'Asha A.', rating: 4, text: 'Great Android TV, fast interface.', date: '2026-03-05' },
+      ],
+      createdAt: '2025-10-25T13:00:00.000Z',
+    },
 
-    // ===== Phones & Tablets (5) =====
+    // ===== Phones & Tablets (9) =====
     {
       id: crypto.randomUUID(),
       name: 'Samsung Galaxy A15 128GB',
@@ -251,8 +335,92 @@ export function seedData() {
       ],
       createdAt: '2025-10-25T09:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'Infinix Hot 40i 128GB',
+      category: 'Phones & Tablets',
+      brand: 'Infinix',
+      originalPrice: 17500,
+      discountedPrice: 14499,
+      unitsAvailable: 25,
+      description: 'Infinix Hot 40i with 6.56" punch-hole display, 128GB storage, 8GB RAM, 50MP main camera, and 5000mAh battery with fast charging.',
+      images: [
+        'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500',
+        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500'
+      ],
+      rating: 4.2,
+      reviewCount: 112,
+      reviews: [
+        { author: 'Evans N.', rating: 5, text: 'Amazing specs for this price tag! Very smooth.', date: '2026-01-15' },
+        { author: 'Fiona M.', rating: 4, text: 'Good battery life, screen is bright.', date: '2026-02-12' },
+      ],
+      createdAt: '2025-10-28T10:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Redmi Note 13 256GB',
+      category: 'Phones & Tablets',
+      brand: 'Xiaomi',
+      originalPrice: 29000,
+      discountedPrice: 24499,
+      unitsAvailable: 15,
+      description: 'Redmi Note 13 with 6.67" AMOLED 120Hz display, 256GB ROM, 8GB RAM, 108MP triple camera, 5000mAh battery, and 33W fast charger included in the box.',
+      images: [
+        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500',
+        'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500'
+      ],
+      rating: 4.6,
+      reviewCount: 148,
+      reviews: [
+        { author: 'Simon K.', rating: 5, text: 'Screen is incredibly beautiful! AMOLED 120Hz is elite.', date: '2026-01-20' },
+        { author: 'Mary P.', rating: 4, text: 'Photos are super sharp. Very fast charging.', date: '2026-02-15' },
+      ],
+      createdAt: '2025-11-01T09:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Apple USB-C Power Adapter 20W',
+      category: 'Phones & Tablets',
+      brand: 'Apple',
+      originalPrice: 4500,
+      discountedPrice: 2999,
+      unitsAvailable: 80,
+      description: 'The Apple 20W USB-C Power Adapter offers fast, efficient charging at home, in the office, or on the go. Compatible with any USB-C-enabled device.',
+      images: [
+        'https://images.unsplash.com/photo-1609592424089-9a7442125bb8?w=500',
+        'https://images.unsplash.com/photo-1601524909162-be87252be298?w=500'
+      ],
+      rating: 4.8,
+      reviewCount: 95,
+      reviews: [
+        { author: 'Hassan A.', rating: 5, text: 'Genuine Apple charger. Charges my iPhone 15 very fast.', date: '2026-01-30' },
+        { author: 'Winnie O.', rating: 4, text: 'Works well. No issues.', date: '2026-02-25' },
+      ],
+      createdAt: '2025-11-05T08:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Oraimo FreePods 4 Active Noise Cancelling Earbuds',
+      category: 'Phones & Tablets',
+      brand: 'Oraimo',
+      originalPrice: 5500,
+      discountedPrice: 3999,
+      unitsAvailable: 50,
+      description: 'Oraimo FreePods 4 wireless earbuds with up to 30dB Active Noise Cancellation, 35.5-hour playtime, fast charging, and low latency game mode.',
+      images: [
+        'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500',
+        'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?w=500'
+      ],
+      rating: 4.4,
+      reviewCount: 130,
+      reviews: [
+        { author: 'Philip N.', rating: 5, text: 'ANC is good for the price. Bass is punchy.', date: '2026-02-10' },
+        { author: 'Grace K.', rating: 4, text: 'Fits well in my ears and battery lasts very long.', date: '2026-03-02' },
+      ],
+      createdAt: '2025-11-10T12:00:00.000Z',
+    },
 
-    // ===== Computing (5) =====
+    // ===== Computing (9) =====
     {
       id: crypto.randomUUID(),
       name: 'HP Pavilion 15 Laptop Intel i5 8GB/512GB SSD',
@@ -365,8 +533,92 @@ export function seedData() {
       ],
       createdAt: '2025-11-10T07:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'HP 290 G4 Microtower Desktop Intel Core i3',
+      category: 'Computing',
+      brand: 'HP',
+      originalPrice: 55000,
+      discountedPrice: 47999,
+      unitsAvailable: 15,
+      description: 'HP 290 G4 desktop computer with Intel Core i3 processor, 4GB RAM, 1TB HDD, and DVD writer. Bundled with HP 18.5" LED Monitor, keyboard, and mouse.',
+      images: [
+        'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500',
+        'https://images.unsplash.com/photo-1600541519468-4a18d1796115?w=500'
+      ],
+      rating: 4.2,
+      reviewCount: 48,
+      reviews: [
+        { author: 'Patrick L.', rating: 5, text: 'Great desktop for office administrative tasks.', date: '2026-01-18' },
+        { author: 'Linet K.', rating: 4, text: 'Value for money. Runs smoothly all day.', date: '2026-02-12' },
+      ],
+      createdAt: '2025-11-15T09:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Transcend 1TB External Hard Drive USB 3.1',
+      category: 'Computing',
+      brand: 'Transcend',
+      originalPrice: 8500,
+      discountedPrice: 6899,
+      unitsAvailable: 60,
+      description: 'Transcend StoreJet 25M3 1TB external hard drive with USB 3.1 interface. Features military-grade shock resistance, three-stage shock protection system, and one-touch auto backup.',
+      images: [
+        'https://images.unsplash.com/photo-1600541519468-4a18d1796115?w=500',
+        'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500'
+      ],
+      rating: 4.6,
+      reviewCount: 198,
+      reviews: [
+        { author: 'Steve O.', rating: 5, text: 'Durable and fast transfer speeds. The rubber casing is very protective.', date: '2026-01-20' },
+        { author: 'Rose J.', rating: 4, text: 'Excellent backup drive. Never had a failure.', date: '2026-03-05' },
+      ],
+      createdAt: '2025-11-18T10:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Epson EcoTank L3210 3-in-1 Printer',
+      category: 'Computing',
+      brand: 'Epson',
+      originalPrice: 28000,
+      discountedPrice: 22499,
+      unitsAvailable: 20,
+      description: 'Save up to 90% on printing costs with Epson’s cartridge-free EcoTank printers. Supplied with high-yield ink bottles, integrated ink tanks are easy to fill.',
+      images: [
+        'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=500',
+        'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500'
+      ],
+      rating: 4.7,
+      reviewCount: 86,
+      reviews: [
+        { author: 'Brian K.', rating: 5, text: 'Ink lasts forever! Print quality is super sharp.', date: '2026-01-10' },
+        { author: 'Teresa W.', rating: 4, text: 'Very cost-effective printer. Scanner is high resolution.', date: '2026-02-15' },
+      ],
+      createdAt: '2025-11-20T11:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Dell Vostro 3520 Laptop Intel Core i3 8GB/256GB SSD',
+      category: 'Computing',
+      brand: 'Dell',
+      originalPrice: 50000,
+      discountedPrice: 42999,
+      unitsAvailable: 15,
+      description: 'Dell Vostro 3520 features 11th Gen Intel Core i3, 8GB RAM, 256GB SSD, 15.6" FHD display with 120Hz refresh rate, and Windows 11 Home.',
+      images: [
+        'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500',
+        'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=500'
+      ],
+      rating: 4.3,
+      reviewCount: 65,
+      reviews: [
+        { author: 'John L.', rating: 5, text: 'Very light and fast boot times. Screen is responsive.', date: '2026-01-25' },
+        { author: 'Carla M.', rating: 4, text: 'Perfect for office work. Great battery backup.', date: '2026-03-08' },
+      ],
+      createdAt: '2025-11-25T13:00:00.000Z',
+    },
 
-    // ===== Fashion (5) =====
+    // ===== Fashion (9) =====
     {
       id: crypto.randomUUID(),
       name: 'Men\'s Slim Fit Casual Button-Down Shirt',
@@ -479,8 +731,92 @@ export function seedData() {
       ],
       createdAt: '2025-11-22T11:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'Unisex Classic Canvas Sneakers Black/White',
+      category: 'Fashion',
+      brand: 'Generic',
+      originalPrice: 2000,
+      discountedPrice: 1299,
+      unitsAvailable: 75,
+      description: 'Low-top classic canvas sneakers with durable rubber outsole and lace-up closure. Lightweight and breathable, perfect for everyday casual wear.',
+      images: [
+        'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500',
+        'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500'
+      ],
+      rating: 4.2,
+      reviewCount: 65,
+      reviews: [
+        { author: 'Kelvin R.', rating: 4, text: 'Very comfortable and fits well. Super affordable.', date: '2026-01-20' },
+        { author: 'Emily J.', rating: 4, text: 'Good quality for a generic brand. Recommended.', date: '2026-02-14' },
+      ],
+      createdAt: '2025-11-25T09:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Women\'s High Waist Denim Jeans Blue',
+      category: 'Fashion',
+      brand: 'Denim Co',
+      originalPrice: 1800,
+      discountedPrice: 1399,
+      unitsAvailable: 45,
+      description: 'Voguish women’s high waist denim jeans with skinny fit and stretchable fabric. Designed with 5 pockets, zipper fly, and button closure.',
+      images: [
+        'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500',
+        'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=500'
+      ],
+      rating: 4.3,
+      reviewCount: 88,
+      reviews: [
+        { author: 'Faith T.', rating: 4, text: 'Very stretchable and comfortable. Highly recommend.', date: '2026-01-30' },
+        { author: 'Christine O.', rating: 5, text: 'Best jeans I have purchased. Fits like a glove.', date: '2026-03-05' },
+      ],
+      createdAt: '2025-11-28T10:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Smart Casual Quartz Watch with Leather Strap',
+      category: 'Fashion',
+      brand: 'Curren',
+      originalPrice: 3000,
+      discountedPrice: 1899,
+      unitsAvailable: 40,
+      description: 'Elegant men\'s analog quartz wristwatch with genuine brown leather strap, round dial, date display window, and scratch-resistant glass.',
+      images: [
+        'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500',
+        'https://images.unsplash.com/photo-1614142222165-b91cbbfe18cd?w=500'
+      ],
+      rating: 4.5,
+      reviewCount: 74,
+      reviews: [
+        { author: 'Charles P.', rating: 5, text: 'Beautiful watch. Feels very premium and looks great.', date: '2026-02-15' },
+        { author: 'Henry T.', rating: 4, text: 'Nice strap and accurate time. Good purchase.', date: '2026-03-01' },
+      ],
+      createdAt: '2025-12-01T08:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Oversized Fleece Hoodie Unisex',
+      category: 'Fashion',
+      brand: 'Streetwear',
+      originalPrice: 2500,
+      discountedPrice: 1699,
+      unitsAvailable: 60,
+      description: 'Cozy oversized fleece pullover hoodie with front kangaroo pocket, adjustable drawstring hood, and ribbed cuffs. Soft and comfortable.',
+      images: [
+        'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500',
+        'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=500'
+      ],
+      rating: 4.4,
+      reviewCount: 95,
+      reviews: [
+        { author: 'Antony W.', rating: 5, text: 'Very warm and fits perfectly. Great design.', date: '2026-01-25' },
+        { author: 'Liz A.', rating: 4, text: 'Soft material. Perfect for cold Nairobi evenings.', date: '2026-02-28' },
+      ],
+      createdAt: '2025-12-05T12:00:00.000Z',
+    },
 
-    // ===== Home & Kitchen (5) =====
+    // ===== Home & Kitchen (9) =====
     {
       id: crypto.randomUUID(),
       name: 'Ramtons 2-Burner Gas Cooker with Oven',
@@ -592,8 +928,92 @@ export function seedData() {
       ],
       createdAt: '2025-12-06T07:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'Mika 3-in-1 Blender & Grinder 1.5L',
+      category: 'Home & Kitchen',
+      brand: 'Mika',
+      originalPrice: 5500,
+      discountedPrice: 3999,
+      unitsAvailable: 40,
+      description: 'Mika 3-in-1 blender with 1.5-litre plastic jug, wet/dry grinder attachments, 4-speed control, pulse function, and safety lock protection.',
+      images: [
+        'https://images.unsplash.com/photo-1578643463396-0997cb5328c1?w=500',
+        'https://images.unsplash.com/photo-1589739900243-4b52cd9b1254?w=500'
+      ],
+      rating: 4.2,
+      reviewCount: 56,
+      reviews: [
+        { author: 'Lucy K.', rating: 5, text: 'Smoothies are perfect. Great blender.', date: '2026-01-20' },
+        { author: 'George J.', rating: 4, text: 'Good build. Easy to dismantle and wash.', date: '2026-03-01' },
+      ],
+      createdAt: '2025-12-10T09:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Ramtons Digital Microwave Oven 20L',
+      category: 'Home & Kitchen',
+      brand: 'Ramtons',
+      originalPrice: 12500,
+      discountedPrice: 9999,
+      unitsAvailable: 22,
+      description: 'Ramtons 20-litre digital microwave oven with 800W power output, 5 power levels, 6 auto cook menus, and child safety lock.',
+      images: [
+        'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=500',
+        'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500'
+      ],
+      rating: 4.5,
+      reviewCount: 65,
+      reviews: [
+        { author: 'Alex N.', rating: 5, text: 'Simple to operate and heats food very evenly.', date: '2026-02-10' },
+        { author: 'Dorothy O.', rating: 4, text: 'Nice digital controls and compact design.', date: '2026-03-02' },
+      ],
+      createdAt: '2025-12-15T10:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Von Hotpoint 4-Gas Burner Cooker',
+      category: 'Home & Kitchen',
+      brand: 'Von',
+      originalPrice: 35000,
+      discountedPrice: 29999,
+      unitsAvailable: 12,
+      description: 'Von Hotpoint 4-gas burner free-standing cooker with gas oven, mechanical timer, double glass oven door, and auto ignition.',
+      images: [
+        'https://images.unsplash.com/photo-1523413651479-797eb2e3a4d8?w=500',
+        'https://images.unsplash.com/photo-1604147706283-d7119b5b822c?w=500'
+      ],
+      rating: 4.4,
+      reviewCount: 38,
+      reviews: [
+        { author: 'Grace F.', rating: 5, text: 'Premium look and bakes beautifully. Auto ignition works perfectly.', date: '2026-01-20' },
+        { author: 'Paul J.', rating: 4, text: 'Oven is spacious. Happy with my purchase.', date: '2026-02-15' },
+      ],
+      createdAt: '2025-12-20T11:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Non-Stick Electric Rice Cooker 1.8L',
+      category: 'Home & Kitchen',
+      brand: 'Lyons',
+      originalPrice: 3800,
+      discountedPrice: 2699,
+      unitsAvailable: 50,
+      description: '1.8-litre electric rice cooker with non-stick inner pot. Keep-warm function automatically activates when rice is cooked. Steaming tray included.',
+      images: [
+        'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500',
+        'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=500'
+      ],
+      rating: 4.3,
+      reviewCount: 94,
+      reviews: [
+        { author: 'Mercy G.', rating: 5, text: 'No more burnt rice! Steaming tray is very useful.', date: '2026-01-30' },
+        { author: 'Simon L.', rating: 4, text: 'Simple to use and clean. Makes perfect fluffy rice.', date: '2026-03-08' },
+      ],
+      createdAt: '2025-12-25T09:00:00.000Z',
+    },
 
-    // ===== Health & Beauty (5) =====
+    // ===== Health & Beauty (9) =====
     {
       id: crypto.randomUUID(),
       name: 'Nivea Men Creme Face & Body Moisturizer 150ml',
@@ -705,8 +1125,92 @@ export function seedData() {
       ],
       createdAt: '2025-12-16T13:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'Neutrogena Hydro Boost Water Gel 50ml',
+      category: 'Health & Beauty',
+      brand: 'Neutrogena',
+      originalPrice: 2800,
+      discountedPrice: 2199,
+      unitsAvailable: 35,
+      description: 'Neutrogena Hydro Boost Water Gel with hyaluronic acid. Unique light-textured formula absorbs quickly, instantly locking in moisture for 24h hydration.',
+      images: [
+        'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500',
+        'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=500'
+      ],
+      rating: 4.6,
+      reviewCount: 112,
+      reviews: [
+        { author: 'Mary M.', rating: 5, text: 'Very hydrating for oily skin. Absorbs fast.', date: '2026-01-20' },
+        { author: 'Shiko G.', rating: 4, text: 'Great moisturizer. Lightweight and non-greasy.', date: '2026-03-05' },
+      ],
+      createdAt: '2025-12-18T10:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'L\'Oreal Paris Elvive Extraordinary Oil Shampoo 400ml',
+      category: 'Health & Beauty',
+      brand: 'L\'Oreal',
+      originalPrice: 1200,
+      discountedPrice: 899,
+      unitsAvailable: 45,
+      description: 'Nourishing shampoo for dry hair, enriched with 6 precious flower oils. Deeply nourishes the hair fibers, giving them touchable softness and radiant shine.',
+      images: [
+        'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500',
+        'https://images.unsplash.com/photo-1608248597481-496100c80836?w=500'
+      ],
+      rating: 4.4,
+      reviewCount: 88,
+      reviews: [
+        { author: 'Jane N.', rating: 5, text: 'Left my hair very soft and shiny. Smells lovely.', date: '2026-01-25' },
+        { author: 'Ruth D.', rating: 4, text: 'Excellent shampoo for dry and curly hair.', date: '2026-02-14' },
+      ],
+      createdAt: '2025-12-20T08:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Calvin Klein One Eau De Toilette 100ml',
+      category: 'Health & Beauty',
+      brand: 'Calvin Klein',
+      originalPrice: 6500,
+      discountedPrice: 4999,
+      unitsAvailable: 20,
+      description: 'CK One by Calvin Klein is a iconic unisex fragrance. Clean, fresh, and contemporary. Notes of green tea, papaya, jasmine, and musk.',
+      images: [
+        'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500',
+        'https://images.unsplash.com/photo-1594035910387-fea47794261f?w=500'
+      ],
+      rating: 4.7,
+      reviewCount: 65,
+      reviews: [
+        { author: 'Victor L.', rating: 5, text: 'Original CK One! Clean and refreshing scent.', date: '2026-02-10' },
+        { author: 'Asha M.', rating: 4, text: 'Excellent daily perfume. Scent is mild and lasts long.', date: '2026-03-01' },
+      ],
+      createdAt: '2025-12-22T12:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Garnier SkinActive Micellar Cleansing Water 400ml',
+      category: 'Health & Beauty',
+      brand: 'Garnier',
+      originalPrice: 950,
+      discountedPrice: 749,
+      unitsAvailable: 60,
+      description: 'Garnier Micellar Cleansing Water lifts away makeup, dirt, and oil like a magnet. Dermatologist and ophthalmologist tested. Suitable for sensitive skin.',
+      images: [
+        'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=500',
+        'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500'
+      ],
+      rating: 4.5,
+      reviewCount: 94,
+      reviews: [
+        { author: 'Emma W.', rating: 5, text: 'Removes makeup easily without irritating my eyes.', date: '2026-01-30' },
+        { author: 'Zipporah K.', rating: 4, text: 'Very gentle. Perfect for everyday face cleansing.', date: '2026-03-08' },
+      ],
+      createdAt: '2025-12-25T09:00:00.000Z',
+    },
 
-    // ===== Sports & Outdoors (4) =====
+    // ===== Sports & Outdoors (8) =====
     {
       id: crypto.randomUUID(),
       name: 'Yoga Mat 6mm Thick Non-Slip',
@@ -795,8 +1299,92 @@ export function seedData() {
       ],
       createdAt: '2025-12-24T09:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'Premium Leather Football Size 5',
+      category: 'Sports & Outdoors',
+      brand: 'Adidas',
+      originalPrice: 3500,
+      discountedPrice: 2499,
+      unitsAvailable: 40,
+      description: 'Adidas size 5 training football. Crafted in high-quality PU leather with butyl bladder for excellent air retention. Suitable for all weather training.',
+      images: [
+        'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=500',
+        'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500'
+      ],
+      rating: 4.4,
+      reviewCount: 74,
+      reviews: [
+        { author: 'Hosea P.', rating: 5, text: 'Excellent bounce and soft touch. Great training ball.', date: '2026-02-12' },
+        { author: 'Amani J.', rating: 4, text: 'Very durable. We play with it on rough soil and it holds.', date: '2026-03-01' },
+      ],
+      createdAt: '2025-12-26T10:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Double Camping Tent Waterproof',
+      category: 'Sports & Outdoors',
+      brand: 'TrailMaster',
+      originalPrice: 8500,
+      discountedPrice: 5999,
+      unitsAvailable: 15,
+      description: 'Waterproof double camping tent. Easy setup dome design with mesh windows, double door layer, and PU coating. Accommodates 2-3 persons comfortably.',
+      images: [
+        'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=500',
+        'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=500'
+      ],
+      rating: 4.5,
+      reviewCount: 48,
+      reviews: [
+        { author: 'Duncan L.', rating: 5, text: 'Easy to set up, survived a rainy night in Naivasha perfectly.', date: '2026-01-20' },
+        { author: 'Jane F.', rating: 4, text: 'Spacious for two. Good air ventilation.', date: '2026-02-15' },
+      ],
+      createdAt: '2025-12-28T08:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Stainless Steel Vacuum Water Bottle 1L',
+      category: 'Sports & Outdoors',
+      brand: 'FitPro',
+      originalPrice: 1800,
+      discountedPrice: 1249,
+      unitsAvailable: 80,
+      description: 'Double-walled stainless steel vacuum insulated water bottle. Keeps drinks ice cold for 24 hours or hot for 12 hours. Sweat-proof, BPA-free.',
+      images: [
+        'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500',
+        'https://images.unsplash.com/photo-1618849767220-4389f417f7d1?w=500'
+      ],
+      rating: 4.6,
+      reviewCount: 92,
+      reviews: [
+        { author: 'Mike G.', rating: 5, text: 'Keeps my water cold all day in the hot weather. Solid build.', date: '2026-02-10' },
+        { author: 'Wanja W.', rating: 4, text: 'Good bottle, does not leak. Highly recommended.', date: '2026-03-02' },
+      ],
+      createdAt: '2025-12-30T13:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Speedo Unisex Swimming Goggles Anti-Fog',
+      category: 'Sports & Outdoors',
+      brand: 'Speedo',
+      originalPrice: 2500,
+      discountedPrice: 1699,
+      unitsAvailable: 45,
+      description: 'Speedo swimming goggles with anti-fog coating, UV protection, and soft silicone gaskets. Easily adjustable head strap for a secure leak-free fit.',
+      images: [
+        'https://images.unsplash.com/photo-1582971805810-b24306e0afe5?w=500',
+        'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500'
+      ],
+      rating: 4.3,
+      reviewCount: 35,
+      reviews: [
+        { author: 'Erick N.', rating: 5, text: 'No leaks at all! Anti-fog works very well.', date: '2026-01-30' },
+        { author: 'Clara K.', rating: 4, text: 'Comfortable fit, does not pinch the nose bridge.', date: '2026-03-05' },
+      ],
+      createdAt: '2026-01-02T10:00:00.000Z',
+    },
 
-    // ===== Grocery (4) =====
+    // ===== Grocery (8) =====
     {
       id: crypto.randomUUID(),
       name: 'Brookside Fresh Milk 1L (6-Pack)',
@@ -858,7 +1446,7 @@ export function seedData() {
       rating: 4.7,
       reviewCount: 210,
       reviews: [
-        { author: 'Linda K.', rating: 5, text: 'Best Kenyan coffee! Rich flavor and aroma.', date: '2025-12-30' },
+        { author: 'Linda K.', rating: 5, text: 'Best coffee! Rich flavor and aroma.', date: '2025-12-30' },
         { author: 'Paul N.', rating: 5, text: 'My morning ritual. Nothing beats Dormans.', date: '2026-01-20' },
         { author: 'Joyce W.', rating: 4, text: 'Great coffee. Wish it came in bigger packs.', date: '2026-03-08' },
       ],
@@ -886,6 +1474,90 @@ export function seedData() {
       ],
       createdAt: '2026-01-02T09:00:00.000Z',
     },
+    {
+      id: crypto.randomUUID(),
+      name: 'Pembe Maize Meal 2kg (12-Pack Bale)',
+      category: 'Grocery',
+      brand: 'Pembe',
+      originalPrice: 2500,
+      discountedPrice: 2199,
+      unitsAvailable: 40,
+      description: 'Grade 1 sifted maize meal bale containing 12 packets of 2kg each. Premium quality, fortified with vitamins and minerals for cooking delicious ugali.',
+      images: [
+        'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500',
+        'https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?w=500'
+      ],
+      rating: 4.4,
+      reviewCount: 65,
+      reviews: [
+        { author: 'Njoroge F.', rating: 5, text: 'Ugali cooked with Pembe has excellent texture. Recommended bale purchase.', date: '2026-01-15' },
+        { author: 'Tabitha G.', rating: 4, text: 'Good price for a whole bale, delivery is prompt.', date: '2026-02-28' },
+      ],
+      createdAt: '2026-01-05T08:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Rina Vegetable Cooking Oil 3L',
+      category: 'Grocery',
+      brand: 'Rina',
+      originalPrice: 950,
+      discountedPrice: 799,
+      unitsAvailable: 95,
+      description: 'Double refined vegetable cooking oil. Cholesterol free, fortified with Vitamins A & D. Clean, neutral taste ideal for deep frying and cooking.',
+      images: [
+        'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500',
+        'https://images.unsplash.com/photo-1528750955906-7e944f109b49?w=500'
+      ],
+      rating: 4.3,
+      reviewCount: 94,
+      reviews: [
+        { author: 'Grace D.', rating: 5, text: 'Very clear oil, does not smoke. Good for deep frying.', date: '2026-02-12' },
+        { author: 'James W.', rating: 4, text: 'Decent size bottle, well packaged. Fair price.', date: '2026-03-01' },
+      ],
+      createdAt: '2026-01-08T09:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Ariel Hand Wash Washing Powder 2kg',
+      category: 'Grocery',
+      brand: 'Ariel',
+      originalPrice: 850,
+      discountedPrice: 699,
+      unitsAvailable: 85,
+      description: 'Ariel hand wash washing powder. Direct stain removal in 1 wash. Specially formulated for hand wash, leaving clothes smelling clean and fresh.',
+      images: [
+        'https://images.unsplash.com/photo-1528740561666-ac2479dc0831?w=500',
+        'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500'
+      ],
+      rating: 4.6,
+      reviewCount: 112,
+      reviews: [
+        { author: 'Brenda J.', rating: 5, text: 'Cleans tough collar stains easily. Smells fresh.', date: '2026-01-20' },
+        { author: 'Sam M.', rating: 4, text: 'Gentle on hands, powerful on stains. Good soap.', date: '2026-02-15' },
+      ],
+      createdAt: '2026-01-10T11:00:00.000Z',
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Hanan Toilet Paper 2-Ply (10-Pack)',
+      category: 'Grocery',
+      brand: 'Hanan',
+      originalPrice: 600,
+      discountedPrice: 480,
+      unitsAvailable: 140,
+      description: 'Premium Hanan toilet paper. 10 pack of 2-ply soft and highly absorbent rolls. Made from 100% recycled virgin pulp tissue.',
+      images: [
+        'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500',
+        'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500'
+      ],
+      rating: 4.5,
+      reviewCount: 145,
+      reviews: [
+        { author: 'Linet A.', rating: 5, text: 'Soft and absorbent. Standard pack is very economical.', date: '2026-01-25' },
+        { author: 'Eunice K.', rating: 4, text: 'Excellent tissue. Does not tear easily.', date: '2026-03-08' },
+      ],
+      createdAt: '2026-01-12T13:00:00.000Z',
+    },
   ];
 
   localStorage.setItem('jumia_products', JSON.stringify(products));
@@ -907,7 +1579,7 @@ export function seedData() {
     };
   });
   localStorage.setItem('jumia_stations', JSON.stringify(mappedStations));
-  localStorage.setItem('jumia_stations_v2_loaded', 'true');
+  localStorage.setItem('jumia_stations_v3_loaded', 'true');
 
   // --- Default Announcement ---
   const announcement = {
