@@ -276,7 +276,7 @@ export function renderFooter() {
 
       <div class="footer-bottom">
         <div class="container">
-          <p class="footer-copy">&copy; ${new Date().getFullYear()} Jumia. All rights reserved. Made with ❤️ in Kenya.</p>
+          <p class="footer-copy">&copy; ${new Date().getFullYear()} Jumia. All rights reserved.</p>
         </div>
       </div>
     </footer>
