@@ -19,27 +19,83 @@ import {
 
 import { showToast } from '/js/components.js';
 
+import { auth } from '/js/firebase.js';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+
 /* ============================================================
    State
    ============================================================ */
 let activeView = 'dashboard';
 let productSearchQuery = '';
 let productCategoryFilter = '';
+let isAdminAuthenticated = false;
 
 /* ============================================================
    Bootstrap
    ============================================================ */
 document.addEventListener('DOMContentLoaded', async () => {
   await initStore();
-  render();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isAdminAuthenticated = true;
+      render();
+    } else {
+      isAdminAuthenticated = false;
+      renderLoginScreen();
+    }
+  });
 
   window.addEventListener('storeUpdated', () => {
     // Only re-render if no modals are open to avoid losing input state
-    if (!document.getElementById('product-modal') && !document.getElementById('delete-modal')) {
+    if (isAdminAuthenticated && !document.getElementById('product-modal') && !document.getElementById('delete-modal')) {
       render();
     }
   });
 });
+
+function renderLoginScreen() {
+  const app = document.getElementById('admin-app');
+  app.innerHTML = `
+    <div class="admin-login-wrapper" style="display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #f1f3f5;">
+      <div class="admin-login-card" style="background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div style="width: 48px; height: 48px; background: #f68b1e; color: white; font-size: 24px; font-weight: bold; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">J</div>
+          <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Admin Portal</h2>
+          <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.95rem;">Please sign in to access the dashboard.</p>
+        </div>
+        <form id="admin-login-form">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #555; font-weight: 500;">Email</label>
+            <input type="email" id="login-email" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" />
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #555; font-weight: 500;">Password</label>
+            <input type="password" id="login-password" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" />
+          </div>
+          <button type="submit" style="width: 100%; background: #f68b1e; color: white; padding: 0.85rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s;">Login</button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = 'Logging in...';
+    btn.disabled = true;
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      showToast('Logged in successfully!', 'success');
+    } catch (error) {
+      showToast('Login failed: ' + error.message, 'error');
+      btn.textContent = 'Login';
+      btn.disabled = false;
+    }
+  });
+}
 
 /* ============================================================
    Top-level Render
@@ -88,6 +144,10 @@ function renderSidebar() {
             <span>${item.label}</span>
           </div>
         `).join('')}
+        <div class="nav-item" id="nav-logout" style="margin-top: auto; color: #dc3545;">
+          <span class="nav-item-icon">🚪</span>
+          <span>Logout</span>
+        </div>
       </nav>
       <div class="sidebar-footer">Jumia Admin &copy; ${new Date().getFullYear()}</div>
     </aside>
@@ -97,11 +157,21 @@ function renderSidebar() {
 function bindSidebarEvents() {
   // Nav items
   document.querySelectorAll('.nav-item').forEach(el => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', async () => {
+      if (el.id === 'nav-logout') {
+        try {
+          await signOut(auth);
+        } catch (err) {
+          console.error(err);
+        }
+        return;
+      }
       activeView = el.dataset.view;
-      productSearchQuery = '';
-      productCategoryFilter = '';
       render();
+      
+      // Close sidebar on mobile
+      document.getElementById('admin-sidebar').classList.remove('active');
+      document.getElementById('sidebar-overlay').classList.remove('active');
     });
   });
 
