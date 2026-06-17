@@ -384,67 +384,6 @@ function startPollingStatus(transactionId, orderRef) {
   }, 3000);
 }
 
-function setupPhoneSimulator(phone, total, orderRef) {
-  const messageEl = document.getElementById('phone-prompt-message');
-  if (messageEl) {
-    messageEl.innerHTML = `Pay KSh ${Number(total).toLocaleString('en-KE')} to JUMIA ONLINE STORE? Enter M-Pesa PIN:`;
-  }
-
-  const pinInput = document.getElementById('phone-pin-input');
-  if (pinInput) pinInput.value = '';
-
-  const keypad = document.querySelector('.phone-keypad');
-  if (keypad) {
-    const newKeypad = keypad.cloneNode(true);
-    keypad.parentNode.replaceChild(newKeypad, keypad);
-
-    newKeypad.addEventListener('click', (e) => {
-      const btn = e.target.closest('.key-btn');
-      if (!btn) return;
-      const key = btn.dataset.key;
-
-      if (key === 'clear') {
-        pinInput.value = '';
-      } else if (key === 'backspace') {
-        pinInput.value = pinInput.value.slice(0, -1);
-      } else {
-        if (pinInput.value.length < 4) {
-          pinInput.value += key;
-        }
-      }
-    });
-  }
-
-  const cancelBtn = document.getElementById('phone-cancel-btn');
-  if (cancelBtn) {
-    cancelBtn.onclick = () => {
-      stopAllTimers();
-      showStkError('Transaction Cancelled', 'You cancelled the simulated M-Pesa STK Push PIN prompt. Please try again.');
-    };
-  }
-
-  const sendBtn = document.getElementById('phone-send-btn');
-  if (sendBtn) {
-    sendBtn.onclick = () => {
-      if (!pinInput || pinInput.value.length < 4) {
-        showToast('Please enter a 4-digit PIN!', 'error');
-        return;
-      }
-
-      setStkStage('stk-status-stage');
-      document.getElementById('stk-status-title').textContent = 'Processing Payment...';
-      document.getElementById('stk-status-desc').textContent = 'Checking transaction details with Safaricom...';
-      setStepState('stk-step-init', 'completed');
-      setStepState('stk-step-prompt', 'completed');
-      setStepState('stk-step-verify', 'active');
-
-      setTimeout(() => {
-        stopAllTimers();
-        handlePaymentSuccess(orderRef);
-      }, 1500);
-    };
-  }
-}
 
 async function triggerStkPushPayment(phone, total, name) {
   const overlay = renderStkPushOverlay();
@@ -505,35 +444,21 @@ async function triggerStkPushPayment(phone, total, name) {
       setStepState('stk-step-init', 'completed');
       setStepState('stk-step-prompt', 'active');
 
-      // Check if local dev or mock response from Vercel Serverless
-      if (result.isMock || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        setTimeout(() => {
-          setStkStage('stk-simulator-stage');
-          setupPhoneSimulator(phone, total, orderRef);
-        }, 1500);
-      } else {
-        // Real production mode
-        document.getElementById('stk-status-title').textContent = 'STK Push Prompt Sent!';
-        document.getElementById('stk-status-desc').innerHTML = `A secure M-Pesa PIN prompt has been sent to <strong>${phone}</strong>. Enter your PIN to complete payment of <strong>${formatPrice(total)}</strong>.`;
-        setStepState('stk-step-prompt', 'completed');
-        setStepState('stk-step-verify', 'active');
+      // Real production mode
+      document.getElementById('stk-status-title').textContent = 'STK Push Prompt Sent!';
+      document.getElementById('stk-status-desc').innerHTML = `A secure M-Pesa PIN prompt has been sent to <strong>${phone}</strong>. Enter your PIN to complete payment of <strong>${formatPrice(total)}</strong>.`;
+      setStepState('stk-step-prompt', 'completed');
+      setStepState('stk-step-verify', 'active');
 
-        // Start polling real payment status
-        startPollingStatus(currentTransactionId, orderRef);
-      }
+      // Start polling real payment status
+      startPollingStatus(currentTransactionId, orderRef);
     } else {
       throw new Error(result.error || 'Failed to dispatch push');
     }
   } catch (err) {
-    console.warn('Vercel serverless function not responding, fallback to local client simulator:', err);
-    // Offline/no-backend local development fallback
-    setStepState('stk-step-init', 'completed');
-    setStepState('stk-step-prompt', 'completed');
-    
-    setTimeout(() => {
-      setStkStage('stk-simulator-stage');
-      setupPhoneSimulator(phone, total, orderRef);
-    }, 1200);
+    console.error('API Error during STK Push:', err);
+    stopAllTimers();
+    showStkError('Connection Error', 'Failed to connect to the payment server. Please try again.');
   }
 }
 
@@ -575,55 +500,6 @@ function renderStkPushOverlay() {
         </div>
       </div>
 
-      <!-- Stage 2: Sandbox Phone Simulator -->
-      <div id="stk-simulator-stage" class="stk-stage">
-        <div class="phone-mockup">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-header">
-              <span class="phone-carrier">Safaricom</span>
-              <span class="phone-time">11:30 AM</span>
-            </div>
-            
-            <div class="stk-popup-box">
-              <div class="stk-popup-title">SIM Toolkit</div>
-              <div class="stk-popup-msg" id="phone-prompt-message">
-                Pay KSh 0 to JUMIA ONLINE STORE? Enter M-Pesa PIN:
-              </div>
-              <div class="stk-popup-input-wrap">
-                <input type="password" id="phone-pin-input" readonly maxlength="4" placeholder="••••" />
-              </div>
-              <div class="stk-popup-actions">
-                <button id="phone-cancel-btn" class="popup-btn cancel">Cancel</button>
-                <button id="phone-send-btn" class="popup-btn send">Send</button>
-              </div>
-            </div>
-
-            <div class="phone-keypad">
-              <button class="key-btn" data-key="1">1</button>
-              <button class="key-btn" data-key="2">2</button>
-              <button class="key-btn" data-key="3">3</button>
-              <button class="key-btn" data-key="4">4</button>
-              <button class="key-btn" data-key="5">5</button>
-              <button class="key-btn" data-key="6">6</button>
-              <button class="key-btn" data-key="7">7</button>
-              <button class="key-btn" data-key="8">8</button>
-              <button class="key-btn" data-key="9">9</button>
-              <button class="key-btn ctrl" data-key="clear">CLR</button>
-              <button class="key-btn" data-key="0">0</button>
-              <button class="key-btn ctrl" data-key="backspace">⌫</button>
-            </div>
-          </div>
-        </div>
-        <div class="simulator-instructions">
-          <h4>Interactive Simulator Mode</h4>
-          <p>Since this is a sandbox local test, use the phone simulator on screen to process or reject the mock transaction:</p>
-          <ul>
-            <li>Enter any 4-digit PIN and click <strong>Send</strong> to mock payment.</li>
-            <li>Click <strong>Cancel</strong> to mock user cancellation.</li>
-          </ul>
-        </div>
-      </div>
 
       <!-- Stage 3: Failure State -->
       <div id="stk-error-stage" class="stk-stage">

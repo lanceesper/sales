@@ -17,15 +17,11 @@ export default async function handler(req, res) {
   const apiKey = process.env.MEGAPAY_API_KEY;
   const email = process.env.MEGAPAY_EMAIL;
 
-  // For testing purposes, if environment variables are not set on Vercel,
-  // we return a simulation code so the developer knows it's working but unconfigured.
   if (!apiKey || !email) {
-    console.warn('MegaPay credentials not configured on Vercel environment.');
-    return res.status(200).json({
-      success: '200',
-      message: 'Simulated request sent (API credentials missing in Vercel)',
-      transaction_request_id: `MOCK-${Date.now()}`,
-      isMock: true
+    console.error('MegaPay credentials not configured on Vercel environment.');
+    return res.status(500).json({
+      error: 'Server is not configured with MegaPay API credentials.',
+      isMock: false
     });
   }
 
