@@ -39,15 +39,21 @@ export function initStore() {
       seedData();
     }
 
-    let productsLoaded = false;
-    let announcementsLoaded = false;
+    // --- INSTANT CACHE LOAD ---
+    // Load previously synced data from local storage so the site renders instantly
+    const cachedProducts = load('jumia_products_firebase_cache');
+    if (cachedProducts && Array.isArray(cachedProducts)) {
+      realTimeProducts = cachedProducts;
+    }
+    const cachedAnnouncement = load('jumia_announcement_firebase_cache');
+    if (cachedAnnouncement !== undefined) {
+      realTimeAnnouncement = cachedAnnouncement;
+    }
+    
+    // Resolve immediately so the UI never blocks on network requests!
+    resolve();
 
-    const checkReady = () => {
-      if (productsLoaded && announcementsLoaded) {
-        resolve();
-      }
-    };
-
+    // --- FIREBASE SYNC ---
     const productsRef = collection(db, 'products');
     onSnapshot(productsRef, async (snapshot) => {
       realTimeProducts = [];
@@ -78,8 +84,8 @@ export function initStore() {
         }
       }
 
-      productsLoaded = true;
-      checkReady();
+      // Update cache
+      save('jumia_products_firebase_cache', realTimeProducts);
       window.dispatchEvent(new Event('storeUpdated'));
     });
 
@@ -90,8 +96,8 @@ export function initStore() {
         realTimeAnnouncement = { ...docSnap.data(), id: docSnap.id };
       });
 
-      announcementsLoaded = true;
-      checkReady();
+      // Update cache
+      save('jumia_announcement_firebase_cache', realTimeAnnouncement);
       window.dispatchEvent(new Event('storeUpdated'));
     });
   });
