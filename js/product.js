@@ -319,58 +319,26 @@ function renderCartControl(container) {
     return;
   }
 
-  if (qty > 0) {
-    container.innerHTML = `
-      <div class="cart-qty-selector">
-        <button class="cart-qty-btn" id="cart-qty-minus" aria-label="Decrease quantity">−</button>
-        <span class="cart-qty-val" id="cart-qty-value">${qty}</span>
-        <button class="cart-qty-btn" id="cart-qty-plus" aria-label="Increase quantity">+</button>
-      </div>
+  container.innerHTML = `
+    <button class="add-to-cart-btn" id="add-to-cart-btn">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span>Add to cart</span>
+    </button>
+  `;
+
+  const addBtn = container.querySelector('#add-to-cart-btn');
+  addBtn.addEventListener('click', () => {
+    addBtn.disabled = true;
+    addBtn.innerHTML = `
+      <span class="btn-spinner"></span>
+      <span>Adding...</span>
     `;
 
-    const minusBtn = container.querySelector('#cart-qty-minus');
-    const plusBtn = container.querySelector('#cart-qty-plus');
-
-    minusBtn.addEventListener('click', () => {
-      const newQty = qty - 1;
-      updateCartQuantity(currentProduct.id, newQty);
-      updateCartBadge();
-      renderCartControl(container);
-    });
-
-    plusBtn.addEventListener('click', () => {
-      if (qty >= currentProduct.unitsAvailable) {
-        showToast('Cannot add more items. Stock limit reached!', 'error');
-        return;
-      }
-      const newQty = qty + 1;
-      updateCartQuantity(currentProduct.id, newQty);
-      updateCartBadge();
-      renderCartControl(container);
-    });
-  } else {
-    container.innerHTML = `
-      <button class="add-to-cart-btn" id="add-to-cart-btn">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        <span>Add to cart</span>
-      </button>
-    `;
-
-    const addBtn = container.querySelector('#add-to-cart-btn');
-    addBtn.addEventListener('click', () => {
-      addBtn.disabled = true;
-      addBtn.innerHTML = `
-        <span class="btn-spinner"></span>
-        <span>Adding...</span>
-      `;
-
-      setTimeout(() => {
-        addToCart(currentProduct.id, 1);
-        updateCartBadge();
-        renderCartControl(container);
-      }, 500);
-    });
-  }
+    setTimeout(() => {
+      addToCart(currentProduct.id, 1);
+      window.location.href = '/checkout.html';
+    }, 500);
+  });
 }
 
 // --- Delivery & Returns Sidebar (Right Column) ---

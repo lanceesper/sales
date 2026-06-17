@@ -109,11 +109,11 @@ export function renderHeader(activePage = 'home') {
             </div>
           </div>
 
-          <a href="/cart.html" class="cart-link" id="cart-link" aria-label="Cart">
+          <div class="cart-link" id="cart-link" aria-label="Cart" title="${cartCount > 0 ? cartCount + ' item(s) on cart' : 'Nothing on cart'}" style="cursor: default;">
             <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             <span class="cart-link-text">Cart</span>
             <span class="cart-badge" id="cart-badge">${cartCount}</span>
-          </a>
+          </div>
         </div>
       </div>
     </header>
