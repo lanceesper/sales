@@ -1016,3 +1016,81 @@ function escapeHtml(str) {
   div.textContent = str;
   return div.innerHTML;
 }
+
+/* ============================================================
+   Orders View
+   ============================================================ */
+function renderOrdersView() {
+  const ordersRaw = getOrders() || [];
+
+  // Sort orders: Failed at the bottom, then by createdAt descending
+  const orders = [...ordersRaw].sort((a, b) => {
+    if (a.status === 'failed' && b.status !== 'failed') return 1;
+    if (a.status !== 'failed' && b.status === 'failed') return -1;
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  return `
+    <div class="content-header">
+      <h1>Orders</h1>
+    </div>
+    
+    ${orders.length ? `
+      <div class="admin-table-wrapper">
+        <table class="admin-table" style="min-width: 900px;">
+          <thead>
+            <tr>
+              <th>Order Details</th>
+              <th>Customer</th>
+              <th>Delivery</th>
+              <th>Time</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${orders.map(o => {
+              const itemsList = (o.items || []).map(i => `${i.quantity}x ${escapeHtml(i.name)}`).join('<br>');
+              const dateObj = new Date(o.createdAt);
+              const timeStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+              let statusBadge = '';
+              if (o.status === 'success') statusBadge = '<span class="stock-badge in-stock">Success</span>';
+              else if (o.status === 'failed') statusBadge = '<span class="stock-badge out-of-stock">Failed</span>';
+              else statusBadge = '<span class="stock-badge low-stock">Pending</span>';
+
+              return `
+                <tr>
+                  <td style="line-height: 1.4; font-size: 0.9em; max-width: 250px;">${itemsList || 'No items'}</td>
+                  <td style="line-height: 1.4; font-size: 0.9em;">
+                    <strong>${escapeHtml(o.name || 'N/A')}</strong><br>
+                    <a href="mailto:${escapeHtml(o.email || '')}" style="color: var(--accent-primary); text-decoration: none;">${escapeHtml(o.email || 'N/A')}</a><br>
+                    ${escapeHtml(o.phone || 'N/A')}
+                  </td>
+                  <td style="line-height: 1.4; font-size: 0.9em;">
+                    ${escapeHtml(o.station || 'N/A')}<br>
+                    <span style="color: var(--text-muted);">${escapeHtml(o.county || '')}</span>
+                  </td>
+                  <td style="font-size: 0.9em; color: var(--text-muted);">${timeStr}</td>
+                  <td class="table-price">${formatPrice(o.totalPrice || 0)}</td>
+                  <td>${statusBadge}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    ` : `
+      <div class="admin-table-wrapper">
+        <div class="empty-state">
+          <span class="empty-state-icon">🛒</span>
+          <div class="empty-state-text">No orders yet</div>
+          <div class="empty-state-sub">Orders placed by users will appear here</div>
+        </div>
+      </div>
+    `}
+  `;
+}
+
+function bindOrdersEvents() {
+  // Static view for now
+}
