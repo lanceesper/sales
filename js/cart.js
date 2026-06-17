@@ -6,7 +6,6 @@ import {
   initStore,
   getProductById,
   getCart,
-  addToCart,
   removeFromCart,
   updateCartQuantity,
   getCartCount,

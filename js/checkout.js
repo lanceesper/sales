@@ -8,7 +8,6 @@ import {
   getDeliveryStations,
   clearCart,
   formatPrice,
-  getCartCount,
   getProductById
 } from '/js/store.js';
 

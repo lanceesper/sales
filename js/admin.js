@@ -833,7 +833,7 @@ function renderStationsView() {
             ${stations.map((s, i) => `
               <tr>
                 <td class="table-product-name">${escapeHtml(s.name)}</td>
-                <td>${escapeHtml(s.area)}</td>
+                <td>${escapeHtml(s.area || s.county || '')}</td>
                 <td class="table-price">${formatPrice(s.fee)}</td>
                 <td>
                   <button class="btn-icon btn-icon-danger" data-delete-station="${i}" title="Delete station">🗑️</button>
@@ -870,7 +870,14 @@ function bindStationsEvents() {
       return;
     }
 
-    addDeliveryStation({ name, area, fee });
+    addDeliveryStation({
+      name,
+      county: area,
+      town: area,
+      location: area,
+      area: area,
+      fee
+    });
     showToast(`Station "${name}" added`, 'success');
     render();
   });

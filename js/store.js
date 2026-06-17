@@ -266,9 +266,16 @@ export function addDeliveryStation(station) {
   save(KEYS.stations, stations);
 }
 
-export function removeDeliveryStation(name) {
+export function removeDeliveryStation(nameOrIndex) {
   let stations = getDeliveryStations();
-  stations = stations.filter((s) => s.name !== name);
+  if (typeof nameOrIndex === 'number' || !isNaN(Number(nameOrIndex))) {
+    const idx = parseInt(nameOrIndex, 10);
+    if (idx >= 0 && idx < stations.length) {
+      stations.splice(idx, 1);
+    }
+  } else {
+    stations = stations.filter((s) => s.name !== nameOrIndex);
+  }
   save(KEYS.stations, stations);
 }
 

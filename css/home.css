@@ -1177,12 +1177,28 @@
     min-width: 150px;
   }
 
+  .main-header {
+    padding: 10px 0;
+  }
+
   .header-inner {
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 10px 8px;
+  }
+
+  .logo {
+    margin-right: auto;
   }
 
   .logo-text {
     font-size: 1.3rem;
+  }
+
+  .header-search {
+    flex: 0 0 100%;
+    order: 4;
+    max-width: none;
+    margin-top: 4px;
   }
 
   .search-input {

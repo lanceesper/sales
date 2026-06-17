@@ -5,7 +5,6 @@
 import {
   getAnnouncement,
   setAnnouncement,
-  getCategories,
   getCartCount,
   formatPrice,
   calculateDiscount,
