@@ -8,7 +8,10 @@ import {
   getDeliveryStations,
   clearCart,
   formatPrice,
-  getProductById
+  getProductById,
+  addOrder,
+  updateOrderStatus,
+  getOrders
 } from '/js/store.js';
 
 import {
@@ -281,15 +284,23 @@ function setStepState(stepId, state) {
   step.className = `stk-step ${state}`;
 }
 
-function showStkError(title, description) {
+function showStkError(title, description, orderRef) {
   setStkStage('stk-error-stage');
   const errTitle = document.getElementById('stk-error-title');
   const errDesc = document.getElementById('stk-error-desc');
   if (errTitle) errTitle.textContent = title;
   if (errDesc) errDesc.textContent = description;
+
+  if (orderRef) {
+    updateOrderStatus(orderRef, 'failed');
+  }
 }
 
 function handlePaymentSuccess(orderRef) {
+  if (orderRef) {
+    updateOrderStatus(orderRef, 'success');
+  }
+
   const overlay = document.getElementById('stk-push-overlay');
   if (overlay) overlay.classList.remove('visible');
 
@@ -335,7 +346,7 @@ function startPollingStatus(transactionId, orderRef) {
         handlePaymentSuccess(orderRef);
       } else if (data.status === 'failed') {
         stopAllTimers();
-        showStkError('Payment Unsuccessful', data.ResponseDescription || 'The transaction was rejected or failed. Please retry.');
+        showStkError('Payment Unsuccessful', data.ResponseDescription || 'The transaction was rejected or failed. Please retry.', orderRef);
       }
     } catch (err) {
       console.error('Error while polling status:', err);
@@ -359,14 +370,25 @@ async function triggerStkPushPayment(phone, total, name) {
 
   const orderRef = 'JUMIA-' + Math.floor(100000 + Math.random() * 900000);
 
+  // Helper function to mark order as failed if still pending
+  const markAsFailedIfPending = () => {
+    const orders = getOrders();
+    const order = orders.find(o => o.id === orderRef);
+    if (order && order.status === 'pending') {
+      updateOrderStatus(orderRef, 'failed');
+    }
+  };
+
   // Bind close actions
   document.getElementById('stk-close-btn').onclick = () => {
     stopAllTimers();
+    markAsFailedIfPending();
     overlay.classList.remove('visible');
   };
 
   document.getElementById('stk-dismiss-btn').onclick = () => {
     stopAllTimers();
+    markAsFailedIfPending();
     overlay.classList.remove('visible');
   };
 
@@ -381,10 +403,39 @@ async function triggerStkPushPayment(phone, total, name) {
       // Transition stage to loading status
       setStkStage('stk-status-stage');
       
+      // Get order details
+      const email = document.getElementById('checkout-email') ? document.getElementById('checkout-email').value.trim() : '';
+      const station = document.getElementById('checkout-town') ? document.getElementById('checkout-town').value : '';
+      const cart = getCart();
+      const orderItems = cart.map(item => {
+        const p = getProductById(item.productId);
+        const price = p ? (p.discountedPrice ?? p.originalPrice) : 0;
+        const name = p ? p.name : 'Unknown Product';
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          price: price,
+          name: name
+        };
+      });
+
+      // Save order to store initially as 'pending'
+      addOrder({
+        id: orderRef,
+        email: email,
+        name: name,
+        phone: phone,
+        county: selectedCounty,
+        station: station,
+        items: orderItems,
+        totalPrice: total,
+        status: 'pending'
+      });
+
       // Start 60s timeout countdown in background (no visual timer)
       startCountdown(() => {
         stopAllTimers();
-        showStkError('Request Timed Out', 'Handset did not respond. Check if your phone is active and try again.');
+        showStkError('Request Timed Out', 'Handset did not respond. Check if your phone is active and try again.', orderRef);
       });
 
       // Execute actual STK push payment API call
@@ -438,7 +489,7 @@ async function executeStkPushPayment(phone, total, name, orderRef) {
   } catch (err) {
     console.error('API Error during STK Push:', err);
     stopAllTimers();
-    showStkError('Connection Error', 'Failed to connect to the payment server. Please try again.');
+    showStkError('Connection Error', 'Failed to connect to the payment server. Please try again.', orderRef);
   }
 }
 

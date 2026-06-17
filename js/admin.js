@@ -14,7 +14,8 @@ import {
   getAnnouncement,
   setAnnouncement,
   formatPrice,
-  calculateDiscount
+  calculateDiscount,
+  getOrders
 } from '/js/store.js';
 
 import { showToast } from '/js/components.js';
@@ -28,6 +29,7 @@ import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebas
 let activeView = 'dashboard';
 let productSearchQuery = '';
 let productCategoryFilter = '';
+let orderSearchQuery = '';
 let isAdminAuthenticated = false;
 
 /* ============================================================
@@ -125,6 +127,7 @@ const NAV_ITEMS = [
   { id: 'categories', icon: '🏷️', label: 'Categories' },
   { id: 'stations', icon: '🚚', label: 'Delivery Stations' },
   { id: 'announcements', icon: '📢', label: 'Announcements' },
+  { id: 'orders', icon: '🛒', label: 'Orders' },
 ];
 
 function renderSidebar() {
@@ -201,6 +204,7 @@ function renderView() {
     case 'categories': return renderCategoriesView();
     case 'stations': return renderStationsView();
     case 'announcements': return renderAnnouncementsView();
+    case 'orders': return renderOrdersView();
     default: return renderDashboard();
   }
 }
@@ -212,6 +216,7 @@ function bindViewEvents() {
     case 'categories': bindCategoriesEvents(); break;
     case 'stations': bindStationsEvents(); break;
     case 'announcements': bindAnnouncementsEvents(); break;
+    case 'orders': bindOrdersEvents(); break;
   }
 }
 
