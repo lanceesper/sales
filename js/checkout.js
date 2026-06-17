@@ -11,7 +11,9 @@ import {
   getProductById,
   addOrder,
   updateOrderStatus,
-  getOrders
+  getOrders,
+  updateCartQuantity,
+  removeFromCart
 } from '/js/store.js';
 
 import {
@@ -182,13 +184,26 @@ function renderOrderSummary(rightCol, cart) {
         const price = p.discountedPrice ?? p.originalPrice;
         const img = p.images && p.images.length > 0 ? p.images[0] : '';
         return `
-          <div class="summary-item-row">
-            <div class="summary-item-thumb">
-              <img src="${img}" alt="${p.name}" />
+          <div class="summary-item-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="summary-item-thumb">
+                <img src="${img}" alt="${p.name}" />
+              </div>
+              <div class="summary-item-details">
+                <div class="summary-item-name">${p.name}</div>
+                <div class="summary-item-qty-price">${formatPrice(price)} each</div>
+              </div>
             </div>
-            <div class="summary-item-details">
-              <div class="summary-item-name">${p.name}</div>
-              <div class="summary-item-qty-price">Qty: ${item.quantity} | ${formatPrice(price)}</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed var(--border-light); padding-top: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="qty-btn" data-action="decrease" data-id="${item.productId}" style="width: 28px; height: 28px; border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-primary);">-</button>
+                <span style="font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center; color: var(--text-primary);">${item.quantity}</span>
+                <button class="qty-btn" data-action="increase" data-id="${item.productId}" style="width: 28px; height: 28px; border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-primary);">+</button>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="qty-btn" data-action="remove" data-id="${item.productId}" style="border: none; background: transparent; color: #ff3b30; cursor: pointer; font-size: 0.85rem; font-weight: 500;">Remove</button>
+                <span style="font-weight: 700; color: var(--text-primary);">${formatPrice(price * item.quantity)}</span>
+              </div>
             </div>
           </div>
         `;
@@ -218,6 +233,42 @@ function renderOrderSummary(rightCol, cart) {
   `;
 
   rightCol.appendChild(card);
+
+  // Bind quantity/remove events
+  const itemsListEl = card.querySelector('.summary-items-list');
+  if (itemsListEl) {
+    itemsListEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.qty-btn');
+      if (!btn) return;
+      
+      const action = btn.dataset.action;
+      const productId = btn.dataset.id;
+      const item = cart.find(i => i.productId === productId);
+      if (!item) return;
+
+      if (action === 'increase') {
+        updateCartQuantity(productId, item.quantity + 1);
+      } else if (action === 'decrease') {
+        if (item.quantity > 1) {
+          updateCartQuantity(productId, item.quantity - 1);
+        } else {
+          removeFromCart(productId);
+        }
+      } else if (action === 'remove') {
+        removeFromCart(productId);
+      }
+      
+      const newCart = getCart();
+      updateCartBadge(newCart);
+      
+      if (newCart.length === 0) {
+        window.location.href = '/';
+        return;
+      }
+      
+      renderOrderSummary(rightCol, newCart);
+    });
+  }
 
   // Place Order handler
   const placeBtn = card.querySelector('#place-order-btn');
