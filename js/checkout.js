@@ -94,7 +94,7 @@ function renderDetailsForm(leftCol, rightCol) {
   shippingCard.className = 'checkout-card';
   shippingCard.innerHTML = `
     <div class="checkout-card-title">
-      <span class="number">1</span> Delivery Details
+      Delivery Details
     </div>
     <form class="checkout-form" id="checkout-details-form">
       <div class="form-grid">
@@ -107,8 +107,8 @@ function renderDetailsForm(leftCol, rightCol) {
           <input type="tel" class="checkout-form-input" id="checkout-phone" placeholder="e.g. 0712345678" required />
         </div>
         <div class="form-group">
-          <label class="checkout-form-label" for="checkout-phone-alt">Alternative Phone Number (Optional)</label>
-          <input type="tel" class="checkout-form-input" id="checkout-phone-alt" placeholder="e.g. 0722334455" />
+          <label class="checkout-form-label" for="checkout-email">Email Address</label>
+          <input type="email" class="checkout-form-input" id="checkout-email" placeholder="e.g. john@example.com" required />
         </div>
         <div class="form-group">
           <label class="checkout-form-label" for="checkout-county">County / Region</label>
@@ -122,10 +122,7 @@ function renderDetailsForm(leftCol, rightCol) {
             <!-- Populated dynamically -->
           </select>
         </div>
-        <div class="form-group full-width">
-          <label class="checkout-form-label" for="checkout-notes">Additional Delivery Instructions (Optional)</label>
-          <input type="text" class="checkout-form-input" id="checkout-notes" placeholder="e.g. Leave it at the gate if not available" />
-        </div>
+
       </div>
     </form>
   `;
@@ -149,43 +146,6 @@ function renderDetailsForm(leftCol, rightCol) {
     const cart = getCart();
     renderOrderSummary(rightCol, cart);
   });
-
-  // Payment Card
-  const paymentCard = document.createElement('div');
-  paymentCard.className = 'checkout-card';
-  paymentCard.innerHTML = `
-    <div class="checkout-card-title">
-      <span class="number">2</span> Payment Method
-    </div>
-    
-    <div class="mpesa-stk-payment-box">
-      <div class="mpesa-stk-header">
-        <span class="mpesa-logo-badge">Lipa na M-Pesa</span>
-        <span class="mpesa-payment-type">Automated STK Push</span>
-      </div>
-      <div class="mpesa-stk-body">
-        <p>A secure prompt (STK Push) will be sent automatically to your mobile phone once you click "Place Order".</p>
-        <div class="mpesa-mirror-alert">
-          <svg class="phone-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-          <span>Payment prompt will be sent to: <strong id="mpesa-mirror-phone">the phone number specified above</strong></span>
-        </div>
-        <p class="mpesa-stk-note">Please ensure your phone is unlocked, active, and has sufficient funds to complete the payment.</p>
-      </div>
-    </div>
-  `;
-  leftCol.appendChild(paymentCard);
-
-  // Dynamic phone mirroring
-  const phoneInput = document.getElementById('checkout-phone');
-  if (phoneInput) {
-    phoneInput.addEventListener('input', (e) => {
-      const val = e.target.value.trim();
-      const mirror = document.getElementById('mpesa-mirror-phone');
-      if (mirror) {
-        mirror.textContent = val ? val : 'the phone number specified above';
-      }
-    });
-  }
 }
 
 function updateTownOptions(townSelect, county, stations) {
@@ -388,13 +348,14 @@ async function triggerStkPushPayment(phone, total, name) {
   const overlay = renderStkPushOverlay();
   overlay.classList.add('visible');
 
-  setStkStage('stk-status-stage');
-  document.getElementById('stk-status-title').textContent = 'Initiating STK Push...';
-  document.getElementById('stk-status-desc').textContent = `Sending payment prompt request to ${phone}...`;
-
-  setStepState('stk-step-init', 'active');
-  setStepState('stk-step-prompt', 'pending');
-  setStepState('stk-step-verify', 'pending');
+  // Set to initial Send Prompt stage
+  setStkStage('stk-send-prompt-stage');
+  
+  // Populate the description with phone number and amount
+  const descEl = document.getElementById('stk-send-desc');
+  if (descEl) {
+    descEl.innerHTML = `Click the button below to send a secure M-Pesa PIN prompt of <strong>${formatPrice(total)}</strong> to <strong>${phone}</strong>.`;
+  }
 
   const orderRef = 'JUMIA-' + Math.floor(100000 + Math.random() * 900000);
 
@@ -413,11 +374,32 @@ async function triggerStkPushPayment(phone, total, name) {
     triggerStkPushPayment(phone, total, name);
   };
 
-  // Start 60s timeout countdown
-  startCountdown(() => {
-    stopAllTimers();
-    showStkError('Request Timed Out', 'Handset did not respond. Check if your phone is active and try again.');
-  });
+  // Setup Send Prompt button click handler
+  const sendBtn = document.getElementById('stk-send-prompt-btn');
+  if (sendBtn) {
+    sendBtn.onclick = async () => {
+      // Transition stage to loading status
+      setStkStage('stk-status-stage');
+      
+      // Start 60s timeout countdown in background (no visual timer)
+      startCountdown(() => {
+        stopAllTimers();
+        showStkError('Request Timed Out', 'Handset did not respond. Check if your phone is active and try again.');
+      });
+
+      // Execute actual STK push payment API call
+      await executeStkPushPayment(phone, total, name, orderRef);
+    };
+  }
+}
+
+async function executeStkPushPayment(phone, total, name, orderRef) {
+  document.getElementById('stk-status-title').textContent = 'Initiating STK Push...';
+  document.getElementById('stk-status-desc').textContent = `Sending payment prompt request to ${phone}...`;
+
+  setStepState('stk-step-init', 'active');
+  setStepState('stk-step-prompt', 'pending');
+  setStepState('stk-step-verify', 'pending');
 
   try {
     const response = await fetch('/api/pay', {
@@ -443,13 +425,12 @@ async function triggerStkPushPayment(phone, total, name) {
       setStepState('stk-step-init', 'completed');
       setStepState('stk-step-prompt', 'active');
 
-      // Real production mode
       document.getElementById('stk-status-title').textContent = 'STK Push Prompt Sent!';
       document.getElementById('stk-status-desc').innerHTML = `A secure M-Pesa PIN prompt has been sent to <strong>${phone}</strong>. Enter your PIN to complete payment of <strong>${formatPrice(total)}</strong>.`;
       setStepState('stk-step-prompt', 'completed');
       setStepState('stk-step-verify', 'active');
 
-      // Start polling real payment status
+      // Start polling status
       startPollingStatus(currentTransactionId, orderRef);
     } else {
       throw new Error(result.error || 'Failed to dispatch push');
@@ -472,8 +453,28 @@ function renderStkPushOverlay() {
     <div class="stk-push-card">
       <button class="stk-close-btn" id="stk-close-btn">&times;</button>
       
+      <div class="stk-push-header">
+        <span class="stk-push-logo">Jumia Pay <span class="stk-logo-star">★</span></span>
+      </div>
+
+      <!-- Stage 0: Send Prompt -->
+      <div id="stk-send-prompt-stage" class="stk-stage active">
+        <div class="stk-pay-icon-wrap" style="margin-bottom: 20px;">
+          <svg class="stk-pay-icon" width="60" height="60" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="color: var(--accent-primary);">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+            <path d="M12 6v8"/>
+            <path d="M9 9h6"/>
+          </svg>
+        </div>
+        <h3 id="stk-send-title">Send M-Pesa Prompt</h3>
+        <p id="stk-send-desc">Click below to send a secure payment prompt to your phone.</p>
+        
+        <button class="stk-send-prompt-btn" id="stk-send-prompt-btn">Send Prompt</button>
+      </div>
+
       <!-- Stage 1: Status Loading -->
-      <div id="stk-status-stage" class="stk-stage active">
+      <div id="stk-status-stage" class="stk-stage">
         <div class="stk-spinner-wrap">
           <div class="stk-double-bounce1"></div>
           <div class="stk-double-bounce2"></div>
@@ -492,13 +493,7 @@ function renderStkPushOverlay() {
             <span class="stk-step-dot"></span> 3. PIN Verification
           </div>
         </div>
-        
-        <div class="stk-timer-box">
-          <div class="stk-timer-label">Request session expires in</div>
-          <div class="stk-timer-value" id="stk-timer-countdown">60s</div>
-        </div>
       </div>
-
 
       <!-- Stage 3: Failure State -->
       <div id="stk-error-stage" class="stk-stage">

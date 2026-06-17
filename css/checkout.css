@@ -225,13 +225,15 @@
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 440px;
-  min-height: 400px;
+  min-height: 420px;
   position: relative;
   box-shadow: var(--shadow-lg);
   transform: translateY(30px);
   transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
   padding: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 .stk-push-overlay.visible .stk-push-card {
@@ -260,7 +262,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
 }
 
 .stk-stage.active {
@@ -374,24 +376,48 @@
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(246, 139, 30, 0); }
 }
 
-.stk-timer-box {
+.stk-push-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  width: 100%;
 }
 
-.stk-timer-label {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 2px;
-}
-
-.stk-timer-value {
-  font-size: 1.3rem;
+.stk-push-logo {
+  font-size: 1.4rem;
   font-weight: 700;
-  color: var(--accent-danger);
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.stk-logo-star {
+  color: var(--accent-primary);
+  font-size: 1.2rem;
+  margin-left: 2px;
+}
+
+.stk-send-prompt-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent-primary);
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(246, 139, 30, 0.25);
+  margin-top: 10px;
+}
+
+.stk-send-prompt-btn:hover {
+  background: var(--accent-primary-hover);
+  box-shadow: 0 6px 16px rgba(246, 139, 30, 0.35);
 }
 
 /* stage 2: Simulator Phone Mockup */
