@@ -14,6 +14,7 @@ const KEYS = {
 
 let realTimeProducts = [];
 let realTimeAnnouncement = null;
+let realTimeOrders = [];
 
 // --- Helpers ---
 function load(key) {
@@ -48,6 +49,10 @@ export function initStore() {
     const cachedAnnouncement = load('jumia_announcement_firebase_cache');
     if (cachedAnnouncement !== undefined) {
       realTimeAnnouncement = cachedAnnouncement;
+    }
+    const cachedOrders = load('jumia_orders_firebase_cache');
+    if (cachedOrders && Array.isArray(cachedOrders)) {
+      realTimeOrders = cachedOrders;
     }
     
     // Resolve immediately so the UI never blocks on network requests!
@@ -98,6 +103,39 @@ export function initStore() {
 
       // Update cache
       save('jumia_announcement_firebase_cache', realTimeAnnouncement);
+      window.dispatchEvent(new Event('storeUpdated'));
+    });
+
+    const ordersRef = collection(db, 'orders');
+    onSnapshot(ordersRef, async (snapshot) => {
+      realTimeOrders = [];
+      snapshot.forEach((docSnap) => {
+        realTimeOrders.push({ ...docSnap.data(), id: docSnap.id });
+      });
+
+      if (snapshot.empty) {
+        const localOrdersRaw = localStorage.getItem('jumia_orders');
+        if (localOrdersRaw) {
+          const localOrders = JSON.parse(localOrdersRaw);
+          if (localOrders && localOrders.length > 0) {
+            console.log("Migrating local orders to Firebase...");
+            try {
+              const batch = writeBatch(db);
+              localOrders.forEach(o => {
+                const id = o.id || crypto.randomUUID();
+                const oRef = doc(ordersRef, id);
+                batch.set(oRef, o);
+              });
+              await batch.commit();
+              console.log("Orders migration successful.");
+            } catch(e) {
+              console.error("Orders migration failed:", e);
+            }
+          }
+        }
+      }
+
+      save('jumia_orders_firebase_cache', realTimeOrders);
       window.dispatchEvent(new Event('storeUpdated'));
     });
   });
@@ -294,40 +332,36 @@ export async function setAnnouncement(announcement) {
 }
 
 // ==========================================
-// Orders (Local)
+// Orders (Firebase)
 // ==========================================
 
 export function getOrders() {
-  return load('jumia_orders') || [];
+  return realTimeOrders;
 }
 
-export function addOrder(orderData) {
-  const orders = getOrders();
+export async function addOrder(orderData) {
+  const id = orderData.id || crypto.randomUUID();
   const order = {
-    id: orderData.id || crypto.randomUUID(),
-    email: orderData.email,
-    name: orderData.name,
-    phone: orderData.phone,
-    county: orderData.county,
-    station: orderData.station,
-    items: orderData.items, // Array of { productId, quantity, price, name }
-    totalPrice: orderData.totalPrice,
-    status: orderData.status || 'pending', // 'success', 'failed', or 'pending'
+    email: orderData.email || '',
+    name: orderData.name || '',
+    phone: orderData.phone || '',
+    county: orderData.county || '',
+    station: orderData.station || '',
+    items: orderData.items || [],
+    totalPrice: orderData.totalPrice || 0,
+    status: orderData.status || 'pending',
     createdAt: new Date().toISOString()
   };
-  orders.push(order);
-  save('jumia_orders', orders);
-  return order;
+  await setDoc(doc(db, 'orders', id), order);
+  return { id, ...order };
 }
 
-export function updateOrderStatus(orderId, status) {
-  const orders = getOrders();
-  const order = orders.find(o => o.id === orderId);
-  if (order) {
-    order.status = status;
-    save('jumia_orders', orders);
+export async function updateOrderStatus(orderId, status) {
+  try {
+    await setDoc(doc(db, 'orders', orderId), { status }, { merge: true });
+  } catch (e) {
+    console.error("Failed to update order status:", e);
   }
-  return order;
 }
 
 // ==========================================
