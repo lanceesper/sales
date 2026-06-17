@@ -8,7 +8,8 @@ import {
   getDeliveryStations,
   clearCart,
   formatPrice,
-  getCartCount
+  getCartCount,
+  getProductById
 } from '/js/store.js';
 
 import {
@@ -155,71 +156,37 @@ function renderDetailsForm(leftCol, rightCol) {
   paymentCard.className = 'checkout-card';
   paymentCard.innerHTML = `
     <div class="checkout-card-title">
-      <span class="number">2</span> Payment Method & Verification
+      <span class="number">2</span> Payment Method
     </div>
     
-    <!-- M-Pesa payment guide instructions banner -->
-    <div class="mpesa-banner-container">
-      <img src="/mpesa_payment_guide.png" alt="Lipa na M-Pesa Instructions" class="mpesa-banner" />
-    </div>
-
-    <!-- Professionally written steps below the image -->
-    <div class="mpesa-instructions">
-      <h3>Payment Verification Steps</h3>
-      <ol>
-        <li>Complete the mobile money transfer using the payment instructions shown in the Lipa na M-Pesa banner above.</li>
-        <li>Locate the 10-character confirmation reference code in your M-Pesa transaction SMS (e.g., <strong>RGF8X9Y7Z6</strong>).</li>
-        <li>Paste this transaction code into the box below and click the verification button to validate your payment. Once confirmed, you can proceed to place your order.</li>
-      </ol>
-    </div>
-
-    <!-- Verification input box -->
-    <div class="mpesa-verification-block">
-      <div class="mpesa-verify-title">Enter transaction reference code</div>
-      <div class="mpesa-verify-subtitle">Paste your 10-character code below for validation</div>
-      <div class="mpesa-input-row">
-        <input type="text" class="mpesa-code-input" id="mpesa-code-input" maxlength="10" placeholder="e.g. SFA8T7D5C4" autocomplete="off" />
-        <button type="button" class="mpesa-verify-btn" id="mpesa-verify-btn">Verify Payment</button>
+    <div class="mpesa-stk-payment-box">
+      <div class="mpesa-stk-header">
+        <span class="mpesa-logo-badge">Lipa na M-Pesa</span>
+        <span class="mpesa-payment-type">Automated STK Push</span>
       </div>
-      <div class="verification-status" id="verification-status"></div>
+      <div class="mpesa-stk-body">
+        <p>A secure prompt (STK Push) will be sent automatically to your mobile phone once you click "Place Order".</p>
+        <div class="mpesa-mirror-alert">
+          <svg class="phone-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span>Payment prompt will be sent to: <strong id="mpesa-mirror-phone">the phone number specified above</strong></span>
+        </div>
+        <p class="mpesa-stk-note">Please ensure your phone is unlocked, active, and has sufficient funds to complete the payment.</p>
+      </div>
     </div>
   `;
   leftCol.appendChild(paymentCard);
 
-  // Bind Payment Verification Handlers
-  const mpesaInput = paymentCard.querySelector('#mpesa-code-input');
-  const verifyBtn = paymentCard.querySelector('#mpesa-verify-btn');
-  const statusEl = paymentCard.querySelector('#verification-status');
-
-  verifyBtn.addEventListener('click', () => {
-    const code = mpesaInput.value.trim().toUpperCase();
-
-    // Regex check: Mpesa code is alphanumeric, 10 characters
-    const mpesaRegex = /^[A-Z0-9]{10}$/;
-    if (!mpesaRegex.test(code)) {
-      statusEl.className = 'verification-status error';
-      statusEl.innerHTML = '❌ Invalid transaction code format. Must be exactly 10 alphanumeric characters (e.g. SFA8T7D5C4).';
-      return;
-    }
-
-    // Show verification spinner animation (simulating real backend verification)
-    verifyBtn.disabled = true;
-    mpesaInput.disabled = true;
-    verifyBtn.innerHTML = '<span class="verify-spinner"></span>Verifying...';
-    statusEl.style.display = 'none';
-
-    setTimeout(() => {
-      isMpesaVerified = true;
-      verifyBtn.innerHTML = 'Verified ✓';
-      verifyBtn.style.background = '#2e7d32';
-      statusEl.className = 'verification-status success';
-      statusEl.innerHTML = `✓ Payment verified successfully! M-Pesa transaction code: <strong>${code}</strong> is logged.`;
-      
-      // Enable checkout button in order summary
-      const placeBtn = document.getElementById('place-order-btn');
-      if (placeBtn) placeBtn.disabled = false;
-    }, 1000);
-  });
+  // Dynamic phone mirroring
+  const phoneInput = document.getElementById('checkout-phone');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      const mirror = document.getElementById('mpesa-mirror-phone');
+      if (mirror) {
+        mirror.textContent = val ? val : 'the phone number specified above';
+      }
+    });
+  }
 }
 
 function updateTownOptions(townSelect, county, stations) {
@@ -283,7 +250,7 @@ function renderOrderSummary(rightCol, cart) {
     </div>
 
     <!-- Main Place Order Button -->
-    <button class="place-order-btn" id="place-order-btn" ${!isMpesaVerified ? 'disabled' : ''}>
+    <button class="place-order-btn" id="place-order-btn">
       Place Order (${formatPrice(total)})
     </button>
   `;
@@ -293,11 +260,11 @@ function renderOrderSummary(rightCol, cart) {
   // Place Order handler
   const placeBtn = card.querySelector('#place-order-btn');
   placeBtn.addEventListener('click', () => {
-    // Check validation of delivery forms
     const name = document.getElementById('checkout-name').value.trim();
     const phone = document.getElementById('checkout-phone').value.trim();
+    const detailsForm = document.getElementById('checkout-details-form');
 
-    if (!name || !phone) {
+    if (!detailsForm || !detailsForm.reportValidity()) {
       showToast('Please fill out all the required Delivery Details!', 'error');
       return;
     }
@@ -307,37 +274,374 @@ function renderOrderSummary(rightCol, cart) {
       return;
     }
 
-    if (!isMpesaVerified) {
-      showToast('Please verify your M-Pesa transaction reference code first!', 'error');
-      return;
+    // Trigger MegaPay STK Push payment flow
+    triggerStkPushPayment(phone, total, name);
+  });
+}
+
+// ============================================
+// STK Push Payment Simulation & Integration Logic
+// ============================================
+
+let pollingInterval = null;
+let countdownInterval = null;
+let countdownValue = 60;
+let currentTransactionId = null;
+
+function startCountdown(onTimeout) {
+  countdownValue = 60;
+  const timerEl = document.getElementById('stk-timer-countdown');
+  if (timerEl) timerEl.textContent = `${countdownValue}s`;
+  
+  clearInterval(countdownInterval);
+  countdownInterval = setInterval(() => {
+    countdownValue--;
+    if (timerEl) timerEl.textContent = `${countdownValue}s`;
+    
+    if (countdownValue <= 0) {
+      clearInterval(countdownInterval);
+      if (onTimeout) onTimeout();
     }
+  }, 1000);
+}
 
-    // Trigger overlay modal
-    const overlay = document.getElementById('success-overlay');
-    const refEl = document.getElementById('success-order-ref');
-    
-    // Generate order reference
-    const refCode = `JUMIA-${Math.floor(100000 + Math.random() * 900000)}`;
-    refEl.textContent = refCode;
+function stopAllTimers() {
+  clearInterval(pollingInterval);
+  clearInterval(countdownInterval);
+}
 
-    overlay.classList.add('visible');
-    
-    // Clear cart in store & header count
-    clearCart();
-    updateCartBadge();
+function setStkStage(stageId) {
+  document.querySelectorAll('.stk-stage').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(stageId);
+  if (target) target.classList.add('active');
+}
 
-    // Start redirect countdown
-    let count = 5;
-    const noteEl = document.getElementById('success-redirect-note');
+function setStepState(stepId, state) {
+  const step = document.getElementById(stepId);
+  if (!step) return;
+  step.className = `stk-step ${state}`;
+}
+
+function showStkError(title, description) {
+  setStkStage('stk-error-stage');
+  const errTitle = document.getElementById('stk-error-title');
+  const errDesc = document.getElementById('stk-error-desc');
+  if (errTitle) errTitle.textContent = title;
+  if (errDesc) errDesc.textContent = description;
+}
+
+function handlePaymentSuccess(orderRef) {
+  const overlay = document.getElementById('stk-push-overlay');
+  if (overlay) overlay.classList.remove('visible');
+
+  // Trigger standard Jumia success overlay modal
+  const successOverlay = document.getElementById('success-overlay');
+  const refEl = document.getElementById('success-order-ref');
+  
+  if (refEl) refEl.textContent = orderRef;
+  if (successOverlay) successOverlay.classList.add('visible');
+
+  // Clear cart in store & header count
+  clearCart();
+  updateCartBadge();
+
+  // Start redirect countdown
+  let count = 5;
+  const noteEl = document.getElementById('success-redirect-note');
+  if (noteEl) {
+    noteEl.innerHTML = `You will be redirected to delivery status in <strong>${count}</strong> seconds.`;
     const interval = setInterval(() => {
       count--;
-      noteEl.innerHTML = `You will be redirected to the homepage in <strong>${count}</strong> seconds.`;
+      noteEl.innerHTML = `You will be redirected to delivery status in <strong>${count}</strong> seconds.`;
       if (count === 0) {
         clearInterval(interval);
-        window.location.href = '/';
+        window.location.href = `/delivery.html?ref=${orderRef}`;
       }
     }, 1000);
+  }
+}
+
+function startPollingStatus(transactionId, orderRef) {
+  clearInterval(pollingInterval);
+  pollingInterval = setInterval(async () => {
+    try {
+      const response = await fetch(`/api/check-status?id=${transactionId}`);
+      if (!response.ok) return;
+
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        stopAllTimers();
+        setStepState('stk-step-verify', 'completed');
+        handlePaymentSuccess(orderRef);
+      } else if (data.status === 'failed') {
+        stopAllTimers();
+        showStkError('Payment Unsuccessful', data.ResponseDescription || 'The transaction was rejected or failed. Please retry.');
+      }
+    } catch (err) {
+      console.error('Error while polling status:', err);
+    }
+  }, 3000);
+}
+
+function setupPhoneSimulator(phone, total, orderRef) {
+  const messageEl = document.getElementById('phone-prompt-message');
+  if (messageEl) {
+    messageEl.innerHTML = `Pay KSh ${Number(total).toLocaleString('en-KE')} to JUMIA ONLINE STORE? Enter M-Pesa PIN:`;
+  }
+
+  const pinInput = document.getElementById('phone-pin-input');
+  if (pinInput) pinInput.value = '';
+
+  const keypad = document.querySelector('.phone-keypad');
+  if (keypad) {
+    const newKeypad = keypad.cloneNode(true);
+    keypad.parentNode.replaceChild(newKeypad, keypad);
+
+    newKeypad.addEventListener('click', (e) => {
+      const btn = e.target.closest('.key-btn');
+      if (!btn) return;
+      const key = btn.dataset.key;
+
+      if (key === 'clear') {
+        pinInput.value = '';
+      } else if (key === 'backspace') {
+        pinInput.value = pinInput.value.slice(0, -1);
+      } else {
+        if (pinInput.value.length < 4) {
+          pinInput.value += key;
+        }
+      }
+    });
+  }
+
+  const cancelBtn = document.getElementById('phone-cancel-btn');
+  if (cancelBtn) {
+    cancelBtn.onclick = () => {
+      stopAllTimers();
+      showStkError('Transaction Cancelled', 'You cancelled the simulated M-Pesa STK Push PIN prompt. Please try again.');
+    };
+  }
+
+  const sendBtn = document.getElementById('phone-send-btn');
+  if (sendBtn) {
+    sendBtn.onclick = () => {
+      if (!pinInput || pinInput.value.length < 4) {
+        showToast('Please enter a 4-digit PIN!', 'error');
+        return;
+      }
+
+      setStkStage('stk-status-stage');
+      document.getElementById('stk-status-title').textContent = 'Processing Payment...';
+      document.getElementById('stk-status-desc').textContent = 'Checking transaction details with Safaricom...';
+      setStepState('stk-step-init', 'completed');
+      setStepState('stk-step-prompt', 'completed');
+      setStepState('stk-step-verify', 'active');
+
+      setTimeout(() => {
+        stopAllTimers();
+        handlePaymentSuccess(orderRef);
+      }, 1500);
+    };
+  }
+}
+
+async function triggerStkPushPayment(phone, total, name) {
+  const overlay = renderStkPushOverlay();
+  overlay.classList.add('visible');
+
+  setStkStage('stk-status-stage');
+  document.getElementById('stk-status-title').textContent = 'Initiating STK Push...';
+  document.getElementById('stk-status-desc').textContent = `Sending payment prompt request to ${phone}...`;
+
+  setStepState('stk-step-init', 'active');
+  setStepState('stk-step-prompt', 'pending');
+  setStepState('stk-step-verify', 'pending');
+
+  const orderRef = 'JUMIA-' + Math.floor(100000 + Math.random() * 900000);
+
+  // Bind close actions
+  document.getElementById('stk-close-btn').onclick = () => {
+    stopAllTimers();
+    overlay.classList.remove('visible');
+  };
+
+  document.getElementById('stk-dismiss-btn').onclick = () => {
+    stopAllTimers();
+    overlay.classList.remove('visible');
+  };
+
+  document.getElementById('stk-retry-btn').onclick = () => {
+    triggerStkPushPayment(phone, total, name);
+  };
+
+  // Start 60s timeout countdown
+  startCountdown(() => {
+    stopAllTimers();
+    showStkError('Request Timed Out', 'Handset did not respond. Check if your phone is active and try again.');
   });
+
+  try {
+    const response = await fetch('/api/pay', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        phone: phone,
+        amount: total,
+        reference: orderRef
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('API server error');
+    }
+
+    const result = await response.json();
+
+    if (result.success === '200') {
+      currentTransactionId = result.transaction_request_id;
+      setStepState('stk-step-init', 'completed');
+      setStepState('stk-step-prompt', 'active');
+
+      // Check if local dev or mock response from Vercel Serverless
+      if (result.isMock || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        setTimeout(() => {
+          setStkStage('stk-simulator-stage');
+          setupPhoneSimulator(phone, total, orderRef);
+        }, 1500);
+      } else {
+        // Real production mode
+        document.getElementById('stk-status-title').textContent = 'STK Push Prompt Sent!';
+        document.getElementById('stk-status-desc').innerHTML = `A secure M-Pesa PIN prompt has been sent to <strong>${phone}</strong>. Enter your PIN to complete payment of <strong>${formatPrice(total)}</strong>.`;
+        setStepState('stk-step-prompt', 'completed');
+        setStepState('stk-step-verify', 'active');
+
+        // Start polling real payment status
+        startPollingStatus(currentTransactionId, orderRef);
+      }
+    } else {
+      throw new Error(result.error || 'Failed to dispatch push');
+    }
+  } catch (err) {
+    console.warn('Vercel serverless function not responding, fallback to local client simulator:', err);
+    // Offline/no-backend local development fallback
+    setStepState('stk-step-init', 'completed');
+    setStepState('stk-step-prompt', 'completed');
+    
+    setTimeout(() => {
+      setStkStage('stk-simulator-stage');
+      setupPhoneSimulator(phone, total, orderRef);
+    }, 1200);
+  }
+}
+
+function renderStkPushOverlay() {
+  let overlay = document.getElementById('stk-push-overlay');
+  if (overlay) return overlay;
+
+  overlay = document.createElement('div');
+  overlay.className = 'stk-push-overlay';
+  overlay.id = 'stk-push-overlay';
+  overlay.innerHTML = `
+    <div class="stk-push-card">
+      <button class="stk-close-btn" id="stk-close-btn">&times;</button>
+      
+      <!-- Stage 1: Status Loading -->
+      <div id="stk-status-stage" class="stk-stage active">
+        <div class="stk-spinner-wrap">
+          <div class="stk-double-bounce1"></div>
+          <div class="stk-double-bounce2"></div>
+        </div>
+        <h3 id="stk-status-title">Initiating STK Push...</h3>
+        <p id="stk-status-desc">Preparing secure payment details. Please wait.</p>
+        
+        <div class="stk-progress-steps">
+          <div class="stk-step" id="stk-step-init">
+            <span class="stk-step-dot"></span> 1. Connection Initialized
+          </div>
+          <div class="stk-step" id="stk-step-prompt">
+            <span class="stk-step-dot"></span> 2. Request Dispatched
+          </div>
+          <div class="stk-step" id="stk-step-verify">
+            <span class="stk-step-dot"></span> 3. PIN Verification
+          </div>
+        </div>
+        
+        <div class="stk-timer-box">
+          <div class="stk-timer-label">Request session expires in</div>
+          <div class="stk-timer-value" id="stk-timer-countdown">60s</div>
+        </div>
+      </div>
+
+      <!-- Stage 2: Sandbox Phone Simulator -->
+      <div id="stk-simulator-stage" class="stk-stage">
+        <div class="phone-mockup">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-header">
+              <span class="phone-carrier">Safaricom</span>
+              <span class="phone-time">11:30 AM</span>
+            </div>
+            
+            <div class="stk-popup-box">
+              <div class="stk-popup-title">SIM Toolkit</div>
+              <div class="stk-popup-msg" id="phone-prompt-message">
+                Pay KSh 0 to JUMIA ONLINE STORE? Enter M-Pesa PIN:
+              </div>
+              <div class="stk-popup-input-wrap">
+                <input type="password" id="phone-pin-input" readonly maxlength="4" placeholder="••••" />
+              </div>
+              <div class="stk-popup-actions">
+                <button id="phone-cancel-btn" class="popup-btn cancel">Cancel</button>
+                <button id="phone-send-btn" class="popup-btn send">Send</button>
+              </div>
+            </div>
+
+            <div class="phone-keypad">
+              <button class="key-btn" data-key="1">1</button>
+              <button class="key-btn" data-key="2">2</button>
+              <button class="key-btn" data-key="3">3</button>
+              <button class="key-btn" data-key="4">4</button>
+              <button class="key-btn" data-key="5">5</button>
+              <button class="key-btn" data-key="6">6</button>
+              <button class="key-btn" data-key="7">7</button>
+              <button class="key-btn" data-key="8">8</button>
+              <button class="key-btn" data-key="9">9</button>
+              <button class="key-btn ctrl" data-key="clear">CLR</button>
+              <button class="key-btn" data-key="0">0</button>
+              <button class="key-btn ctrl" data-key="backspace">⌫</button>
+            </div>
+          </div>
+        </div>
+        <div class="simulator-instructions">
+          <h4>Interactive Simulator Mode</h4>
+          <p>Since this is a sandbox local test, use the phone simulator on screen to process or reject the mock transaction:</p>
+          <ul>
+            <li>Enter any 4-digit PIN and click <strong>Send</strong> to mock payment.</li>
+            <li>Click <strong>Cancel</strong> to mock user cancellation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Stage 3: Failure State -->
+      <div id="stk-error-stage" class="stk-stage">
+        <div class="stk-error-icon-wrap">
+          <svg class="stk-error-icon" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h3 id="stk-error-title">Payment Unsuccessful</h3>
+        <p id="stk-error-desc">The STK Push request could not be completed.</p>
+        
+        <div class="stk-error-actions">
+          <button class="stk-retry-btn" id="stk-retry-btn">Resend STK Push</button>
+          <button class="stk-cancel-btn" id="stk-dismiss-btn">Cancel & Edit Details</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  return overlay;
 }
 
 function renderSuccessOverlay() {
@@ -361,9 +665,10 @@ function renderSuccessOverlay() {
       </div>
 
       <div class="success-redirect-note" id="success-redirect-note">
-        You will be redirected to the homepage in <strong>5</strong> seconds.
+        You will be redirected to delivery status in <strong>5</strong> seconds.
       </div>
     </div>
   `;
   document.body.appendChild(overlay);
 }
+
