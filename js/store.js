@@ -294,6 +294,43 @@ export async function setAnnouncement(announcement) {
 }
 
 // ==========================================
+// Orders (Local)
+// ==========================================
+
+export function getOrders() {
+  return load('jumia_orders') || [];
+}
+
+export function addOrder(orderData) {
+  const orders = getOrders();
+  const order = {
+    id: orderData.id || crypto.randomUUID(),
+    email: orderData.email,
+    name: orderData.name,
+    phone: orderData.phone,
+    county: orderData.county,
+    station: orderData.station,
+    items: orderData.items, // Array of { productId, quantity, price, name }
+    totalPrice: orderData.totalPrice,
+    status: orderData.status || 'pending', // 'success', 'failed', or 'pending'
+    createdAt: new Date().toISOString()
+  };
+  orders.push(order);
+  save('jumia_orders', orders);
+  return order;
+}
+
+export function updateOrderStatus(orderId, status) {
+  const orders = getOrders();
+  const order = orders.find(o => o.id === orderId);
+  if (order) {
+    order.status = status;
+    save('jumia_orders', orders);
+  }
+  return order;
+}
+
+// ==========================================
 // Utilities
 // ==========================================
 
