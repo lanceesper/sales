@@ -15,9 +15,9 @@ import {
   renderCategorySection,
 } from './components.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // 1. Initialize store (seeds data on first visit)
-  initStore();
+  await initStore();
 
   // 2. Render header
   renderHeader('home');
@@ -33,6 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 6. Attach scroll arrow listeners
   attachScrollArrows();
+
+  // Listen for real-time updates
+  window.addEventListener('storeUpdated', () => {
+    renderHeader('home');
+    renderCategorySections();
+    attachScrollArrows();
+  });
 });
 
 // ==========================================
@@ -294,8 +301,13 @@ function renderCategorySections() {
   const main = document.getElementById('main-content');
   if (!main) return;
 
-  // Anchor for CTA scrolling
-  main.insertAdjacentHTML('beforeend', '<div id="categories-start"></div>');
+  let container = document.getElementById('categories-container');
+  if (!container) {
+    main.insertAdjacentHTML('beforeend', '<div id="categories-start"></div>');
+    container = document.createElement('div');
+    container.id = 'categories-container';
+    main.appendChild(container);
+  }
 
   const categories = getCategories();
   let sectionsHTML = '';
@@ -307,7 +319,7 @@ function renderCategorySections() {
     }
   });
 
-  main.insertAdjacentHTML('beforeend', sectionsHTML);
+  container.innerHTML = sectionsHTML;
 }
 
 // ==========================================

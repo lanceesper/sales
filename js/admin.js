@@ -29,9 +29,16 @@ let productCategoryFilter = '';
 /* ============================================================
    Bootstrap
    ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  initStore();
+document.addEventListener('DOMContentLoaded', async () => {
+  await initStore();
   render();
+
+  window.addEventListener('storeUpdated', () => {
+    // Only re-render if no modals are open to avoid losing input state
+    if (!document.getElementById('product-modal') && !document.getElementById('delete-modal')) {
+      render();
+    }
+  });
 });
 
 /* ============================================================

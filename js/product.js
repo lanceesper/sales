@@ -54,13 +54,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.title = `${currentProduct.name} - Jumia`;
 
   const main = document.getElementById('main-content');
-  main.innerHTML = '';
-
-  renderBreadcrumb(main);
-  renderProductLayout(main);
-  renderDetailsSection(main);
-  renderSimilarProducts(main);
+  
+  const renderAll = () => {
+    main.innerHTML = '';
+    renderBreadcrumb(main);
+    renderProductLayout(main);
+    renderDetailsSection(main);
+    renderSimilarProducts(main);
+  };
+  
+  renderAll();
   renderFooter();
+
+  window.addEventListener('storeUpdated', () => {
+    const updated = getProductById(productId);
+    if (updated) {
+      currentProduct = updated;
+      renderAll();
+    }
+  });
 });
 
 // --- Breadcrumb ---

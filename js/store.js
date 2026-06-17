@@ -1,16 +1,19 @@
 // ============================================
-// Jumia — LocalStorage Data Layer
+// Jumia — Firebase & Local Data Layer
 // ============================================
 
 import { seedData } from './seed.js';
+import { db } from './firebase.js';
+import { collection, onSnapshot, doc, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 
 const KEYS = {
-  products: 'jumia_products',
   categories: 'jumia_categories',
   cart: 'jumia_cart',
   stations: 'jumia_stations',
-  announcement: 'jumia_announcement',
 };
+
+let realTimeProducts = [];
+let realTimeAnnouncement = null;
 
 // --- Helpers ---
 function load(key) {
@@ -31,32 +34,89 @@ function save(key, data) {
 // ==========================================
 
 export function initStore() {
-  if (!localStorage.getItem(KEYS.products) || !localStorage.getItem('jumia_stations_v3_loaded')) {
-    seedData();
-  }
+  return new Promise((resolve) => {
+    if (!localStorage.getItem(KEYS.categories) || !localStorage.getItem('jumia_stations_v3_loaded')) {
+      seedData();
+    }
+
+    let productsLoaded = false;
+    let announcementsLoaded = false;
+
+    const checkReady = () => {
+      if (productsLoaded && announcementsLoaded) {
+        resolve();
+      }
+    };
+
+    const productsRef = collection(db, 'products');
+    onSnapshot(productsRef, async (snapshot) => {
+      realTimeProducts = [];
+      snapshot.forEach((docSnap) => {
+        realTimeProducts.push({ ...docSnap.data(), id: docSnap.id });
+      });
+
+      // Migrate local products to Firebase if Firebase is empty
+      if (snapshot.empty) {
+        const localProductsRaw = localStorage.getItem('jumia_products');
+        if (localProductsRaw) {
+          const localProducts = JSON.parse(localProductsRaw);
+          if (localProducts && localProducts.length > 0) {
+            console.log("Migrating local products to Firebase...");
+            try {
+              const batch = writeBatch(db);
+              localProducts.forEach(p => {
+                const id = p.id || crypto.randomUUID();
+                const pRef = doc(productsRef, id);
+                batch.set(pRef, p);
+              });
+              await batch.commit();
+              console.log("Migration successful.");
+            } catch(e) {
+              console.error("Migration failed:", e);
+            }
+          }
+        }
+      }
+
+      productsLoaded = true;
+      checkReady();
+      window.dispatchEvent(new Event('storeUpdated'));
+    });
+
+    const announcementRef = collection(db, 'announcements');
+    onSnapshot(announcementRef, (snapshot) => {
+      realTimeAnnouncement = null;
+      snapshot.forEach((docSnap) => {
+        realTimeAnnouncement = { ...docSnap.data(), id: docSnap.id };
+      });
+
+      announcementsLoaded = true;
+      checkReady();
+      window.dispatchEvent(new Event('storeUpdated'));
+    });
+  });
 }
 
 // ==========================================
-// Products
+// Products (Firebase)
 // ==========================================
 
 export function getProducts() {
-  return load(KEYS.products) || [];
+  return realTimeProducts;
 }
 
 export function getProductById(id) {
-  const products = getProducts();
-  return products.find((p) => p.id === id) || null;
+  return realTimeProducts.find((p) => p.id === id) || null;
 }
 
 export function getProductsByCategory(category) {
-  return getProducts().filter((p) => p.category === category);
+  return realTimeProducts.filter((p) => p.category === category);
 }
 
 export function searchProducts(query) {
   const q = query.toLowerCase().trim();
-  if (!q) return getProducts();
-  return getProducts().filter(
+  if (!q) return realTimeProducts;
+  return realTimeProducts.filter(
     (p) =>
       p.name.toLowerCase().includes(q) ||
       p.brand.toLowerCase().includes(q) ||
@@ -64,37 +124,32 @@ export function searchProducts(query) {
   );
 }
 
-export function addProduct(productData) {
-  const products = getProducts();
+export async function addProduct(productData) {
+  const id = crypto.randomUUID();
   const product = {
     ...productData,
-    id: crypto.randomUUID(),
+    id,
     createdAt: new Date().toISOString(),
   };
-  products.push(product);
-  save(KEYS.products, products);
+  await setDoc(doc(db, 'products', id), product);
   return product;
 }
 
-export function updateProduct(id, updates) {
-  const products = getProducts();
-  const idx = products.findIndex((p) => p.id === id);
-  if (idx === -1) return null;
-  products[idx] = { ...products[idx], ...updates };
-  save(KEYS.products, products);
-  return products[idx];
+export async function updateProduct(id, updates) {
+  const existing = getProductById(id);
+  if (!existing) return null;
+  const updated = { ...existing, ...updates };
+  await setDoc(doc(db, 'products', id), updated);
+  return updated;
 }
 
-export function deleteProduct(id) {
-  const products = getProducts();
-  const filtered = products.filter((p) => p.id !== id);
-  if (filtered.length === products.length) return false;
-  save(KEYS.products, filtered);
+export async function deleteProduct(id) {
+  await deleteDoc(doc(db, 'products', id));
   return true;
 }
 
 // ==========================================
-// Categories
+// Categories (Local)
 // ==========================================
 
 export function getCategories() {
@@ -118,7 +173,7 @@ export function deleteCategory(name) {
 }
 
 // ==========================================
-// Cart
+// Cart (Local)
 // ==========================================
 
 export function getCart() {
@@ -192,7 +247,7 @@ export function clearCart() {
 }
 
 // ==========================================
-// Delivery Stations
+// Delivery Stations (Local)
 // ==========================================
 
 export function getDeliveryStations() {
@@ -212,15 +267,17 @@ export function removeDeliveryStation(name) {
 }
 
 // ==========================================
-// Announcements
+// Announcements (Firebase)
 // ==========================================
 
 export function getAnnouncement() {
-  return load(KEYS.announcement) || null;
+  return realTimeAnnouncement;
 }
 
-export function setAnnouncement(announcement) {
-  save(KEYS.announcement, announcement);
+export async function setAnnouncement(announcement) {
+  const id = announcement.id || 'main';
+  const updated = { ...announcement, id };
+  await setDoc(doc(db, 'announcements', id), updated);
 }
 
 // ==========================================
