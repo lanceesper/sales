@@ -15,7 +15,8 @@ import {
   setAnnouncement,
   formatPrice,
   calculateDiscount,
-  getOrders
+  getOrders,
+  deleteOrder
 } from '/js/store.js';
 
 import { showToast } from '/js/components.js';
@@ -1046,6 +1047,7 @@ function renderOrdersView() {
               <th>Time</th>
               <th>Total</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -1073,6 +1075,9 @@ function renderOrdersView() {
                   <td style="font-size: 0.9em; color: var(--text-muted);">${timeStr}</td>
                   <td class="table-price">${formatPrice(o.totalPrice || 0)}</td>
                   <td>${statusBadge}</td>
+                  <td>
+                    <button class="btn-icon btn-icon-danger" data-delete-order="${o.id}" title="Delete order">🗑️</button>
+                  </td>
                 </tr>
               `;
             }).join('')}
@@ -1092,5 +1097,64 @@ function renderOrdersView() {
 }
 
 function bindOrdersEvents() {
-  // Static view for now
+  document.querySelectorAll('[data-delete-order]').forEach(btn => {
+    btn.addEventListener('click', () => openDeleteOrderModal(btn.dataset.deleteOrder));
+  });
+}
+
+/* ============================================================
+   Delete Order Confirmation Modal
+   ============================================================ */
+function openDeleteOrderModal(orderId) {
+  const ordersRaw = getOrders() || [];
+  const order = ordersRaw.find(o => o.id === orderId);
+  if (!order) return;
+
+  const html = `
+    <div class="modal-overlay" id="delete-order-modal">
+      <div class="modal-content" style="max-width:440px">
+        <div class="modal-header">
+          <h2>Delete Order</h2>
+          <button class="modal-close" id="delete-order-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="delete-confirm-body">
+            <span class="delete-confirm-icon">🗑️</span>
+            <div class="delete-confirm-text">
+              Are you sure you want to delete this order?<br>
+              <span class="delete-confirm-name">${escapeHtml(order.id)}</span><br>
+              <span style="font-size:13px; color:var(--text-muted)">This action cannot be undone.</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="delete-order-cancel">Cancel</button>
+          <button class="btn-danger" id="delete-order-confirm">Delete</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', html);
+
+  const modal = document.getElementById('delete-order-modal');
+
+  const closeModal = () => {
+    modal.classList.add('closing');
+    setTimeout(() => modal.remove(), 200);
+  };
+
+  modal.querySelector('#delete-order-modal-close').addEventListener('click', closeModal);
+  modal.querySelector('#delete-order-cancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+  modal.querySelector('#delete-order-confirm').addEventListener('click', async () => {
+    await deleteOrder(orderId);
+    showToast('Order deleted', 'success');
+    modal.classList.add('closing');
+    setTimeout(() => {
+      modal.remove();
+      render();
+    }, 200);
+  });
 }

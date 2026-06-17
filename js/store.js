@@ -364,6 +364,11 @@ export async function updateOrderStatus(orderId, status) {
   }
 }
 
+export async function deleteOrder(id) {
+  await deleteDoc(doc(db, 'orders', id));
+  return true;
+}
+
 // ==========================================
 // Utilities
 // ==========================================
