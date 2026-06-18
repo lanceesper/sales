@@ -83,79 +83,451 @@ function renderCheckoutPage() {
   renderSuccessOverlay();
 }
 
+
+let customerInfo = {};
+let selectedStationInfo = null;
+
 function renderDetailsForm(leftCol, rightCol) {
   const stations = getDeliveryStations();
   const counties = [...new Set(stations.map(s => s.county || 'Nairobi'))].sort();
   selectedCounty = counties.includes('Nairobi') ? 'Nairobi' : counties[0];
 
-  // Set initial delivery fee
   const initialStation = stations.find(s => s.county === selectedCounty) || stations[0];
   selectedFee = initialStation ? initialStation.fee : 150;
 
   const regionOptionsHTML = counties.map(c => `<option value="${c}" ${c === selectedCounty ? 'selected' : ''}>${c}</option>`).join('');
 
-  // Shipping Card
-  const shippingCard = document.createElement('div');
-  shippingCard.className = 'checkout-card';
-  shippingCard.innerHTML = `
-    <div class="checkout-card-title">
-      Delivery Details
-    </div>
-    <form class="checkout-form" id="checkout-details-form">
-      <div class="form-grid">
-        <div class="form-group full-width">
-          <label class="checkout-form-label" for="checkout-name">Recipient's Full Name</label>
-          <input type="text" class="checkout-form-input" id="checkout-name" placeholder="e.g. John Doe" required />
-        </div>
-        <div class="form-group">
-          <label class="checkout-form-label" for="checkout-phone">Phone Number (M-Pesa registered)</label>
-          <input type="tel" class="checkout-form-input" id="checkout-phone" placeholder="e.g. 0712345678" required />
-        </div>
-        <div class="form-group">
-          <label class="checkout-form-label" for="checkout-email">Email Address</label>
-          <input type="email" class="checkout-form-input" id="checkout-email" placeholder="e.g. john@example.com" required />
-        </div>
-        <div class="form-group">
-          <label class="checkout-form-label" for="checkout-county">County / Region</label>
-          <select class="checkout-form-select" id="checkout-county">
-            ${regionOptionsHTML}
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="checkout-form-label" for="checkout-town">Pickup Town / Neighborhood</label>
-          <select class="checkout-form-select" id="checkout-town">
-            <!-- Populated dynamically -->
-          </select>
-        </div>
-
+  const step1 = document.createElement('div');
+  step1.className = 'accordion-section active';
+  step1.id = 'step1-section';
+  step1.innerHTML = `
+    <div class="accordion-header" onclick="toggleAccordion(1)">
+      <div class="accordion-title">
+        <div class="accordion-icon">&#10003;</div>
+        1. CUSTOMER ADDRESS
       </div>
-    </form>
+      <button class="accordion-change-btn" type="button" onclick="event.stopPropagation(); toggleAccordion(1)">Change ></button>
+    </div>
+    <div class="accordion-summary" id="step1-summary"></div>
+    <div class="accordion-body">
+      <form class="checkout-form" id="checkout-details-form">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label class="checkout-form-label" for="checkout-name">Recipient's Full Name</label>
+            <input type="text" class="checkout-form-input" id="checkout-name" placeholder="e.g. John Doe" required />
+          </div>
+          <div class="form-group">
+            <label class="checkout-form-label" for="checkout-phone">Phone Number (M-Pesa registered)</label>
+            <input type="tel" class="checkout-form-input" id="checkout-phone" placeholder="e.g. 0712345678" required />
+          </div>
+          <div class="form-group">
+            <label class="checkout-form-label" for="checkout-email">Email Address</label>
+            <input type="email" class="checkout-form-input" id="checkout-email" placeholder="e.g. john@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="checkout-form-label" for="checkout-county">County / Region</label>
+            <select class="checkout-form-select" id="checkout-county">
+              ${regionOptionsHTML}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="checkout-form-label" for="checkout-town">Town / City</label>
+            <select class="checkout-form-select" id="checkout-town">
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">Save and Continue</button>
+      </form>
+    </div>
   `;
-  leftCol.appendChild(shippingCard);
 
-  // Populate initial towns
-  const townSelect = shippingCard.querySelector('#checkout-town');
-  const countySelect = shippingCard.querySelector('#checkout-county');
+  const step2 = document.createElement('div');
+  step2.className = 'accordion-section';
+  step2.id = 'step2-section';
+  step2.innerHTML = `
+    <div class="accordion-header" onclick="if(this.parentElement.classList.contains('completed')) toggleAccordion(2)">
+      <div class="accordion-title">
+        <div class="accordion-icon">&#10003;</div>
+        2. DELIVERY DETAILS
+      </div>
+      <button class="accordion-change-btn" type="button" onclick="event.stopPropagation(); toggleAccordion(2)">Change ></button>
+    </div>
+    <div class="accordion-summary" id="step2-summary"></div>
+    <div class="accordion-body">
+      
+      <label class="delivery-option" id="option-pickup">
+        <input type="radio" name="delivery_type" value="pickup">
+        <div class="delivery-option-details">
+          <div class="delivery-option-title">
+            <span>Pick-up Station</span>
+            <span class="delivery-option-price" id="pickup-fee-preview">FROM KSh 280</span>
+          </div>
+          <div class="delivery-option-desc">Delivery between 20 June and 22 June</div>
+          <div id="selected-pickup-details" style="display:none; padding:10px; background:#f9f9f9; border:1px solid #eee; border-radius:4px; margin-bottom:10px;">
+          </div>
+          <button type="button" class="delivery-select-btn" id="btn-select-station">Select pickup station ></button>
+        </div>
+      </label>
+
+      <label class="delivery-option" id="option-door">
+        <input type="radio" name="delivery_type" value="door">
+        <div class="delivery-option-details">
+          <div class="delivery-option-title">
+            <span>Door Delivery</span>
+            <span class="delivery-option-price">FROM KSh 23,200</span>
+          </div>
+          <div class="delivery-option-desc">Delivery between 19 June and 25 June</div>
+        </div>
+      </label>
+      
+      <button type="button" class="btn-primary" id="btn-save-delivery" style="display:none;">Save and Continue</button>
+    </div>
+  `;
+
+  const step3 = document.createElement('div');
+  step3.className = 'accordion-section';
+  step3.id = 'step3-section';
+  step3.innerHTML = `
+    <div class="accordion-header" onclick="if(this.parentElement.classList.contains('completed')) toggleAccordion(3)">
+      <div class="accordion-title">
+        <div class="accordion-icon">&#10003;</div>
+        3. PAYMENT METHOD
+      </div>
+      <button class="accordion-change-btn" type="button" onclick="event.stopPropagation(); toggleAccordion(3)">Change ></button>
+    </div>
+    <div class="accordion-summary" id="step3-summary"></div>
+    <div class="accordion-body">
+      <div class="payment-method-header">
+        <img src="/jumia_pay_transparent.png" alt="Jumia Pay" class="payment-method-logo" />
+      </div>
+      
+      <label class="delivery-option selected" style="margin-bottom: 20px;">
+        <input type="radio" name="payment_method" value="mpesa" checked>
+        <div class="delivery-option-details">
+          <div class="delivery-option-title" style="color: #f68b1e; margin-bottom: 2px;">
+            <span>Pay Now with M-Pesa</span>
+          </div>
+          <div class="delivery-option-desc" style="font-weight: 600; color: #000;">Pay now fast and securely with your Mpesa account.</div>
+          
+          <div class="payment-details-box">
+            <div class="store-credit-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12zm-9-2h2V9h-2v7z"/></svg>
+              Jumia store credit balance: KSh 0
+            </div>
+            <div class="payment-info-text">
+              You will be redirected to the JumiaPay platform to complete your purchase.<br>
+              Ensure your payment information is up to date and that you have the necessary funds....<br>
+              <a href="#" style="color: #0071e3; text-decoration: none;">Details</a>
+            </div>
+            <div class="payment-footer">
+              <span>Powered by <span style="font-weight:700; color:#333;">JUMIA <span style="color:#0071e3;">PAY</span></span></span>
+              <div class="payment-footer-logos">
+                <span>We accept:</span>
+                <span style="color:#4caf50; font-weight:700; font-style:italic;">M-PESA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </label>
+      
+      <button class="btn-primary" id="place-order-btn" style="width: 100%; font-size: 1.1rem;">Confirm order</button>
+    </div>
+  `;
+
+  leftCol.appendChild(step1);
+  leftCol.appendChild(step2);
+  leftCol.appendChild(step3);
+
+  const townSelect = step1.querySelector('#checkout-town');
+  const countySelect = step1.querySelector('#checkout-county');
   updateTownOptions(townSelect, countySelect.value, stations);
 
-  // County change handler to update delivery fee dynamically!
   countySelect.addEventListener('change', (e) => {
     selectedCounty = e.target.value;
     updateTownOptions(townSelect, selectedCounty, stations);
-    
-    // Find delivery fee for first station in that county
-    const matchedStation = stations.find(s => s.county === selectedCounty);
-    selectedFee = matchedStation ? matchedStation.fee : 150;
+  });
 
-    // Re-render order summary to update delivery and total cost
+  const form = step1.querySelector('#checkout-details-form');
+  
+  // Pre-fill from localStorage if available
+  const savedAddressStr = localStorage.getItem('checkout_address');
+  if (savedAddressStr) {
+    try {
+      const savedAddress = JSON.parse(savedAddressStr);
+      document.getElementById('checkout-name').value = savedAddress.name || '';
+      document.getElementById('checkout-phone').value = savedAddress.phone || '';
+      document.getElementById('checkout-email').value = savedAddress.email || '';
+      if (savedAddress.county) {
+        countySelect.value = savedAddress.county;
+        selectedCounty = savedAddress.county;
+        updateTownOptions(townSelect, selectedCounty, stations);
+      }
+      if (savedAddress.town) {
+        townSelect.value = savedAddress.town;
+      }
+    } catch (e) {
+      console.error('Error parsing saved address', e);
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    customerInfo = {
+      name: document.getElementById('checkout-name').value.trim(),
+      phone: document.getElementById('checkout-phone').value.trim(),
+      email: document.getElementById('checkout-email').value.trim(),
+      county: document.getElementById('checkout-county').value,
+      town: document.getElementById('checkout-town').value,
+    };
+
+    if (customerInfo.phone.length < 10) {
+      showToast('Please enter a valid phone number!', 'error');
+      return;
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('checkout_address', JSON.stringify(customerInfo));
+
+    document.getElementById('step1-summary').innerHTML = `
+      <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">${customerInfo.name}</div>
+      <div>${customerInfo.town} | ${customerInfo.county} | ${customerInfo.phone}</div>
+    `;
+
+    markStepCompleted(1);
+    toggleAccordion(2);
+  });
+
+  const doorOption = step2.querySelector('#option-door input');
+  const pickupOption = step2.querySelector('#option-pickup input');
+  const btnSelectStation = step2.querySelector('#btn-select-station');
+  const btnSaveDelivery = step2.querySelector('#btn-save-delivery');
+
+  doorOption.addEventListener('change', () => {
+    if (doorOption.checked) {
+      showToast('We are experiencing problems with this right now! Please select a pick up station instead!', 'error');
+      doorOption.checked = false;
+      pickupOption.checked = false;
+      step2.querySelector('#option-door').classList.remove('selected');
+      btnSaveDelivery.style.display = 'none';
+    }
+  });
+
+  pickupOption.addEventListener('change', () => {
+    step2.querySelector('#option-door').classList.remove('selected');
+    step2.querySelector('#option-pickup').classList.add('selected');
+    
+    if (selectedStationInfo) {
+      btnSaveDelivery.style.display = 'block';
+    } else {
+      openPickupModal(stations);
+    }
+  });
+
+  btnSelectStation.addEventListener('click', (e) => {
+    e.preventDefault();
+    pickupOption.checked = true;
+    step2.querySelector('#option-door').classList.remove('selected');
+    step2.querySelector('#option-pickup').classList.add('selected');
+    openPickupModal(stations);
+  });
+
+  btnSaveDelivery.addEventListener('click', () => {
+    if (!selectedStationInfo) {
+      showToast('Please select a pickup station', 'error');
+      return;
+    }
+    
+    selectedFee = selectedStationInfo.fee || 280;
+    
+    document.getElementById('step2-summary').innerHTML = `
+      <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Pick-up Station</div>
+      <div>${selectedStationInfo.name}</div>
+    `;
+
     const cart = getCart();
     renderOrderSummary(rightCol, cart);
+
+    markStepCompleted(2);
+    toggleAccordion(3);
   });
+
+  const placeBtn = step3.querySelector('#place-order-btn');
+  placeBtn.addEventListener('click', () => {
+    if (!step1.classList.contains('completed') || !step2.classList.contains('completed')) {
+      showToast('Please complete all previous steps first!', 'error');
+      return;
+    }
+
+    const cart = getCart();
+    let subtotal = 0;
+    cart.forEach(item => {
+      const p = getProductById(item.productId);
+      if (p) subtotal += (p.discountedPrice ?? p.originalPrice) * item.quantity;
+    });
+    const total = subtotal + selectedFee;
+
+    triggerStkPushPayment(customerInfo.phone, total, customerInfo.name);
+  });
+
+  renderPickupModal(leftCol);
 }
 
 function updateTownOptions(townSelect, county, stations) {
   const filtered = stations.filter(s => s.county === county);
-  townSelect.innerHTML = filtered.map(s => `<option value="${s.name}">${s.name} (${s.town})</option>`).join('');
+  const towns = [...new Set(filtered.map(s => s.town))].sort();
+  townSelect.innerHTML = towns.map(t => `<option value="${t}">${t}</option>`).join('');
+}
+
+window.toggleAccordion = function(stepNum) {
+  for (let i = 1; i <= 3; i++) {
+    const section = document.getElementById(`step${i}-section`);
+    if (section) {
+      if (i === stepNum) {
+        section.classList.add('active');
+      } else {
+        section.classList.remove('active');
+      }
+    }
+  }
+};
+
+window.markStepCompleted = function(stepNum) {
+  const section = document.getElementById(`step${stepNum}-section`);
+  if (section) {
+    section.classList.add('completed');
+  }
+};
+
+function renderPickupModal(container) {
+  const modal = document.createElement('div');
+  modal.className = 'pickup-modal-overlay';
+  modal.id = 'pickup-modal';
+  modal.innerHTML = `
+    <div class="pickup-modal">
+      <div class="pickup-modal-header">
+        <h3>Select a Pick-up station close to you</h3>
+        <button class="pickup-modal-close" id="pickup-modal-close">&times;</button>
+      </div>
+      <div class="pickup-modal-body">
+        <div class="pickup-modal-list">
+          <div class="pickup-modal-filters">
+            <select id="modal-county-filter"></select>
+            <select id="modal-town-filter"></select>
+          </div>
+          <div class="pickup-modal-stations" id="modal-stations-list">
+          </div>
+        </div>
+      </div>
+      <div class="pickup-modal-footer">
+        <button class="btn-confirm-station" id="btn-confirm-station" disabled>Select pickup station</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  document.getElementById('pickup-modal-close').addEventListener('click', closePickupModal);
+}
+
+function openPickupModal(stations) {
+  const modal = document.getElementById('pickup-modal');
+  modal.classList.add('active');
+
+  const counties = [...new Set(stations.map(s => s.county || 'Nairobi'))].sort();
+  
+  const countyFilter = document.getElementById('modal-county-filter');
+  countyFilter.innerHTML = counties.map(c => `<option value="${c}" ${c === customerInfo.county ? 'selected' : ''}>${c}</option>`).join('');
+
+  const townFilter = document.getElementById('modal-town-filter');
+  
+  function updateModalTowns(county) {
+    const filteredStations = stations.filter(s => s.county === county);
+    const towns = [...new Set(filteredStations.map(s => s.town))].sort();
+    townFilter.innerHTML = towns.map(t => `<option value="${t}" ${t === customerInfo.town ? 'selected' : ''}>${t}</option>`).join('');
+    renderStationsList(county, townFilter.value, stations);
+  }
+
+  countyFilter.addEventListener('change', (e) => updateModalTowns(e.target.value));
+  townFilter.addEventListener('change', (e) => renderStationsList(countyFilter.value, e.target.value, stations));
+
+  updateModalTowns(customerInfo.county || counties[0]);
+}
+
+function renderStationsList(county, town, stations) {
+  const listEl = document.getElementById('modal-stations-list');
+  const filtered = stations.filter(s => s.county === county && s.town === town);
+  
+  if (filtered.length === 0) {
+    listEl.innerHTML = `<div style="padding:20px; text-align:center; color:#666;">No stations found in this area.</div>`;
+    document.getElementById('btn-confirm-station').disabled = true;
+    return;
+  }
+
+
+  const hoursOptions = [
+    "Mon-Fri 8am-6pm; Sat 8am-4pm",
+    "Mon-Fri 9am-5pm; Sat 9am-1pm",
+    "Mon-Sat 8am-8pm; Sun 10am-4pm",
+    "Mon-Fri 8:30am-5:30pm; Sat 8:30am-1pm"
+  ];
+
+  listEl.innerHTML = filtered.map((s, i) => {
+    const fee = s.fee || (280 + Math.floor(Math.random()*50));
+    s.fee = fee; // inject fee
+    const randHours = hoursOptions[(s.name.length) % hoursOptions.length];
+    
+    return `
+      <label class="station-item ${s.name === (selectedStationInfo?.name) ? 'selected' : ''}">
+        <div class="station-item-header">
+          <input type="radio" name="modal_station" value="${i}" ${s.name === (selectedStationInfo?.name) ? 'checked' : ''}>
+          <div class="station-item-details">
+            <div class="station-item-title">
+              <span>${s.name}</span>
+              <span class="station-item-price">KSh ${fee}</span>
+            </div>
+            <div class="station-item-address">${s.location || s.town}</div>
+            <div style="font-size:0.75rem; color:#888; margin-top:6px; display:flex; align-items:center; gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+              Opening hours ${randHours}
+            </div>
+          </div>
+        </div>
+      </label>
+    `;
+  }).join('');
+
+
+  const radios = listEl.querySelectorAll('input[type="radio"]');
+  radios.forEach(r => r.addEventListener('change', () => {
+    document.querySelectorAll('.station-item').forEach(el => el.classList.remove('selected'));
+    r.closest('.station-item').classList.add('selected');
+    document.getElementById('btn-confirm-station').disabled = false;
+  }));
+
+  const confirmBtn = document.getElementById('btn-confirm-station');
+  const newBtn = confirmBtn.cloneNode(true);
+  confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+  
+  newBtn.addEventListener('click', () => {
+    const selectedRadio = listEl.querySelector('input[type="radio"]:checked');
+    if (selectedRadio) {
+      selectedStationInfo = filtered[selectedRadio.value];
+      
+      const preview = document.getElementById('selected-pickup-details');
+      preview.style.display = 'block';
+      preview.innerHTML = `
+        <strong>${selectedStationInfo.name}</strong><br>
+        <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
+      `;
+      document.getElementById('pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
+      document.getElementById('btn-save-delivery').style.display = 'block';
+      
+      closePickupModal();
+    }
+  });
+}
+
+function closePickupModal() {
+  document.getElementById('pickup-modal').classList.remove('active');
 }
 
 function renderOrderSummary(rightCol, cart) {
@@ -176,7 +548,6 @@ function renderOrderSummary(rightCol, cart) {
   card.innerHTML = `
     <div class="checkout-card-title">Order Summary</div>
     
-    <!-- Item list with thumbnails -->
     <div class="summary-items-list">
       ${cart.map(item => {
         const p = getProductById(item.productId);
@@ -210,31 +581,35 @@ function renderOrderSummary(rightCol, cart) {
       }).join('')}
     </div>
 
-    <!-- Pricing Summary -->
     <div class="summary-pricing-block">
       <div class="summary-price-row">
-        <span class="label">Items Subtotal</span>
+        <span class="label">Item's total (${cart.reduce((a,b)=>a+b.quantity, 0)})</span>
         <span class="value">${formatPrice(subtotal)}</span>
       </div>
       <div class="summary-price-row">
-        <span class="label">Delivery Cost (${selectedCounty})</span>
+        <span class="label">Delivery fees</span>
         <span class="value">${formatPrice(selectedFee)}</span>
       </div>
       <div class="summary-price-row total">
-        <span class="label">Order Total</span>
+        <span class="label">Total</span>
         <span class="value">${formatPrice(total)}</span>
       </div>
+      <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:12px; padding-top:12px; border-top:1px dashed var(--border-light);">
+        You will be able to add a voucher when selecting your payment method.
+      </p>
     </div>
-
-    <!-- Main Place Order Button -->
-    <button class="place-order-btn" id="place-order-btn">
-      Place Order (${formatPrice(total)})
+    
+    <button class="place-order-btn" style="background:#aaa; cursor:not-allowed; opacity:0.6;" disabled>
+      Confirm order
     </button>
+    <div style="text-align:center; font-size:0.75rem; color:#888; margin-top:8px;">
+      (Complete the steps in order to proceed)<br><br>
+      By proceeding, you are automatically accepting the <a href="#" style="color:#0071e3; text-decoration:none;">Terms & Conditions</a>
+    </div>
   `;
 
   rightCol.appendChild(card);
 
-  // Bind quantity/remove events
   const itemsListEl = card.querySelector('.summary-items-list');
   if (itemsListEl) {
     itemsListEl.addEventListener('click', (e) => {
@@ -269,29 +644,7 @@ function renderOrderSummary(rightCol, cart) {
       renderOrderSummary(rightCol, newCart);
     });
   }
-
-  // Place Order handler
-  const placeBtn = card.querySelector('#place-order-btn');
-  placeBtn.addEventListener('click', () => {
-    const name = document.getElementById('checkout-name').value.trim();
-    const phone = document.getElementById('checkout-phone').value.trim();
-    const detailsForm = document.getElementById('checkout-details-form');
-
-    if (!detailsForm || !detailsForm.reportValidity()) {
-      showToast('Please fill out all the required Delivery Details!', 'error');
-      return;
-    }
-
-    if (phone.length < 10) {
-      showToast('Please enter a valid 10-digit phone number!', 'error');
-      return;
-    }
-
-    // Trigger MegaPay STK Push payment flow
-    triggerStkPushPayment(phone, total, name);
-  });
 }
-
 // ============================================
 // STK Push Payment Simulation & Integration Logic
 // ============================================
@@ -556,7 +909,7 @@ function renderStkPushOverlay() {
       <button class="stk-close-btn" id="stk-close-btn">&times;</button>
       
       <div class="stk-push-header">
-        <span class="stk-push-logo">Jumia Pay <span class="stk-logo-star">★</span></span>
+        <img src="/jumia_pay_transparent.png" alt="Jumia Pay" style="height: 28px;" />
       </div>
 
       <!-- Stage 0: Send Prompt -->
