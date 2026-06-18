@@ -87,6 +87,15 @@ function renderCheckoutPage() {
 let customerInfo = {};
 let selectedStationInfo = null;
 
+try {
+  const savedStationStr = localStorage.getItem('checkout_station');
+  if (savedStationStr) {
+    selectedStationInfo = JSON.parse(savedStationStr);
+  }
+} catch(e) {
+  console.error('Error parsing saved station', e);
+}
+
 function renderDetailsForm(leftCol, rightCol) {
   const stations = getDeliveryStations();
   const counties = [...new Set(stations.map(s => s.county || 'Nairobi'))].sort();
@@ -238,6 +247,20 @@ function renderDetailsForm(leftCol, rightCol) {
   leftCol.appendChild(step2);
   leftCol.appendChild(step3);
 
+  if (selectedStationInfo) {
+    const preview = step2.querySelector('#selected-pickup-details');
+    preview.style.display = 'block';
+    preview.innerHTML = `
+      <strong>${selectedStationInfo.name}</strong><br>
+      <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
+    `;
+    step2.querySelector('#pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
+    step2.querySelector('#option-door').classList.remove('selected');
+    step2.querySelector('#option-pickup').classList.add('selected');
+    step2.querySelector('#option-pickup input').checked = true;
+    step2.querySelector('#btn-save-delivery').style.display = 'block';
+  }
+
   const townSelect = step1.querySelector('#checkout-town');
   const countySelect = step1.querySelector('#checkout-county');
   updateTownOptions(townSelect, countySelect.value, stations);
@@ -336,6 +359,9 @@ function renderDetailsForm(leftCol, rightCol) {
       showToast('Please select a pickup station', 'error');
       return;
     }
+    
+    // Save to localStorage
+    localStorage.setItem('checkout_station', JSON.stringify(selectedStationInfo));
     
     selectedFee = selectedStationInfo.fee || 280;
     
