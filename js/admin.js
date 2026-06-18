@@ -1024,10 +1024,8 @@ function escapeHtml(str) {
 function renderOrdersView() {
   const ordersRaw = getOrders() || [];
 
-  // Sort orders: Failed at the bottom, then by createdAt descending
+  // Sort orders purely by createdAt descending
   const orders = [...ordersRaw].sort((a, b) => {
-    if (a.status === 'failed' && b.status !== 'failed') return 1;
-    if (a.status !== 'failed' && b.status === 'failed') return -1;
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
