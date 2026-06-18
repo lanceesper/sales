@@ -16,7 +16,8 @@ import {
   formatPrice,
   calculateDiscount,
   getOrders,
-  deleteOrder
+  deleteOrder,
+  updateOrderStatus
 } from '/js/store.js';
 
 import { showToast } from '/js/components.js';
@@ -1053,9 +1054,19 @@ function renderOrdersView() {
               const itemsList = (o.items || []).map(i => `${i.quantity}x ${escapeHtml(i.name)}`).join('<br>');
               const dateObj = new Date(o.createdAt);
               const timeStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+              let currentStatus = o.status;
+              if (currentStatus === 'pending') {
+                const now = new Date();
+                const diffMinutes = (now - dateObj) / (1000 * 60);
+                if (diffMinutes > 2) {
+                  currentStatus = 'failed';
+                  updateOrderStatus(o.id, 'failed');
+                }
+              }
+
               let statusBadge = '';
-              if (o.status === 'success') statusBadge = '<span class="stock-badge in-stock">Success</span>';
-              else if (o.status === 'failed') statusBadge = '<span class="stock-badge out-of-stock">Failed</span>';
+              if (currentStatus === 'success') statusBadge = '<span class="stock-badge in-stock">Success</span>';
+              else if (currentStatus === 'failed') statusBadge = '<span class="stock-badge out-of-stock">Failed</span>';
               else statusBadge = '<span class="stock-badge low-stock">Pending</span>';
 
               return `
