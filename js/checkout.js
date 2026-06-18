@@ -899,6 +899,11 @@ async function executeStkPushPayment(phone, total, name, orderRef) {
   setStepState('stk-step-init', 'active');
   setStepState('stk-step-prompt', 'pending');
   setStepState('stk-step-verify', 'pending');
+  
+  const spinnerAnim = document.getElementById('stk-spinner-anim');
+  const successTick = document.getElementById('stk-success-tick');
+  if (spinnerAnim) spinnerAnim.style.display = 'block';
+  if (successTick) successTick.style.display = 'none';
 
   try {
     const response = await fetch('/api/pay', {
@@ -926,6 +931,15 @@ async function executeStkPushPayment(phone, total, name, orderRef) {
 
       document.getElementById('stk-status-title').textContent = 'STK Push Prompt Sent!';
       document.getElementById('stk-status-desc').innerHTML = `A secure M-Pesa PIN prompt has been sent to <strong>${phone}</strong>. Enter your PIN to complete payment of <strong>${formatPrice(total)}</strong>.`;
+      
+      const spinnerAnim = document.getElementById('stk-spinner-anim');
+      const successTick = document.getElementById('stk-success-tick');
+      if (spinnerAnim) spinnerAnim.style.display = 'none';
+      if (successTick) {
+        successTick.style.display = 'flex';
+        successTick.style.justifyContent = 'center';
+      }
+
       setStepState('stk-step-prompt', 'completed');
       setStepState('stk-step-verify', 'active');
 
@@ -974,24 +988,17 @@ function renderStkPushOverlay() {
 
       <!-- Stage 1: Status Loading -->
       <div id="stk-status-stage" class="stk-stage">
-        <div class="stk-spinner-wrap">
+        <div class="stk-spinner-wrap" id="stk-spinner-anim">
           <div class="stk-double-bounce1"></div>
           <div class="stk-double-bounce2"></div>
         </div>
+        <div class="stk-success-tick-wrap" id="stk-success-tick" style="display:none; color: #4ade80; margin-bottom: 20px;">
+          <svg width="60" height="60" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
         <h3 id="stk-status-title">Initiating STK Push...</h3>
         <p id="stk-status-desc">Preparing secure payment details. Please wait.</p>
-        
-        <div class="stk-progress-steps">
-          <div class="stk-step" id="stk-step-init">
-            <span class="stk-step-dot"></span> 1. Connection Initialized
-          </div>
-          <div class="stk-step" id="stk-step-prompt">
-            <span class="stk-step-dot"></span> 2. Request Dispatched
-          </div>
-          <div class="stk-step" id="stk-step-verify">
-            <span class="stk-step-dot"></span> 3. PIN Verification
-          </div>
-        </div>
       </div>
 
       <!-- Stage 3: Failure State -->
