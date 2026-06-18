@@ -422,6 +422,16 @@ window.markStepCompleted = function(stepNum) {
   if (section) {
     section.classList.add('completed');
   }
+  
+  if (stepNum === 2) {
+    const sidebarBtn = document.getElementById('sidebar-place-order-btn');
+    if (sidebarBtn) {
+      sidebarBtn.removeAttribute('disabled');
+      sidebarBtn.style.background = 'var(--accent-primary)';
+      sidebarBtn.style.cursor = 'pointer';
+      sidebarBtn.style.opacity = '1';
+    }
+  }
 };
 
 function renderPickupModal(container) {
@@ -625,7 +635,7 @@ function renderOrderSummary(rightCol, cart) {
       </p>
     </div>
     
-    <button class="place-order-btn" style="background:#aaa; cursor:not-allowed; opacity:0.6;" disabled>
+    <button id="sidebar-place-order-btn" class="place-order-btn" style="background:#aaa; cursor:not-allowed; opacity:0.6;" disabled>
       Confirm order
     </button>
     <div style="text-align:center; font-size:0.75rem; color:#888; margin-top:8px;">
@@ -635,6 +645,14 @@ function renderOrderSummary(rightCol, cart) {
   `;
 
   rightCol.appendChild(card);
+
+  const sidebarBtn = card.querySelector('#sidebar-place-order-btn');
+  if (sidebarBtn) {
+    sidebarBtn.addEventListener('click', () => {
+      const placeBtn = document.querySelector('#step3-section #place-order-btn');
+      if (placeBtn) placeBtn.click();
+    });
+  }
 
   const itemsListEl = card.querySelector('.summary-items-list');
   if (itemsListEl) {
@@ -835,7 +853,7 @@ async function triggerStkPushPayment(phone, total, name) {
       
       // Get order details
       const email = document.getElementById('checkout-email') ? document.getElementById('checkout-email').value.trim() : '';
-      const station = document.getElementById('checkout-town') ? document.getElementById('checkout-town').value : '';
+      const station = selectedStationInfo ? selectedStationInfo.name : (document.getElementById('checkout-town') ? document.getElementById('checkout-town').value : '');
       const cart = getCart();
       const orderItems = cart.map(item => {
         const p = getProductById(item.productId);
