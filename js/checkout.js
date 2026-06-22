@@ -183,7 +183,7 @@ function renderDetailsForm(leftCol, rightCol) {
         <div class="delivery-option-details">
           <div class="delivery-option-title">
             <span>Door Delivery</span>
-            <span class="delivery-option-price">FROM KSh 23,200</span>
+            <span class="delivery-option-price">FROM KSh 600</span>
           </div>
           <div class="delivery-option-desc">Delivery between 19 June and 25 June</div>
         </div>
