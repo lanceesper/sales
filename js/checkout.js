@@ -225,7 +225,7 @@ function renderDetailsForm(leftCol, rightCol) {
             <span class="delivery-option-price" id="pickup-fee-preview">FROM KSh 280</span>
           </div>
           <div class="delivery-option-desc">Delivery ${initialRange.label}</div>
-          <div id="selected-pickup-details" style="display:none; padding:10px; background:#f9f9f9; border:1px solid #eee; border-radius:4px; margin-bottom:10px;">
+          <div id="selected-pickup-details" style="display:none; padding:10px; background:#f9f9f9; border:1px solid #eee; border-radius:4px; margin-bottom:10px; cursor:pointer; transition:background 0.2s;" title="Tap to continue with this station">
           </div>
           <button type="button" class="delivery-select-btn" id="btn-select-station">Select pickup station ></button>
         </div>
@@ -304,6 +304,7 @@ function renderDetailsForm(leftCol, rightCol) {
     preview.innerHTML = `
       <strong>${selectedStationInfo.name}</strong><br>
       <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
+      <div style="font-size:0.75rem; color:var(--accent-primary); margin-top:6px; font-weight:600;">Tap to continue ›</div>
     `;
     step2.querySelector('#pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
     step2.querySelector('#option-door').classList.remove('selected');
@@ -664,6 +665,7 @@ function renderStationsList(county, town, stations) {
       preview.innerHTML = `
         <strong>${selectedStationInfo.name}</strong><br>
         <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
+        <div style="font-size:0.75rem; color:var(--accent-primary); margin-top:6px; font-weight:600;">Tap to continue ›</div>
       `;
       document.getElementById('pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
       
