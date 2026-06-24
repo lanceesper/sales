@@ -76,7 +76,25 @@ function updateDeliveryDatesUI() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   await initStore();
-  renderHeader('cart');
+  
+  const siteHeader = document.getElementById('site-header');
+  if (siteHeader) {
+    siteHeader.innerHTML = `
+      <header class="secure-checkout-header" style="background: #fff; border-bottom: 1px solid var(--border-color); padding: 16px 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 16px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="/jumia_pay_transparent.png" alt="JumiaPay" style="height: 26px;" />
+            <span style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary); border-left: 1px solid var(--border-color); padding-left: 12px; margin-left: 4px; letter-spacing: 0.2px;">Checkout</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #2e7d32; font-weight: 600; background: #e8f5e9; padding: 6px 12px; border-radius: 20px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Secure Checkout
+          </div>
+        </div>
+      </header>
+    `;
+  }
+
   renderCheckoutPage();
   renderFooter();
 });
@@ -93,18 +111,6 @@ function renderCheckoutPage() {
     }, 1500);
     return;
   }
-
-  // Breadcrumb
-  const breadcrumb = document.createElement('nav');
-  breadcrumb.className = 'checkout-breadcrumb';
-  breadcrumb.innerHTML = `
-    <a href="/">Home</a>
-    <span class="separator">›</span>
-    <a href="/cart.html">Shopping Cart</a>
-    <span class="separator">›</span>
-    <span class="current">Checkout</span>
-  `;
-  main.appendChild(breadcrumb);
 
   // Main layout
   const layout = document.createElement('div');
@@ -133,15 +139,8 @@ function renderCheckoutPage() {
 
 let customerInfo = {};
 let selectedStationInfo = null;
+localStorage.removeItem('checkout_station');
 
-try {
-  const savedStationStr = localStorage.getItem('checkout_station');
-  if (savedStationStr) {
-    selectedStationInfo = JSON.parse(savedStationStr);
-  }
-} catch(e) {
-  console.error('Error parsing saved station', e);
-}
 
 function renderDetailsForm(leftCol, rightCol) {
   const stations = getDeliveryStations();
@@ -360,8 +359,6 @@ function renderDetailsForm(leftCol, rightCol) {
 
   function completeDeliveryStep() {
     if (!selectedStationInfo) return;
-    
-    localStorage.setItem('checkout_station', JSON.stringify(selectedStationInfo));
     
     selectedFee = selectedStationInfo.fee || 280;
     
