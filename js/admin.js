@@ -40,13 +40,37 @@ let isAdminAuthenticated = false;
 document.addEventListener('DOMContentLoaded', async () => {
   await initStore();
 
+  // Read initial hash on load
+  const hash = window.location.hash.replace('#', '');
+  if (hash && ['dashboard', 'products', 'categories', 'stations', 'announcements', 'orders'].includes(hash)) {
+    activeView = hash;
+  }
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       isAdminAuthenticated = true;
+      const currentHash = window.location.hash.replace('#', '');
+      if (currentHash && ['dashboard', 'products', 'categories', 'stations', 'announcements', 'orders'].includes(currentHash)) {
+        activeView = currentHash;
+      } else {
+        window.location.hash = activeView;
+      }
       render();
     } else {
       isAdminAuthenticated = false;
       renderLoginScreen();
+    }
+  });
+
+  window.addEventListener('hashchange', () => {
+    const currentHash = window.location.hash.replace('#', '');
+    if (currentHash && ['dashboard', 'products', 'categories', 'stations', 'announcements', 'orders'].includes(currentHash)) {
+      if (activeView !== currentHash) {
+        activeView = currentHash;
+        if (isAdminAuthenticated) {
+          render();
+        }
+      }
     }
   });
 
@@ -172,6 +196,7 @@ function bindSidebarEvents() {
         return;
       }
       activeView = el.dataset.view;
+      window.location.hash = activeView;
       render();
       
       // Close sidebar on mobile
