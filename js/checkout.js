@@ -86,10 +86,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <img src="/jumia_pay_transparent.png" alt="JumiaPay" style="height: 26px;" />
             <span style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary); border-left: 1px solid var(--border-color); padding-left: 12px; margin-left: 4px; letter-spacing: 0.2px;">Checkout</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #2e7d32; font-weight: 600; background: #e8f5e9; padding: 6px 12px; border-radius: 20px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Secure Checkout
-          </div>
         </div>
       </header>
     `;
