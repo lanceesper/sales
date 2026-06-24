@@ -153,49 +153,6 @@ function renderDetailsForm(leftCol, rightCol) {
 
   const regionOptionsHTML = counties.map(c => `<option value="${c}" ${c === selectedCounty ? 'selected' : ''}>${c}</option>`).join('');
 
-  const step1 = document.createElement('div');
-  step1.className = 'accordion-section active';
-  step1.id = 'step1-section';
-  step1.innerHTML = `
-    <div class="accordion-header" onclick="toggleAccordion(1)">
-      <div class="accordion-title">
-        <div class="accordion-icon">&#10003;</div>
-        1. CUSTOMER ADDRESS
-      </div>
-      <button class="accordion-change-btn" type="button" onclick="event.stopPropagation(); toggleAccordion(1)">Change ></button>
-    </div>
-    <div class="accordion-summary" id="step1-summary"></div>
-    <div class="accordion-body">
-      <form class="checkout-form" id="checkout-details-form">
-        <div class="form-grid">
-          <div class="form-group full-width">
-            <label class="checkout-form-label" for="checkout-name">Recipient's Full Name</label>
-            <input type="text" class="checkout-form-input" id="checkout-name" placeholder="e.g. John Doe" required />
-          </div>
-          <div class="form-group">
-            <label class="checkout-form-label" for="checkout-phone">Phone Number (M-Pesa registered)</label>
-            <input type="tel" class="checkout-form-input" id="checkout-phone" placeholder="e.g. 0712345678" required />
-          </div>
-          <div class="form-group">
-            <label class="checkout-form-label" for="checkout-email">Email Address</label>
-            <input type="email" class="checkout-form-input" id="checkout-email" placeholder="e.g. john@example.com" required />
-          </div>
-          <div class="form-group">
-            <label class="checkout-form-label" for="checkout-county">County / Region</label>
-            <select class="checkout-form-select" id="checkout-county">
-              ${regionOptionsHTML}
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="checkout-form-label" for="checkout-town">Town / City</label>
-            <select class="checkout-form-select" id="checkout-town">
-            </select>
-          </div>
-        </div>
-      </form>
-    </div>
-  `;
-
   // Calculate initial delivery dates
   const initialRange = getDeliveryDateRange(selectedCounty);
   const doorStart = new Date();
@@ -203,20 +160,46 @@ function renderDetailsForm(leftCol, rightCol) {
   const doorEnd = new Date();
   doorEnd.setDate(doorEnd.getDate() + 5);
 
-  const step2 = document.createElement('div');
-  step2.className = 'accordion-section';
-  step2.id = 'step2-section';
-  step2.innerHTML = `
-    <div class="accordion-header" onclick="if(this.parentElement.classList.contains('completed')) toggleAccordion(2)">
-      <div class="accordion-title">
-        <div class="accordion-icon">&#10003;</div>
-        2. DELIVERY DETAILS
-      </div>
-      <button class="accordion-change-btn" type="button" onclick="event.stopPropagation(); toggleAccordion(2)">Change ></button>
+  const checkoutCard = document.createElement('div');
+  checkoutCard.className = 'checkout-card';
+  checkoutCard.innerHTML = `
+    <div class="checkout-card-title">
+      <span class="number">1</span>
+      CUSTOMER ADDRESS
     </div>
-    <div class="accordion-summary" id="step2-summary"></div>
-    <div class="accordion-body">
-      
+    <form class="checkout-form" id="checkout-details-form" style="margin-bottom: 30px;">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label class="checkout-form-label" for="checkout-name">Recipient's Full Name</label>
+          <input type="text" class="checkout-form-input" id="checkout-name" placeholder="e.g. John Doe" required />
+        </div>
+        <div class="form-group">
+          <label class="checkout-form-label" for="checkout-phone">Phone Number (M-Pesa registered)</label>
+          <input type="tel" class="checkout-form-input" id="checkout-phone" placeholder="e.g. 0712345678" required />
+        </div>
+        <div class="form-group">
+          <label class="checkout-form-label" for="checkout-email">Email Address</label>
+          <input type="email" class="checkout-form-input" id="checkout-email" placeholder="e.g. john@example.com" required />
+        </div>
+        <div class="form-group">
+          <label class="checkout-form-label" for="checkout-county">County / Region</label>
+          <select class="checkout-form-select" id="checkout-county">
+            \${regionOptionsHTML}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="checkout-form-label" for="checkout-town">Town / City</label>
+          <select class="checkout-form-select" id="checkout-town">
+          </select>
+        </div>
+      </div>
+    </form>
+
+    <div class="checkout-card-title" style="margin-top: 24px; padding-top: 12px;">
+      <span class="number">2</span>
+      DELIVERY DETAILS
+    </div>
+    <div style="margin-bottom: 30px;">
       <label class="delivery-option" id="option-pickup">
         <input type="radio" name="delivery_type" value="pickup">
         <div class="delivery-option-details">
@@ -224,8 +207,8 @@ function renderDetailsForm(leftCol, rightCol) {
             <span>Pick-up Station</span>
             <span class="delivery-option-price" id="pickup-fee-preview">FROM KSh 280</span>
           </div>
-          <div class="delivery-option-desc">Delivery ${initialRange.label}</div>
-          <div id="selected-pickup-details" style="display:none; padding:10px; background:#f9f9f9; border:1px solid #eee; border-radius:4px; margin-bottom:10px; cursor:pointer; transition:background 0.2s;" title="Tap to continue with this station">
+          <div class="delivery-option-desc">Delivery \${initialRange.label}</div>
+          <div id="selected-pickup-details" style="display:none; padding:10px; background:#f9f9f9; border:1px solid #eee; border-radius:4px; margin-bottom:10px; cursor:pointer; transition:background 0.2s;" title="Tap to change station">
           </div>
           <button type="button" class="delivery-select-btn" id="btn-select-station">Select pickup station ></button>
         </div>
@@ -238,25 +221,16 @@ function renderDetailsForm(leftCol, rightCol) {
             <span>Door Delivery</span>
             <span class="delivery-option-price">FROM KSh 600</span>
           </div>
-          <div class="delivery-option-desc">Delivery between ${formatDeliveryDate(doorStart)} and ${formatDeliveryDate(doorEnd)}</div>
+          <div class="delivery-option-desc">Delivery between \${formatDeliveryDate(doorStart)} and \${formatDeliveryDate(doorEnd)}</div>
         </div>
       </label>
     </div>
-  `;
 
-  const step3 = document.createElement('div');
-  step3.className = 'accordion-section';
-  step3.id = 'step3-section';
-  step3.innerHTML = `
-    <div class="accordion-header" onclick="if(this.parentElement.classList.contains('completed')) toggleAccordion(3)">
-      <div class="accordion-title">
-        <div class="accordion-icon">&#10003;</div>
-        3. PAYMENT METHOD
-      </div>
-      <button class="accordion-change-btn" type="button" onclick="event.stopPropagation(); toggleAccordion(3)">Change ></button>
+    <div class="checkout-card-title" style="margin-top: 24px; padding-top: 12px;">
+      <span class="number">3</span>
+      PAYMENT METHOD
     </div>
-    <div class="accordion-summary" id="step3-summary"></div>
-    <div class="accordion-body">
+    <div>
       <div class="payment-method-header">
         <img src="/jumia_pay_transparent.png" alt="Jumia Pay" class="payment-method-logo" />
       </div>
@@ -290,40 +264,23 @@ function renderDetailsForm(leftCol, rightCol) {
         </div>
       </label>
       
-      <button class="btn-primary" id="place-order-btn" style="width: 100%; font-size: 1.1rem;">Confirm order</button>
+      <button class="btn-primary" id="place-order-btn" style="width: 100%; font-size: 1.1rem; margin-top: 10px;">Confirm order</button>
     </div>
   `;
 
-  leftCol.appendChild(step1);
-  leftCol.appendChild(step2);
-  leftCol.appendChild(step3);
+  leftCol.appendChild(checkoutCard);
 
-  if (selectedStationInfo) {
-    const preview = step2.querySelector('#selected-pickup-details');
-    preview.style.display = 'block';
-    preview.innerHTML = `
-      <strong>${selectedStationInfo.name}</strong><br>
-      <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
-      <div style="font-size:0.75rem; color:var(--accent-primary); margin-top:6px; font-weight:600;">Tap to continue ›</div>
-    `;
-    step2.querySelector('#pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
-    step2.querySelector('#option-door').classList.remove('selected');
-    step2.querySelector('#option-pickup').classList.add('selected');
-    step2.querySelector('#option-pickup input').checked = true;
-  }
-
-  const townSelect = step1.querySelector('#checkout-town');
-  const countySelect = step1.querySelector('#checkout-county');
+  const townSelect = checkoutCard.querySelector('#checkout-town');
+  const countySelect = checkoutCard.querySelector('#checkout-county');
   updateTownOptions(townSelect, countySelect.value, stations);
 
   countySelect.addEventListener('change', (e) => {
     selectedCounty = e.target.value;
     updateTownOptions(townSelect, selectedCounty, stations);
     updateDeliveryDatesUI();
-    tryAutoAdvanceStep1();
   });
 
-  const form = step1.querySelector('#checkout-details-form');
+  const form = checkoutCard.querySelector('#checkout-details-form');
   
   // Pre-fill from localStorage if available
   const savedAddressStr = localStorage.getItem('checkout_address');
@@ -347,144 +304,109 @@ function renderDetailsForm(leftCol, rightCol) {
     }
   }
 
-  // Auto-advance: try to move to step 2 whenever a field changes
-  function tryAutoAdvanceStep1() {
-    const name = document.getElementById('checkout-name').value.trim();
-    const phone = document.getElementById('checkout-phone').value.trim();
-    const email = document.getElementById('checkout-email').value.trim();
-    const county = document.getElementById('checkout-county').value;
-    const town = document.getElementById('checkout-town').value;
-
-    // All fields must be filled
-    if (!name || !phone || !email || !county || !town) return;
-    // Basic phone validation
-    if (phone.length < 10) return;
-    // Basic email validation
-    if (!email.includes('@') || !email.includes('.')) return;
-
-    customerInfo = { name, phone, email, county, town };
-    
-    // Save to localStorage
-    localStorage.setItem('checkout_address', JSON.stringify(customerInfo));
-
-    document.getElementById('step1-summary').innerHTML = `
-      <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">${customerInfo.name}</div>
-      <div>${customerInfo.town} | ${customerInfo.county} | ${customerInfo.phone}</div>
+  if (selectedStationInfo) {
+    const preview = checkoutCard.querySelector('#selected-pickup-details');
+    preview.style.display = 'block';
+    preview.innerHTML = `
+      <strong>${selectedStationInfo.name}</strong><br>
+      <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
+      <div style="font-size:0.75rem; color:var(--accent-primary); margin-top:6px; font-weight:600;">Tap to change station</div>
     `;
-
-    markStepCompleted(1);
-    toggleAccordion(2);
-    smoothScrollToStep(2);
+    checkoutCard.querySelector('#pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
+    checkoutCard.querySelector('#option-door').classList.remove('selected');
+    checkoutCard.querySelector('#option-pickup').classList.add('selected');
+    checkoutCard.querySelector('#option-pickup input').checked = true;
   }
 
-  // Listen on town select change to auto-advance
-  townSelect.addEventListener('change', () => {
-    tryAutoAdvanceStep1();
-  });
-
-  // Also listen on blur of all inputs to auto-advance if everything is filled
-  ['checkout-name', 'checkout-phone', 'checkout-email'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('blur', () => {
-        // Small delay to allow the field value to settle
-        setTimeout(tryAutoAdvanceStep1, 100);
-      });
-    }
-  });
-
-  // Keep form submit as fallback (e.g. pressing Enter)
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    tryAutoAdvanceStep1();
-  });
-
-  const doorOption = step2.querySelector('#option-door input');
-  const pickupOption = step2.querySelector('#option-pickup input');
-  const btnSelectStation = step2.querySelector('#btn-select-station');
+  const doorOption = checkoutCard.querySelector('#option-door input');
+  const pickupOption = checkoutCard.querySelector('#option-pickup input');
+  const btnSelectStation = checkoutCard.querySelector('#btn-select-station');
 
   doorOption.addEventListener('change', () => {
     if (doorOption.checked) {
       showToast('We are experiencing problems with this right now! Please select a pick up station instead!', 'error');
       doorOption.checked = false;
       pickupOption.checked = false;
-      step2.querySelector('#option-door').classList.remove('selected');
+      checkoutCard.querySelector('#option-door').classList.remove('selected');
     }
   });
 
   pickupOption.addEventListener('change', () => {
-    step2.querySelector('#option-door').classList.remove('selected');
-    step2.querySelector('#option-pickup').classList.add('selected');
+    checkoutCard.querySelector('#option-door').classList.remove('selected');
+    checkoutCard.querySelector('#option-pickup').classList.add('selected');
     
     if (selectedStationInfo) {
-      // Auto-advance since we already have a station selected
       completeDeliveryStep();
     } else {
       openPickupModal(stations);
     }
   });
 
-  // Handle click on the entire pickup option area — covers the case where
-  // the radio is already checked (no 'change' fires) but user taps to proceed
-  const pickupLabel = step2.querySelector('#option-pickup');
+  // Handle click on the entire pickup option area
+  const pickupLabel = checkoutCard.querySelector('#option-pickup');
   pickupLabel.addEventListener('click', (e) => {
-    // Don't intercept clicks on the "Select pickup station" button
     if (e.target.closest('.delivery-select-btn')) return;
-    
     if (selectedStationInfo && pickupOption.checked) {
       completeDeliveryStep();
     }
   });
 
-  // Also let the station preview box itself act as a "continue" button
-  const previewBox = step2.querySelector('#selected-pickup-details');
+  // Let the station preview box itself act as a trigger to open the modal
+  const previewBox = checkoutCard.querySelector('#selected-pickup-details');
   previewBox.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (selectedStationInfo) {
-      completeDeliveryStep();
-    }
+    openPickupModal(stations);
   });
 
   btnSelectStation.addEventListener('click', (e) => {
     e.preventDefault();
     pickupOption.checked = true;
-    step2.querySelector('#option-door').classList.remove('selected');
-    step2.querySelector('#option-pickup').classList.add('selected');
+    checkoutCard.querySelector('#option-door').classList.remove('selected');
+    checkoutCard.querySelector('#option-pickup').classList.add('selected');
     openPickupModal(stations);
   });
 
-  // Extracted function to complete delivery step (used by auto-advance)
   function completeDeliveryStep() {
     if (!selectedStationInfo) return;
     
-    // Save to localStorage
     localStorage.setItem('checkout_station', JSON.stringify(selectedStationInfo));
     
     selectedFee = selectedStationInfo.fee || 280;
     
-    document.getElementById('step2-summary').innerHTML = `
-      <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Pick-up Station</div>
-      <div>${selectedStationInfo.name}</div>
-    `;
-
     const cart = getCart();
     renderOrderSummary(rightCol, cart);
-
-    markStepCompleted(2);
-    toggleAccordion(3);
-    smoothScrollToStep(3);
   }
   
-  // Expose for use after station selection in modal
   window._completeDeliveryStep = completeDeliveryStep;
 
-  const placeBtn = step3.querySelector('#place-order-btn');
+  const placeBtn = checkoutCard.querySelector('#place-order-btn');
   placeBtn.addEventListener('click', () => {
-    if (!step1.classList.contains('completed') || !step2.classList.contains('completed')) {
-      showToast('Please complete all previous steps first!', 'error');
+    if (!form.checkValidity()) {
+      form.reportValidity();
       return;
     }
+
+    const deliveryType = checkoutCard.querySelector('input[name="delivery_type"]:checked')?.value;
+    if (!deliveryType) {
+      showToast('Please select a delivery option!', 'error');
+      return;
+    }
+
+    if (deliveryType === 'pickup' && !selectedStationInfo) {
+      showToast('Please select a pickup station!', 'error');
+      return;
+    }
+
+    const name = document.getElementById('checkout-name').value.trim();
+    const phone = document.getElementById('checkout-phone').value.trim();
+    const email = document.getElementById('checkout-email').value.trim();
+    const county = document.getElementById('checkout-county').value;
+    const town = document.getElementById('checkout-town').value;
+
+    customerInfo = { name, phone, email, county, town };
+    
+    localStorage.setItem('checkout_address', JSON.stringify(customerInfo));
 
     const cart = getCart();
     let subtotal = 0;
@@ -505,46 +427,6 @@ function updateTownOptions(townSelect, county, stations) {
   const towns = [...new Set(filtered.map(s => s.town))].sort();
   townSelect.innerHTML = towns.map(t => `<option value="${t}">${t}</option>`).join('');
 }
-
-window.toggleAccordion = function(stepNum) {
-  for (let i = 1; i <= 3; i++) {
-    const section = document.getElementById(`step${i}-section`);
-    if (section) {
-      if (i === stepNum) {
-        section.classList.add('active');
-      } else {
-        section.classList.remove('active');
-      }
-    }
-  }
-};
-
-// Smooth scroll to a step section
-function smoothScrollToStep(stepNum) {
-  setTimeout(() => {
-    const section = document.getElementById(`step${stepNum}-section`);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, 150);
-}
-
-window.markStepCompleted = function(stepNum) {
-  const section = document.getElementById(`step${stepNum}-section`);
-  if (section) {
-    section.classList.add('completed');
-  }
-  
-  if (stepNum === 2) {
-    const sidebarBtn = document.getElementById('sidebar-place-order-btn');
-    if (sidebarBtn) {
-      sidebarBtn.removeAttribute('disabled');
-      sidebarBtn.style.background = 'var(--accent-primary)';
-      sidebarBtn.style.cursor = 'pointer';
-      sidebarBtn.style.opacity = '1';
-    }
-  }
-};
 
 function renderPickupModal(container) {
   const modal = document.createElement('div');
@@ -751,12 +633,10 @@ function renderOrderSummary(rightCol, cart) {
         You will be able to add a voucher when selecting your payment method.
       </p>
     </div>
-    
-    <button id="sidebar-place-order-btn" class="place-order-btn" style="background:#aaa; cursor:not-allowed; opacity:0.6;" disabled>
+    <button id="sidebar-place-order-btn" class="place-order-btn">
       Confirm order
     </button>
     <div style="text-align:center; font-size:0.75rem; color:#888; margin-top:8px;">
-      (Complete the steps in order to proceed)<br><br>
       By proceeding, you are automatically accepting the <a href="#" style="color:#0071e3; text-decoration:none;">Terms & Conditions</a>
     </div>
   `;
