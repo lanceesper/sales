@@ -136,6 +136,7 @@ function renderCheckoutPage() {
 let customerInfo = {};
 let selectedStationInfo = null;
 localStorage.removeItem('checkout_station');
+localStorage.removeItem('checkout_address');
 
 
 function renderDetailsForm(leftCol, rightCol) {
@@ -268,27 +269,7 @@ function renderDetailsForm(leftCol, rightCol) {
 
   const form = checkoutCard.querySelector('#checkout-details-form');
   
-  // Pre-fill from localStorage if available
-  const savedAddressStr = localStorage.getItem('checkout_address');
-  if (savedAddressStr) {
-    try {
-      const savedAddress = JSON.parse(savedAddressStr);
-      document.getElementById('checkout-name').value = savedAddress.name || '';
-      document.getElementById('checkout-phone').value = savedAddress.phone || '';
-      document.getElementById('checkout-email').value = savedAddress.email || '';
-      if (savedAddress.county) {
-        countySelect.value = savedAddress.county;
-        selectedCounty = savedAddress.county;
-        updateTownOptions(townSelect, selectedCounty, stations);
-        updateDeliveryDatesUI();
-      }
-      if (savedAddress.town) {
-        townSelect.value = savedAddress.town;
-      }
-    } catch (e) {
-      console.error('Error parsing saved address', e);
-    }
-  }
+
 
   if (selectedStationInfo) {
     const preview = checkoutCard.querySelector('#selected-pickup-details');
@@ -389,8 +370,6 @@ function renderDetailsForm(leftCol, rightCol) {
     const town = document.getElementById('checkout-town').value;
 
     customerInfo = { name, phone, email, county, town };
-    
-    localStorage.setItem('checkout_address', JSON.stringify(customerInfo));
 
     const cart = getCart();
     let subtotal = 0;
