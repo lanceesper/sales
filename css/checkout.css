@@ -45,15 +45,23 @@
 /* ---------- Layout ---------- */
 .checkout-layout {
   display: grid;
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 20px;
   align-items: start;
+  width: 100%;
 }
 
 .checkout-main {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
+  width: 100%;
+}
+
+.checkout-sidebar {
+  min-width: 0;
+  width: 100%;
 }
 
 /* ---------- Cards ---------- */
@@ -935,7 +943,7 @@
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .checkout-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .checkout-summary-card {
     position: static;
@@ -990,11 +998,21 @@
   }
   .summary-item-row > div {
     flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
   }
 
   /* Payment details mobile */
   .payment-details-box {
     padding: 12px;
+  }
+  .store-credit-box {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .payment-info-text {
+    word-break: break-word;
   }
   .payment-footer {
     flex-direction: column;
@@ -1175,6 +1193,7 @@
 
 .delivery-option-details {
   flex: 1;
+  min-width: 0;
 }
 
 .delivery-option-title {
