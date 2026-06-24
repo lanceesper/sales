@@ -624,23 +624,9 @@ function renderOrderSummary(rightCol, cart) {
         You will be able to add a voucher when selecting your payment method.
       </p>
     </div>
-    <button id="sidebar-place-order-btn" class="place-order-btn">
-      Confirm order
-    </button>
-    <div style="text-align:center; font-size:0.75rem; color:#888; margin-top:8px;">
-      By proceeding, you are automatically accepting the <a href="#" style="color:#0071e3; text-decoration:none;">Terms & Conditions</a>
-    </div>
   `;
 
   rightCol.appendChild(card);
-
-  const sidebarBtn = card.querySelector('#sidebar-place-order-btn');
-  if (sidebarBtn) {
-    sidebarBtn.addEventListener('click', () => {
-      const placeBtn = document.querySelector('#step3-section #place-order-btn');
-      if (placeBtn) placeBtn.click();
-    });
-  }
 
   const itemsListEl = card.querySelector('.summary-items-list');
   if (itemsListEl) {
