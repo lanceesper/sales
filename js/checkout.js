@@ -164,8 +164,7 @@ function renderDetailsForm(leftCol, rightCol) {
   checkoutCard.className = 'checkout-card';
   checkoutCard.innerHTML = `
     <div class="checkout-card-title">
-      <span class="number">1</span>
-      CUSTOMER ADDRESS
+      CHECKOUT DETAILS
     </div>
     <form class="checkout-form" id="checkout-details-form" style="margin-bottom: 30px;">
       <div class="form-grid">
@@ -184,7 +183,7 @@ function renderDetailsForm(leftCol, rightCol) {
         <div class="form-group">
           <label class="checkout-form-label" for="checkout-county">County / Region</label>
           <select class="checkout-form-select" id="checkout-county">
-            \${regionOptionsHTML}
+            ${regionOptionsHTML}
           </select>
         </div>
         <div class="form-group">
@@ -195,11 +194,7 @@ function renderDetailsForm(leftCol, rightCol) {
       </div>
     </form>
 
-    <div class="checkout-card-title" style="margin-top: 24px; padding-top: 12px;">
-      <span class="number">2</span>
-      DELIVERY DETAILS
-    </div>
-    <div style="margin-bottom: 30px;">
+    <div style="margin-bottom: 30px; border-top: 1px solid var(--border-light); padding-top: 24px;">
       <label class="delivery-option" id="option-pickup">
         <input type="radio" name="delivery_type" value="pickup">
         <div class="delivery-option-details">
@@ -207,7 +202,7 @@ function renderDetailsForm(leftCol, rightCol) {
             <span>Pick-up Station</span>
             <span class="delivery-option-price" id="pickup-fee-preview">FROM KSh 280</span>
           </div>
-          <div class="delivery-option-desc">Delivery \${initialRange.label}</div>
+          <div class="delivery-option-desc">Delivery ${initialRange.label}</div>
           <div id="selected-pickup-details" style="display:none; padding:10px; background:#f9f9f9; border:1px solid #eee; border-radius:4px; margin-bottom:10px; cursor:pointer; transition:background 0.2s;" title="Tap to change station">
           </div>
           <button type="button" class="delivery-select-btn" id="btn-select-station">Select pickup station ></button>
@@ -221,16 +216,12 @@ function renderDetailsForm(leftCol, rightCol) {
             <span>Door Delivery</span>
             <span class="delivery-option-price">FROM KSh 600</span>
           </div>
-          <div class="delivery-option-desc">Delivery between \${formatDeliveryDate(doorStart)} and \${formatDeliveryDate(doorEnd)}</div>
+          <div class="delivery-option-desc">Delivery between ${formatDeliveryDate(doorStart)} and ${formatDeliveryDate(doorEnd)}</div>
         </div>
       </label>
     </div>
 
-    <div class="checkout-card-title" style="margin-top: 24px; padding-top: 12px;">
-      <span class="number">3</span>
-      PAYMENT METHOD
-    </div>
-    <div>
+    <div style="border-top: 1px solid var(--border-light); padding-top: 24px; margin-bottom: 20px;">
       <div class="payment-method-header">
         <img src="/jumia_pay_transparent.png" alt="Jumia Pay" class="payment-method-logo" />
       </div>
