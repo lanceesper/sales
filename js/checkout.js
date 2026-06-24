@@ -27,6 +27,53 @@ let isMpesaVerified = false;
 let selectedCounty = 'Nairobi';
 let selectedFee = 150;
 
+// Dynamic delivery date helpers
+function getDeliveryDateRange(county) {
+  const today = new Date();
+  const isNairobi = county && county.toLowerCase() === 'nairobi';
+  
+  if (isNairobi) {
+    // Same day delivery for Nairobi
+    return {
+      start: new Date(today),
+      end: new Date(today),
+      label: formatDeliveryDate(today) + ' (Same Day)'
+    };
+  } else {
+    // 2-3 days for other counties
+    const start = new Date(today);
+    start.setDate(start.getDate() + 2);
+    const end = new Date(today);
+    end.setDate(end.getDate() + 3);
+    return {
+      start,
+      end,
+      label: formatDeliveryDate(start) + ' and ' + formatDeliveryDate(end)
+    };
+  }
+}
+
+function formatDeliveryDate(date) {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return date.getDate() + ' ' + months[date.getMonth()];
+}
+
+function updateDeliveryDatesUI() {
+  const range = getDeliveryDateRange(selectedCounty);
+  const pickupDesc = document.querySelector('#option-pickup .delivery-option-desc');
+  if (pickupDesc) {
+    pickupDesc.textContent = `Delivery ${range.label}`;
+  }
+  const doorDesc = document.querySelector('#option-door .delivery-option-desc');
+  if (doorDesc) {
+    const doorStart = new Date();
+    doorStart.setDate(doorStart.getDate() + 3);
+    const doorEnd = new Date();
+    doorEnd.setDate(doorEnd.getDate() + 5);
+    doorDesc.textContent = `Delivery between ${formatDeliveryDate(doorStart)} and ${formatDeliveryDate(doorEnd)}`;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   await initStore();
   renderHeader('cart');
@@ -145,10 +192,16 @@ function renderDetailsForm(leftCol, rightCol) {
             </select>
           </div>
         </div>
-        <button type="submit" class="btn-primary">Save and Continue</button>
       </form>
     </div>
   `;
+
+  // Calculate initial delivery dates
+  const initialRange = getDeliveryDateRange(selectedCounty);
+  const doorStart = new Date();
+  doorStart.setDate(doorStart.getDate() + 3);
+  const doorEnd = new Date();
+  doorEnd.setDate(doorEnd.getDate() + 5);
 
   const step2 = document.createElement('div');
   step2.className = 'accordion-section';
@@ -171,7 +224,7 @@ function renderDetailsForm(leftCol, rightCol) {
             <span>Pick-up Station</span>
             <span class="delivery-option-price" id="pickup-fee-preview">FROM KSh 280</span>
           </div>
-          <div class="delivery-option-desc">Delivery between 20 June and 22 June</div>
+          <div class="delivery-option-desc">Delivery ${initialRange.label}</div>
           <div id="selected-pickup-details" style="display:none; padding:10px; background:#f9f9f9; border:1px solid #eee; border-radius:4px; margin-bottom:10px;">
           </div>
           <button type="button" class="delivery-select-btn" id="btn-select-station">Select pickup station ></button>
@@ -185,11 +238,9 @@ function renderDetailsForm(leftCol, rightCol) {
             <span>Door Delivery</span>
             <span class="delivery-option-price">FROM KSh 600</span>
           </div>
-          <div class="delivery-option-desc">Delivery between 19 June and 25 June</div>
+          <div class="delivery-option-desc">Delivery between ${formatDeliveryDate(doorStart)} and ${formatDeliveryDate(doorEnd)}</div>
         </div>
       </label>
-      
-      <button type="button" class="btn-primary" id="btn-save-delivery" style="display:none;">Save and Continue</button>
     </div>
   `;
 
@@ -258,7 +309,6 @@ function renderDetailsForm(leftCol, rightCol) {
     step2.querySelector('#option-door').classList.remove('selected');
     step2.querySelector('#option-pickup').classList.add('selected');
     step2.querySelector('#option-pickup input').checked = true;
-    step2.querySelector('#btn-save-delivery').style.display = 'block';
   }
 
   const townSelect = step1.querySelector('#checkout-town');
@@ -268,6 +318,8 @@ function renderDetailsForm(leftCol, rightCol) {
   countySelect.addEventListener('change', (e) => {
     selectedCounty = e.target.value;
     updateTownOptions(townSelect, selectedCounty, stations);
+    updateDeliveryDatesUI();
+    tryAutoAdvanceStep1();
   });
 
   const form = step1.querySelector('#checkout-details-form');
@@ -284,6 +336,7 @@ function renderDetailsForm(leftCol, rightCol) {
         countySelect.value = savedAddress.county;
         selectedCounty = savedAddress.county;
         updateTownOptions(townSelect, selectedCounty, stations);
+        updateDeliveryDatesUI();
       }
       if (savedAddress.town) {
         townSelect.value = savedAddress.town;
@@ -293,20 +346,22 @@ function renderDetailsForm(leftCol, rightCol) {
     }
   }
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    customerInfo = {
-      name: document.getElementById('checkout-name').value.trim(),
-      phone: document.getElementById('checkout-phone').value.trim(),
-      email: document.getElementById('checkout-email').value.trim(),
-      county: document.getElementById('checkout-county').value,
-      town: document.getElementById('checkout-town').value,
-    };
+  // Auto-advance: try to move to step 2 whenever a field changes
+  function tryAutoAdvanceStep1() {
+    const name = document.getElementById('checkout-name').value.trim();
+    const phone = document.getElementById('checkout-phone').value.trim();
+    const email = document.getElementById('checkout-email').value.trim();
+    const county = document.getElementById('checkout-county').value;
+    const town = document.getElementById('checkout-town').value;
 
-    if (customerInfo.phone.length < 10) {
-      showToast('Please enter a valid phone number!', 'error');
-      return;
-    }
+    // All fields must be filled
+    if (!name || !phone || !email || !county || !town) return;
+    // Basic phone validation
+    if (phone.length < 10) return;
+    // Basic email validation
+    if (!email.includes('@') || !email.includes('.')) return;
+
+    customerInfo = { name, phone, email, county, town };
     
     // Save to localStorage
     localStorage.setItem('checkout_address', JSON.stringify(customerInfo));
@@ -318,12 +373,34 @@ function renderDetailsForm(leftCol, rightCol) {
 
     markStepCompleted(1);
     toggleAccordion(2);
+    smoothScrollToStep(2);
+  }
+
+  // Listen on town select change to auto-advance
+  townSelect.addEventListener('change', () => {
+    tryAutoAdvanceStep1();
+  });
+
+  // Also listen on blur of all inputs to auto-advance if everything is filled
+  ['checkout-name', 'checkout-phone', 'checkout-email'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('blur', () => {
+        // Small delay to allow the field value to settle
+        setTimeout(tryAutoAdvanceStep1, 100);
+      });
+    }
+  });
+
+  // Keep form submit as fallback (e.g. pressing Enter)
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    tryAutoAdvanceStep1();
   });
 
   const doorOption = step2.querySelector('#option-door input');
   const pickupOption = step2.querySelector('#option-pickup input');
   const btnSelectStation = step2.querySelector('#btn-select-station');
-  const btnSaveDelivery = step2.querySelector('#btn-save-delivery');
 
   doorOption.addEventListener('change', () => {
     if (doorOption.checked) {
@@ -331,7 +408,6 @@ function renderDetailsForm(leftCol, rightCol) {
       doorOption.checked = false;
       pickupOption.checked = false;
       step2.querySelector('#option-door').classList.remove('selected');
-      btnSaveDelivery.style.display = 'none';
     }
   });
 
@@ -340,9 +416,32 @@ function renderDetailsForm(leftCol, rightCol) {
     step2.querySelector('#option-pickup').classList.add('selected');
     
     if (selectedStationInfo) {
-      btnSaveDelivery.style.display = 'block';
+      // Auto-advance since we already have a station selected
+      completeDeliveryStep();
     } else {
       openPickupModal(stations);
+    }
+  });
+
+  // Handle click on the entire pickup option area — covers the case where
+  // the radio is already checked (no 'change' fires) but user taps to proceed
+  const pickupLabel = step2.querySelector('#option-pickup');
+  pickupLabel.addEventListener('click', (e) => {
+    // Don't intercept clicks on the "Select pickup station" button
+    if (e.target.closest('.delivery-select-btn')) return;
+    
+    if (selectedStationInfo && pickupOption.checked) {
+      completeDeliveryStep();
+    }
+  });
+
+  // Also let the station preview box itself act as a "continue" button
+  const previewBox = step2.querySelector('#selected-pickup-details');
+  previewBox.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (selectedStationInfo) {
+      completeDeliveryStep();
     }
   });
 
@@ -354,11 +453,9 @@ function renderDetailsForm(leftCol, rightCol) {
     openPickupModal(stations);
   });
 
-  btnSaveDelivery.addEventListener('click', () => {
-    if (!selectedStationInfo) {
-      showToast('Please select a pickup station', 'error');
-      return;
-    }
+  // Extracted function to complete delivery step (used by auto-advance)
+  function completeDeliveryStep() {
+    if (!selectedStationInfo) return;
     
     // Save to localStorage
     localStorage.setItem('checkout_station', JSON.stringify(selectedStationInfo));
@@ -375,7 +472,11 @@ function renderDetailsForm(leftCol, rightCol) {
 
     markStepCompleted(2);
     toggleAccordion(3);
-  });
+    smoothScrollToStep(3);
+  }
+  
+  // Expose for use after station selection in modal
+  window._completeDeliveryStep = completeDeliveryStep;
 
   const placeBtn = step3.querySelector('#place-order-btn');
   placeBtn.addEventListener('click', () => {
@@ -416,6 +517,16 @@ window.toggleAccordion = function(stepNum) {
     }
   }
 };
+
+// Smooth scroll to a step section
+function smoothScrollToStep(stepNum) {
+  setTimeout(() => {
+    const section = document.getElementById(`step${stepNum}-section`);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 150);
+}
 
 window.markStepCompleted = function(stepNum) {
   const section = document.getElementById(`step${stepNum}-section`);
@@ -555,9 +666,13 @@ function renderStationsList(county, town, stations) {
         <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
       `;
       document.getElementById('pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
-      document.getElementById('btn-save-delivery').style.display = 'block';
       
       closePickupModal();
+      
+      // Auto-advance to payment step after selecting station
+      if (window._completeDeliveryStep) {
+        setTimeout(() => window._completeDeliveryStep(), 300);
+      }
     }
   });
 }
