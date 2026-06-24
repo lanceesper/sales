@@ -261,29 +261,52 @@ function renderDetailsForm(leftCol, rightCol) {
   const countySelect = checkoutCard.querySelector('#checkout-county');
   updateTownOptions(townSelect, countySelect.value, stations);
 
+  function autoSelectStationForCurrentTown(townName) {
+    const matchingStation = stations.find(s => s.county === selectedCounty && s.town === townName);
+    if (matchingStation) {
+      selectedStationInfo = matchingStation;
+      const preview = checkoutCard.querySelector('#selected-pickup-details');
+      if (preview) {
+        preview.style.display = 'block';
+        preview.innerHTML = `
+          <strong>${selectedStationInfo.name}</strong><br>
+          <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
+          <div style="font-size:0.75rem; color:var(--accent-primary); margin-top:6px; font-weight:600;">Tap to change station</div>
+        `;
+      }
+      const feePreview = checkoutCard.querySelector('#pickup-fee-preview');
+      if (feePreview) {
+        feePreview.innerText = `KSh ${selectedStationInfo.fee}`;
+      }
+      
+      const pickupOpt = checkoutCard.querySelector('#option-pickup');
+      const doorOpt = checkoutCard.querySelector('#option-door');
+      const pickupInput = checkoutCard.querySelector('#option-pickup input');
+      if (pickupOpt && doorOpt && pickupInput) {
+        doorOpt.classList.remove('selected');
+        pickupOpt.classList.add('selected');
+        pickupInput.checked = true;
+      }
+      
+      completeDeliveryStep();
+    }
+  }
+
+  // Set initial default station
+  autoSelectStationForCurrentTown(townSelect.value);
+
   countySelect.addEventListener('change', (e) => {
     selectedCounty = e.target.value;
     updateTownOptions(townSelect, selectedCounty, stations);
     updateDeliveryDatesUI();
+    autoSelectStationForCurrentTown(townSelect.value);
+  });
+
+  townSelect.addEventListener('change', (e) => {
+    autoSelectStationForCurrentTown(e.target.value);
   });
 
   const form = checkoutCard.querySelector('#checkout-details-form');
-  
-
-
-  if (selectedStationInfo) {
-    const preview = checkoutCard.querySelector('#selected-pickup-details');
-    preview.style.display = 'block';
-    preview.innerHTML = `
-      <strong>${selectedStationInfo.name}</strong><br>
-      <span style="font-size:0.8rem; color:#666;">${selectedStationInfo.location}</span>
-      <div style="font-size:0.75rem; color:var(--accent-primary); margin-top:6px; font-weight:600;">Tap to change station</div>
-    `;
-    checkoutCard.querySelector('#pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
-    checkoutCard.querySelector('#option-door').classList.remove('selected');
-    checkoutCard.querySelector('#option-pickup').classList.add('selected');
-    checkoutCard.querySelector('#option-pickup input').checked = true;
-  }
 
   const doorOption = checkoutCard.querySelector('#option-door input');
   const pickupOption = checkoutCard.querySelector('#option-pickup input');
@@ -403,10 +426,6 @@ function renderPickupModal(container) {
       </div>
       <div class="pickup-modal-body">
         <div class="pickup-modal-list">
-          <div class="pickup-modal-filters">
-            <select id="modal-county-filter"></select>
-            <select id="modal-town-filter"></select>
-          </div>
           <div class="pickup-modal-stations" id="modal-stations-list">
           </div>
         </div>
@@ -425,24 +444,10 @@ function openPickupModal(stations) {
   const modal = document.getElementById('pickup-modal');
   modal.classList.add('active');
 
-  const counties = [...new Set(stations.map(s => s.county || 'Nairobi'))].sort();
-  
-  const countyFilter = document.getElementById('modal-county-filter');
-  countyFilter.innerHTML = counties.map(c => `<option value="${c}" ${c === customerInfo.county ? 'selected' : ''}>${c}</option>`).join('');
+  const currentCounty = document.getElementById('checkout-county')?.value || selectedCounty;
+  const currentTown = document.getElementById('checkout-town')?.value;
 
-  const townFilter = document.getElementById('modal-town-filter');
-  
-  function updateModalTowns(county) {
-    const filteredStations = stations.filter(s => s.county === county);
-    const towns = [...new Set(filteredStations.map(s => s.town))].sort();
-    townFilter.innerHTML = towns.map(t => `<option value="${t}" ${t === customerInfo.town ? 'selected' : ''}>${t}</option>`).join('');
-    renderStationsList(county, townFilter.value, stations);
-  }
-
-  countyFilter.addEventListener('change', (e) => updateModalTowns(e.target.value));
-  townFilter.addEventListener('change', (e) => renderStationsList(countyFilter.value, e.target.value, stations));
-
-  updateModalTowns(customerInfo.county || counties[0]);
+  renderStationsList(currentCounty, currentTown, stations);
 }
 
 function renderStationsList(county, town, stations) {
@@ -455,7 +460,6 @@ function renderStationsList(county, town, stations) {
     return;
   }
 
-
   const hoursOptions = [
     "Mon-Fri 8am-6pm; Sat 8am-4pm",
     "Mon-Fri 9am-5pm; Sat 9am-1pm",
@@ -463,15 +467,19 @@ function renderStationsList(county, town, stations) {
     "Mon-Fri 8:30am-5:30pm; Sat 8:30am-1pm"
   ];
 
+  // Pre-select first station if no station is currently selected matching this town
+  const hasChecked = filtered.some(s => s.name === selectedStationInfo?.name);
+
   listEl.innerHTML = filtered.map((s, i) => {
     const fee = s.fee || (280 + Math.floor(Math.random()*50));
     s.fee = fee; // inject fee
     const randHours = hoursOptions[(s.name.length) % hoursOptions.length];
+    const isSelected = hasChecked ? (s.name === selectedStationInfo?.name) : (i === 0);
     
     return `
-      <label class="station-item ${s.name === (selectedStationInfo?.name) ? 'selected' : ''}">
+      <label class="station-item ${isSelected ? 'selected' : ''}">
         <div class="station-item-header">
-          <input type="radio" name="modal_station" value="${i}" ${s.name === (selectedStationInfo?.name) ? 'checked' : ''}>
+          <input type="radio" name="modal_station" value="${i}" ${isSelected ? 'checked' : ''}>
           <div class="station-item-details">
             <div class="station-item-title">
               <span>${s.name}</span>
@@ -488,6 +496,11 @@ function renderStationsList(county, town, stations) {
     `;
   }).join('');
 
+  // Enable select button since the first station is auto-selected by default
+  const confirmBtn = document.getElementById('btn-confirm-station');
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+  }
 
   const radios = listEl.querySelectorAll('input[type="radio"]');
   radios.forEach(r => r.addEventListener('change', () => {
@@ -496,7 +509,6 @@ function renderStationsList(county, town, stations) {
     document.getElementById('btn-confirm-station').disabled = false;
   }));
 
-  const confirmBtn = document.getElementById('btn-confirm-station');
   const newBtn = confirmBtn.cloneNode(true);
   confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
   
@@ -514,6 +526,18 @@ function renderStationsList(county, town, stations) {
       `;
       document.getElementById('pickup-fee-preview').innerText = `KSh ${selectedStationInfo.fee}`;
       
+      // Sync main dropdown values
+      const mainCounty = document.getElementById('checkout-county');
+      const mainTown = document.getElementById('checkout-town');
+      if (mainCounty && mainTown) {
+        if (mainCounty.value !== selectedStationInfo.county) {
+          mainCounty.value = selectedStationInfo.county;
+          selectedCounty = selectedStationInfo.county;
+          updateTownOptions(mainTown, selectedCounty, stations);
+        }
+        mainTown.value = selectedStationInfo.town;
+      }
+
       closePickupModal();
       
       // Auto-advance to payment step after selecting station
