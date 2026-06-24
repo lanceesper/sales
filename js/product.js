@@ -27,7 +27,9 @@ import {
 let currentProduct = null;
 let currentImageIndex = 0;
 let selectedQuantity = 1;
-let selectedStationIndex = 0;
+let selectedStationIndex = -1;
+let selectedCounty = 'Nairobi';
+let activeTab = 'description';
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -108,7 +110,10 @@ function buildGallery() {
   gallery.className = 'product-gallery';
 
   const images = currentProduct.images || [];
-  const mainSrc = images[0] || '';
+  if (currentImageIndex >= images.length) {
+    currentImageIndex = 0;
+  }
+  const mainSrc = images[currentImageIndex] || '';
 
   gallery.innerHTML = `
     <div class="main-image-container">
@@ -118,7 +123,7 @@ function buildGallery() {
       <button class="thumb-arrow left" id="thumb-left" aria-label="Scroll thumbnails left">‹</button>
       <div class="thumbnail-strip" id="thumbnail-strip">
         ${images.map((img, i) => `
-          <div class="thumb ${i === 0 ? 'active' : ''}" data-index="${i}">
+          <div class="thumb ${i === currentImageIndex ? 'active' : ''}" data-index="${i}">
             <img src="${img}" alt="${currentProduct.name} - Image ${i + 1}" />
           </div>
         `).join('')}
@@ -350,13 +355,23 @@ function buildSidebar() {
 
   // Extract unique counties from stations
   const counties = [...new Set(stations.map(s => s.county || 'Nairobi'))].sort();
-  const initialRegion = counties.includes('Nairobi') ? 'Nairobi' : counties[0];
-  const filteredStations = stations.filter(s => s.county === initialRegion);
+  if (!counties.includes(selectedCounty)) {
+    selectedCounty = counties.includes('Nairobi') ? 'Nairobi' : counties[0];
+  }
+  const filteredStations = stations.filter(s => s.county === selectedCounty);
 
-  const regionOptionsHTML = counties.map(c => `<option value="${c}" ${c === initialRegion ? 'selected' : ''}>${c}</option>`).join('');
+  const regionOptionsHTML = counties.map(c => `<option value="${c}" ${c === selectedCounty ? 'selected' : ''}>${c}</option>`).join('');
+  
+  // Ensure selectedStationIndex is initialized or valid for the county
+  if (selectedStationIndex < 0 || selectedStationIndex >= stations.length || stations[selectedStationIndex].county !== selectedCounty) {
+    const firstStation = filteredStations[0] || stations[0];
+    selectedStationIndex = stations.indexOf(firstStation);
+  }
+  const activeStation = stations[selectedStationIndex];
+
   const stationOptionsHTML = filteredStations.map((s) => {
     const globalIdx = stations.indexOf(s);
-    return `<option value="${globalIdx}">${s.name} (${s.town})</option>`;
+    return `<option value="${globalIdx}" ${globalIdx === selectedStationIndex ? 'selected' : ''}>${s.name} (${s.town})</option>`;
   }).join('');
 
   // Delivery & Returns card
@@ -386,7 +401,7 @@ function buildSidebar() {
     </div>
 
     <div class="delivery-options" id="delivery-options">
-      ${renderDeliveryOptions(filteredStations[0] || stations[0], estDateStr, estDateStr2)}
+      ${renderDeliveryOptions(activeStation, estDateStr, estDateStr2)}
     </div>
   `;
 
@@ -435,7 +450,7 @@ function buildSidebar() {
     const optionsEl = deliveryCard.querySelector('#delivery-options');
 
     regionSelect.addEventListener('change', (e) => {
-      const selectedCounty = e.target.value;
+      selectedCounty = e.target.value;
       const newFiltered = stations.filter(s => s.county === selectedCounty);
       
       // Update station select options
@@ -448,14 +463,15 @@ function buildSidebar() {
       const firstStation = newFiltered[0] || stations[0];
       const globalIdx = stations.indexOf(firstStation);
       stationSelect.value = globalIdx;
+      selectedStationIndex = globalIdx;
 
       // Update delivery options
       updateDeliveryOptions(firstStation);
     });
 
     stationSelect.addEventListener('change', (e) => {
-      const selectedIndex = parseInt(e.target.value);
-      const station = stations[selectedIndex];
+      selectedStationIndex = parseInt(e.target.value);
+      const station = stations[selectedStationIndex];
       updateDeliveryOptions(station);
     });
 
@@ -530,13 +546,13 @@ function renderDetailsSection(container) {
 
   section.innerHTML = `
     <div class="product-tabs" role="tablist">
-      <button class="product-tab active" data-tab="description" role="tab" aria-selected="true">Product Details</button>
-      <button class="product-tab" data-tab="specs" role="tab" aria-selected="false">Specifications</button>
-      <button class="product-tab" data-tab="reviews" role="tab" aria-selected="false">Customer Feedback (${currentProduct.reviewCount})</button>
+      <button class="product-tab ${activeTab === 'description' ? 'active' : ''}" data-tab="description" role="tab" aria-selected="${activeTab === 'description'}">Product Details</button>
+      <button class="product-tab ${activeTab === 'specs' ? 'active' : ''}" data-tab="specs" role="tab" aria-selected="${activeTab === 'specs'}">Specifications</button>
+      <button class="product-tab ${activeTab === 'reviews' ? 'active' : ''}" data-tab="reviews" role="tab" aria-selected="${activeTab === 'reviews'}">Customer Feedback (${currentProduct.reviewCount})</button>
     </div>
-    <div class="tab-panel active" id="tab-description">${renderDescriptionTab()}</div>
-    <div class="tab-panel" id="tab-specs">${renderSpecsTab()}</div>
-    <div class="tab-panel" id="tab-reviews">${renderReviewsTab()}</div>
+    <div class="tab-panel ${activeTab === 'description' ? 'active' : ''}" id="tab-description">${renderDescriptionTab()}</div>
+    <div class="tab-panel ${activeTab === 'specs' ? 'active' : ''}" id="tab-specs">${renderSpecsTab()}</div>
+    <div class="tab-panel ${activeTab === 'reviews' ? 'active' : ''}" id="tab-reviews">${renderReviewsTab()}</div>
   `;
 
   // Tab switching
@@ -551,7 +567,8 @@ function renderDetailsSection(container) {
 
         tab.classList.add('active');
         tab.setAttribute('aria-selected', 'true');
-        const panel = section.querySelector(`#tab-${tab.dataset.tab}`);
+        activeTab = tab.dataset.tab;
+        const panel = section.querySelector(`#tab-${activeTab}`);
         if (panel) panel.classList.add('active');
       });
     });
