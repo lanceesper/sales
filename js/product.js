@@ -45,36 +45,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  currentProduct = getProductById(productId);
-
-  if (!currentProduct) {
-    renderNotFound();
-    renderFooter();
-    return;
-  }
-
-  document.title = `${currentProduct.name} - Jumia`;
-
   const main = document.getElementById('main-content');
+  let rendered = false;
   
   const renderAll = () => {
+    document.title = `${currentProduct.name} - Jumia`;
     main.innerHTML = '';
     renderBreadcrumb(main);
     renderProductLayout(main);
     renderDetailsSection(main);
     renderSimilarProducts(main);
   };
-  
-  renderAll();
-  renderFooter();
 
-  window.addEventListener('storeUpdated', () => {
-    const updated = getProductById(productId);
-    if (updated) {
-      currentProduct = updated;
+  const checkAndRender = () => {
+    currentProduct = getProductById(productId);
+    if (currentProduct) {
       renderAll();
+      if (!rendered) {
+        renderFooter();
+        rendered = true;
+      }
+      return true;
+    } else if (window.productsSynced) {
+      renderNotFound();
+      if (!rendered) {
+        renderFooter();
+        rendered = true;
+      }
+      return true;
     }
-  });
+    return false;
+  };
+
+  // Try to render immediately (e.g. from local storage cache)
+  const isDone = checkAndRender();
+
+  if (!isDone) {
+    // Show a premium loading state while we sync from Firebase
+    main.innerHTML = `
+      <div class="product-loading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; gap: 16px;">
+        <span class="btn-spinner" style="width: 40px; height: 40px; border-width: 4px; border-top-color: var(--accent-primary); border-style: solid; border-radius: 50%; border-left-color: transparent; animation: spin 1s linear infinite;"></span>
+        <p style="color: var(--text-secondary); font-family: 'Inter', sans-serif;">Loading product details...</p>
+      </div>
+    `;
+
+    const handleUpdate = () => {
+      if (checkAndRender()) {
+        window.removeEventListener('storeUpdated', handleUpdate);
+      }
+    };
+    window.addEventListener('storeUpdated', handleUpdate);
+  } else if (currentProduct) {
+    // If successfully rendered from cache, keep listening to update product details if they change in real-time
+    window.addEventListener('storeUpdated', () => {
+      const updated = getProductById(productId);
+      if (updated) {
+        currentProduct = updated;
+        renderAll();
+      }
+    });
+  }
 });
 
 // --- Breadcrumb ---

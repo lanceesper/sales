@@ -35,6 +35,7 @@ function save(key, data) {
 // ==========================================
 
 export function initStore() {
+  window.productsSynced = window.productsSynced || false;
   return new Promise((resolve) => {
     if (!localStorage.getItem(KEYS.categories) || !localStorage.getItem('jumia_stations_v3_loaded')) {
       seedData();
@@ -91,6 +92,7 @@ export function initStore() {
 
       // Update cache
       save('jumia_products_firebase_cache', realTimeProducts);
+      window.productsSynced = true;
       window.dispatchEvent(new Event('storeUpdated'));
     });
 
