@@ -786,10 +786,77 @@ async function triggerStkPushPayment(phone, total, name) {
   // Set to initial Send Prompt stage
   setStkStage('stk-send-prompt-stage');
   
-  // Populate the description with phone number and amount
-  const descEl = document.getElementById('stk-send-desc');
-  if (descEl) {
-    descEl.innerHTML = `Click the button below to send a secure M-Pesa PIN prompt of <strong>${formatPrice(total)}</strong> to <strong>${phone}</strong>.`;
+  let currentPhone = phone;
+
+  // Populate amount due
+  const amountNumEl = document.getElementById('stk-amount-num');
+  if (amountNumEl) {
+    amountNumEl.textContent = formatPrice(total);
+  }
+
+  // Populate phone display & edit input
+  const phoneValEl = document.getElementById('stk-phone-number-val');
+  const phoneInputEl = document.getElementById('stk-phone-input-field');
+  if (phoneValEl) phoneValEl.textContent = currentPhone;
+  if (phoneInputEl) phoneInputEl.value = currentPhone;
+
+  // Toggle display and edit modes
+  const displayModeEl = document.getElementById('stk-phone-display-mode');
+  const editModeEl = document.getElementById('stk-phone-edit-mode');
+  
+  // Set to edit mode initially
+  if (displayModeEl && editModeEl) {
+    displayModeEl.style.display = 'none';
+    editModeEl.style.display = 'flex';
+  }
+  
+  const changeBtn = document.getElementById('stk-phone-change-btn');
+  const saveBtn = document.getElementById('stk-phone-save-btn');
+
+  if (changeBtn && displayModeEl && editModeEl) {
+    changeBtn.onclick = () => {
+      displayModeEl.style.display = 'none';
+      editModeEl.style.display = 'flex';
+      if (phoneInputEl) {
+        phoneInputEl.value = currentPhone;
+        phoneInputEl.focus();
+      }
+    };
+  }
+
+  if (saveBtn && displayModeEl && editModeEl) {
+    saveBtn.onclick = () => {
+      if (!phoneInputEl) return;
+      const rawVal = phoneInputEl.value.trim();
+      const digitsOnly = rawVal.replace(/\D/g, '');
+      if (digitsOnly.length !== 9 && digitsOnly.length !== 10 && digitsOnly.length !== 12) {
+        showToast('Please enter a valid phone number (e.g. 0712345678)', 'error');
+        return;
+      }
+      currentPhone = rawVal;
+      if (phoneValEl) phoneValEl.textContent = currentPhone;
+      
+      displayModeEl.style.display = 'flex';
+      editModeEl.style.display = 'none';
+
+      // Sync back to checkout form and memory context
+      const formPhoneInput = document.getElementById('checkout-phone');
+      if (formPhoneInput) {
+        formPhoneInput.value = currentPhone;
+      }
+      if (customerInfo) {
+        customerInfo.phone = currentPhone;
+      }
+    };
+
+    if (phoneInputEl) {
+      phoneInputEl.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          saveBtn.click();
+        }
+      };
+    }
   }
 
   const orderRef = 'JUMIA-' + Math.floor(100000 + Math.random() * 900000);
@@ -817,13 +884,31 @@ async function triggerStkPushPayment(phone, total, name) {
   };
 
   document.getElementById('stk-retry-btn').onclick = () => {
-    triggerStkPushPayment(phone, total, name);
+    triggerStkPushPayment(currentPhone, total, name);
   };
 
   // Setup Send Prompt button click handler
   const sendBtn = document.getElementById('stk-send-prompt-btn');
   if (sendBtn) {
     sendBtn.onclick = async () => {
+      // Auto-save and validate edited number if still in editing mode
+      if (editModeEl && editModeEl.style.display !== 'none' && phoneInputEl) {
+        const rawVal = phoneInputEl.value.trim();
+        const digitsOnly = rawVal.replace(/\D/g, '');
+        if (digitsOnly.length !== 9 && digitsOnly.length !== 10 && digitsOnly.length !== 12) {
+          showToast('Please enter a valid phone number (e.g. 0712345678)', 'error');
+          return;
+        }
+        currentPhone = rawVal;
+        if (phoneValEl) phoneValEl.textContent = currentPhone;
+        displayModeEl.style.display = 'flex';
+        editModeEl.style.display = 'none';
+
+        const formPhoneInput = document.getElementById('checkout-phone');
+        if (formPhoneInput) formPhoneInput.value = currentPhone;
+        if (customerInfo) customerInfo.phone = currentPhone;
+      }
+
       // Transition stage to loading status
       setStkStage('stk-status-stage');
       
@@ -848,7 +933,7 @@ async function triggerStkPushPayment(phone, total, name) {
         id: orderRef,
         email: email,
         name: name,
-        phone: phone,
+        phone: currentPhone,
         county: selectedCounty,
         station: station,
         items: orderItems,
@@ -863,7 +948,7 @@ async function triggerStkPushPayment(phone, total, name) {
       });
 
       // Execute actual STK push payment API call
-      await executeStkPushPayment(phone, total, name, orderRef);
+      await executeStkPushPayment(currentPhone, total, name, orderRef);
     };
   }
 }
@@ -948,16 +1033,46 @@ function renderStkPushOverlay() {
 
       <!-- Stage 0: Send Prompt -->
       <div id="stk-send-prompt-stage" class="stk-stage active">
-        <div class="stk-pay-icon-wrap" style="margin-bottom: 20px;">
-          <svg class="stk-pay-icon" width="60" height="60" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="color: var(--accent-primary);">
-            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-            <line x1="12" y1="18" x2="12.01" y2="18"/>
-            <path d="M12 6v8"/>
-            <path d="M9 9h6"/>
-          </svg>
-        </div>
         <h3 id="stk-send-title">Send M-Pesa Prompt</h3>
-        <p id="stk-send-desc">Click below to send a secure payment prompt to your phone.</p>
+        
+        <!-- Total Amount Display Card -->
+        <div class="stk-amount-card">
+          <div class="stk-amount-row">
+            <span class="stk-amount-lbl">Total Amount</span>
+            <span class="stk-amount-num" id="stk-amount-num">KSh 0</span>
+          </div>
+        </div>
+
+        <!-- Phone Display / Edit Widget -->
+        <div class="stk-phone-widget">
+          <!-- Initially hidden display mode -->
+          <div class="stk-phone-display-mode" id="stk-phone-display-mode" style="display: none;">
+            <div class="stk-phone-number-wrap">
+              <svg class="stk-phone-inline-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+              <span class="stk-phone-number-val" id="stk-phone-number-val">0700000000</span>
+            </div>
+            <button class="stk-phone-change-btn" id="stk-phone-change-btn">Edit</button>
+          </div>
+          
+          <!-- Initially visible edit mode -->
+          <div class="stk-phone-edit-mode" id="stk-phone-edit-mode">
+            <div class="stk-phone-input-wrap">
+              <svg class="stk-phone-inline-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+              <input type="tel" class="stk-phone-input-field" id="stk-phone-input-field" placeholder="e.g. 0712345678" />
+            </div>
+            <button class="stk-phone-save-btn" id="stk-phone-save-btn" aria-label="Confirm">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
         
         <button class="stk-send-prompt-btn" id="stk-send-prompt-btn">Send Prompt</button>
       </div>
