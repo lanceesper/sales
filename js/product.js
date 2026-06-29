@@ -151,14 +151,14 @@ function buildGallery() {
 
   gallery.innerHTML = `
     <div class="main-image-container">
-      <img id="main-product-image" src="${mainSrc}" alt="${currentProduct.name}" class="fade-in" />
+      <img id="main-product-image" src="/jumia_loading_image.png" data-src="${mainSrc}" alt="${currentProduct.name}" class="fade-in lazy-placeholder" />
     </div>
     <div class="thumbnail-strip-wrapper">
       <button class="thumb-arrow left" id="thumb-left" aria-label="Scroll thumbnails left">‹</button>
       <div class="thumbnail-strip" id="thumbnail-strip">
         ${images.map((img, i) => `
           <div class="thumb ${i === currentImageIndex ? 'active' : ''}" data-index="${i}">
-            <img src="${img}" alt="${currentProduct.name} - Image ${i + 1}" />
+            <img src="/jumia_loading_image.png" data-src="${img}" alt="${currentProduct.name} - Image ${i + 1}" class="lazy-placeholder" />
           </div>
         `).join('')}
       </div>

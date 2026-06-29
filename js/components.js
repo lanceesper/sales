@@ -162,7 +162,7 @@ export function renderHeader(activePage = 'home') {
             .map(
               (p) => `
               <a href="/product.html?id=${p.id}" class="search-result-item">
-                <img src="${p.images[0]}" alt="${p.name}" class="search-result-img" loading="lazy" />
+                <img src="/jumia_loading_image.png" data-src="${p.images[0]}" alt="${p.name}" class="search-result-img lazy-placeholder" loading="lazy" />
                 <div class="search-result-info">
                   <div class="search-result-name">${p.name}</div>
                   <div class="search-result-price">${formatPrice(p.discountedPrice ?? p.originalPrice)}</div>
@@ -309,9 +309,10 @@ export function renderProductCard(product) {
     <a href="/product.html?id=${product.id}" class="product-card" id="product-${product.id}">
       <div class="product-card-img-wrap">
         <img
-          src="${product.images[0]}"
+          src="/jumia_loading_image.png"
+          data-src="${product.images[0]}"
           alt="${product.name}"
-          class="product-card-img"
+          class="product-card-img lazy-placeholder"
           loading="lazy"
         />
         ${hasDiscount ? `<span class="product-card-badge">-${discountPercent}%</span>` : ''}
@@ -435,10 +436,23 @@ export function showToast(message, type = 'success') {
 
 export function navigateTo(url) {
   if (!url || url === window.location.pathname) return;
-  document.body.classList.add('page-exit');
+  
+  let overlay = document.getElementById('page-transition-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'page-transition-overlay';
+    overlay.className = 'page-transition-overlay';
+    overlay.innerHTML = '<img src="/jumia_loading_image.png" class="jumia-spinner" alt="Loading..." />';
+    document.body.appendChild(overlay);
+  }
+  
+  // Force reflow
+  overlay.offsetHeight;
+  overlay.classList.add('active');
+  
   setTimeout(() => {
     window.location.href = url;
-  }, 200);
+  }, 100);
 }
 
 // Intercept internal link clicks for smooth transitions
@@ -471,25 +485,63 @@ export function initPageTransitions() {
 // ==========================================
 
 export function initImageFadeIn() {
-  // Handle images that are already in the DOM
   const markLoaded = (img) => {
-    if (img.complete && img.naturalWidth > 0) {
+    const dataSrc = img.getAttribute('data-src');
+    if (dataSrc) {
+      img.removeAttribute('data-src'); // Prevent double observing
+      const realImg = new Image();
+      realImg.src = dataSrc;
+      realImg.onload = () => {
+        img.src = dataSrc;
+        img.classList.remove('lazy-placeholder');
+        img.classList.add('loaded');
+      };
+      return;
+    }
+
+    if (img.complete && img.naturalWidth > 0 && !img.src.includes('jumia_loading_image.png')) {
       img.classList.add('loaded');
     } else {
-      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+      img.addEventListener('load', () => {
+        if (!img.src.includes('jumia_loading_image.png')) {
+          img.classList.add('loaded');
+        }
+      }, { once: true });
       img.addEventListener('error', () => img.classList.add('loaded'), { once: true });
     }
   };
 
-  document.querySelectorAll('img').forEach(markLoaded);
+  const io = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        observer.unobserve(img);
+        markLoaded(img);
+      }
+    });
+  }, { rootMargin: '50px' });
+
+  document.querySelectorAll('img').forEach(img => {
+    if (img.hasAttribute('data-src')) {
+      io.observe(img);
+    } else {
+      markLoaded(img);
+    }
+  });
 
   // Observe newly added images
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((m) => {
       m.addedNodes.forEach((node) => {
         if (node.nodeType === 1) {
-          if (node.tagName === 'IMG') markLoaded(node);
-          node.querySelectorAll?.('img').forEach(markLoaded);
+          if (node.tagName === 'IMG') {
+            if (node.hasAttribute('data-src')) io.observe(node);
+            else markLoaded(node);
+          }
+          node.querySelectorAll?.('img').forEach(img => {
+            if (img.hasAttribute('data-src')) io.observe(img);
+            else markLoaded(img);
+          });
         }
       });
     });

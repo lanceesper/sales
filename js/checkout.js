@@ -587,7 +587,7 @@ function renderOrderSummary(rightCol, cart) {
           <div class="summary-item-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <div class="summary-item-thumb">
-                <img src="${img}" alt="${p.name}" />
+                <img src="/jumia_loading_image.png" data-src="${img}" alt="${p.name}" class="lazy-placeholder" loading="lazy" />
               </div>
               <div class="summary-item-details">
                 <div class="summary-item-name">${p.name}</div>

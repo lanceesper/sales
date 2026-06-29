@@ -106,21 +106,36 @@ body {
   }
 }
 
-/* --- Page Exit (applied via JS before navigation) --- */
-body.page-exit #main-content {
-  animation: pageExit 0.2s ease forwards;
+/* --- Page Transition Overlay --- */
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
   pointer-events: none;
 }
+.page-transition-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-@keyframes pageExit {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
+.jumia-spinner {
+  width: 70px;
+  height: auto;
+  animation: jumiaSpinPulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes jumiaSpinPulse {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(360deg) scale(1.3); }
+  100% { transform: rotate(0deg) scale(1); }
 }
 
 /* --- Image Fade-In on Load --- */
@@ -139,6 +154,14 @@ img:not([src]) {
 img.no-fade {
   opacity: 1;
   transition: none;
+}
+
+img.lazy-placeholder {
+  opacity: 1;
+  animation: jumiaSpinPulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  object-fit: contain !important;
+  padding: 30px;
+  background: var(--bg-secondary);
 }
 
 #site-header {
