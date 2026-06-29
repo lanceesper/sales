@@ -83,17 +83,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (siteHeader) {
     siteHeader.innerHTML = `
       <header class="secure-checkout-header" style="background: #fff; border-bottom: 1px solid var(--border-color); padding: 16px 0;">
-        <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 16px;">
-          <div style="display: flex; align-items: center; justify-content: flex-start;">
-            <a href="/" style="display: flex; align-items: center; text-decoration: none;">
-              <img src="https://cdn.brandfetch.io/idDVEIJONY/w/2800/h/469/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1668154920215" alt="Jumia" style="height: 20px; width: auto;" />
-            </a>
-          </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 1200px; margin: 0 auto; padding: 0 16px;">
+          <a href="/" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="https://cdn.brandfetch.io/idDVEIJONY/w/2800/h/469/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1668154920215" alt="Jumia" style="height: 22px; width: auto;" />
+          </a>
           <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
-            <img src="/jumia_pay_transparent.png" alt="JumiaPay" style="height: 26px;" />
-            <span style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary); border-left: 1px solid var(--border-color); padding-left: 12px; margin-left: 4px; letter-spacing: 0.2px;">Checkout</span>
+            <img src="/jumia_pay_transparent.png" alt="JumiaPay" style="height: 24px;" />
+            <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); border-left: 1px solid var(--border-color); padding-left: 12px; margin-left: 4px; letter-spacing: 0.2px;">Checkout</span>
           </div>
-          <div></div>
         </div>
       </header>
     `;

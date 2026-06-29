@@ -100,7 +100,6 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -1045,7 +1044,7 @@
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
   padding: 0 8px 14px;
   background: var(--bg-card);
@@ -1125,7 +1124,7 @@
   .product-layout {
     grid-template-columns: 1fr;
     gap: 10px;
-    padding: 0 12px 24px;
+    padding: 0 12px 90px;
   }
 
   .product-sidebar {
@@ -1166,6 +1165,19 @@
     padding: 12px 16px;
     font-size: 0.8rem;
     white-space: nowrap;
+  }
+
+  .product-cart-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    padding: 12px 16px;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+    margin-bottom: 0;
+    border-top: 1px solid var(--border-light);
   }
 }
 
