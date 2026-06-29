@@ -145,7 +145,6 @@ img.lazy-placeholder {
   opacity: 1;
   object-fit: contain !important;
   padding: 30px;
-  background: var(--bg-secondary);
 }
 
 #site-header {
