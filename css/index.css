@@ -90,21 +90,7 @@ body {
   touch-action: manipulation;
 }
 
-/* --- Page Entry Animation --- */
-#main-content {
-  animation: pageEnter 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-@keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* --- Page Entry Animation removed for sudden load and to fix position: fixed containing blocks --- */
 
 /* --- Page Transition Overlay --- */
 .page-transition-overlay {
@@ -127,7 +113,7 @@ body {
 }
 
 .jumia-spinner {
-  width: 70px;
+  width: 24px;
   height: auto;
   animation: jumiaSpinPulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
@@ -158,7 +144,6 @@ img.no-fade {
 
 img.lazy-placeholder {
   opacity: 1;
-  animation: jumiaSpinPulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   object-fit: contain !important;
   padding: 30px;
   background: var(--bg-secondary);
