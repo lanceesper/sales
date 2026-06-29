@@ -9,6 +9,7 @@ import {
   formatPrice,
   calculateDiscount,
   searchProducts,
+  getCategories,
 } from './store.js';
 
 // ==========================================
@@ -63,7 +64,7 @@ export function renderHeader(activePage = 'home') {
 
     <header class="main-header">
       <div class="header-inner container">
-        <button class="hamburger-btn" aria-label="Menu" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-primary); margin-right: -8px;">☰</button>
+        <button class="hamburger-btn" aria-label="Menu">☰</button>
         <a href="/" class="logo" id="logo-link">
           <img src="https://cdn.brandfetch.io/idDVEIJONY/w/2800/h/469/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1668154920215" alt="Jumia" class="logo-img" style="height: 20px; width: auto;" />
         </a>
@@ -205,6 +206,14 @@ export function renderHeader(activePage = 'home') {
       if (query) {
         searchResultsEl.classList.remove('visible');
       }
+    });
+  }
+
+  // Hamburger → Mobile Nav Drawer
+  const hamburgerBtn = header.querySelector('.hamburger-btn');
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener('click', () => {
+      openMobileNav();
     });
   }
 }
@@ -418,4 +427,178 @@ export function showToast(message, type = 'success') {
     toast.classList.add('toast-exit');
     setTimeout(() => toast.remove(), 300);
   }, 3000);
+}
+
+// ==========================================
+// Smooth Page Transitions
+// ==========================================
+
+export function navigateTo(url) {
+  if (!url || url === window.location.pathname) return;
+  document.body.classList.add('page-exit');
+  setTimeout(() => {
+    window.location.href = url;
+  }, 200);
+}
+
+// Intercept internal link clicks for smooth transitions
+export function initPageTransitions() {
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    // Only intercept internal same-origin links
+    if (
+      !href ||
+      href.startsWith('#') ||
+      href.startsWith('http') ||
+      href.startsWith('javascript') ||
+      link.target === '_blank' ||
+      e.ctrlKey || e.metaKey || e.shiftKey
+    ) return;
+
+    // Only intercept links to our pages
+    if (href.startsWith('/') || href.endsWith('.html')) {
+      e.preventDefault();
+      navigateTo(href);
+    }
+  });
+}
+
+// ==========================================
+// Image Fade-In on Load
+// ==========================================
+
+export function initImageFadeIn() {
+  // Handle images that are already in the DOM
+  const markLoaded = (img) => {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+      img.addEventListener('error', () => img.classList.add('loaded'), { once: true });
+    }
+  };
+
+  document.querySelectorAll('img').forEach(markLoaded);
+
+  // Observe newly added images
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((m) => {
+      m.addedNodes.forEach((node) => {
+        if (node.nodeType === 1) {
+          if (node.tagName === 'IMG') markLoaded(node);
+          node.querySelectorAll?.('img').forEach(markLoaded);
+        }
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+// ==========================================
+// Mobile Navigation Drawer
+// ==========================================
+
+const categoryIcons = {
+  'Electronics': '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+  'Phones & Tablets': '<svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+  'Computing': '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M2 17h20"/><path d="M6 21h12"/></svg>',
+  'Fashion': '<svg viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 5.5 8 2l-4.38 1.46a2 2 0 00-1.34 2.23l1.09 7.97C3.75 16.29 6 18 6 18v3a1 1 0 001 1h10a1 1 0 001-1v-3s2.25-1.71 2.63-4.34l1.09-7.97a2 2 0 00-1.34-2.23z"/></svg>',
+  'Home & Kitchen': '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  'Health & Beauty': '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+  'Sports & Outdoors': '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+  'Grocery': '<svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>',
+};
+
+let mobileNavBackdrop = null;
+
+function createMobileNav() {
+  if (mobileNavBackdrop) return mobileNavBackdrop;
+
+  const categories = getCategories();
+
+  const catItemsHTML = categories.map(cat => {
+    const icon = categoryIcons[cat] || categoryIcons['Electronics'];
+    return `
+      <a href="/?category=${encodeURIComponent(cat)}" class="mobile-nav-item">
+        ${icon}
+        <span>${cat}</span>
+      </a>
+    `;
+  }).join('');
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'mobile-nav-backdrop';
+  backdrop.innerHTML = `
+    <div class="mobile-nav-drawer">
+      <div class="mobile-nav-header">
+        <span class="mobile-nav-header-title">Menu</span>
+        <button class="mobile-nav-close" aria-label="Close menu">&times;</button>
+      </div>
+      <div class="mobile-nav-body">
+        ${catItemsHTML}
+        <div class="mobile-nav-divider"></div>
+        <a href="/checkout.html" class="mobile-nav-item">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span>My Cart</span>
+        </a>
+        <a href="/admin.html" class="mobile-nav-item">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Seller Dashboard</span>
+        </a>
+      </div>
+      <div class="mobile-nav-footer">
+        <a href="#">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Help Center
+        </a>
+        <a href="#">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72"/></svg>
+          Contact Us
+        </a>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(backdrop);
+  mobileNavBackdrop = backdrop;
+
+  // Close on backdrop click
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeMobileNav();
+  });
+
+  // Close button
+  backdrop.querySelector('.mobile-nav-close').addEventListener('click', closeMobileNav);
+
+  // Internal link clicks — smooth transition
+  backdrop.querySelectorAll('a[href]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('/')) {
+        e.preventDefault();
+        closeMobileNav();
+        setTimeout(() => navigateTo(href), 250);
+      }
+    });
+  });
+
+  return backdrop;
+}
+
+export function openMobileNav() {
+  const backdrop = createMobileNav();
+  // Force reflow before adding class for transition
+  backdrop.offsetHeight;
+  backdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+export function closeMobileNav() {
+  if (mobileNavBackdrop) {
+    mobileNavBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 }

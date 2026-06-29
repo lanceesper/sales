@@ -20,7 +20,9 @@ import {
   renderFooter,
   renderProductCard,
   updateCartBadge,
-  showToast
+  showToast,
+  initPageTransitions,
+  initImageFadeIn,
 } from '/js/components.js';
 
 // --- State ---
@@ -35,6 +37,8 @@ let activeTab = 'description';
 document.addEventListener('DOMContentLoaded', async () => {
   await initStore();
   renderHeader('product');
+  initPageTransitions();
+  initImageFadeIn();
 
   const params = new URLSearchParams(window.location.search);
   const productId = params.get('id');

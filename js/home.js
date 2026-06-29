@@ -6,13 +6,14 @@ import {
   initStore,
   getCategories,
   getProductsByCategory,
-  searchProducts,
 } from './store.js';
 
 import {
   renderHeader,
   renderFooter,
   renderCategorySection,
+  initPageTransitions,
+  initImageFadeIn,
 } from './components.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -33,6 +34,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 6. Attach scroll arrow listeners
   attachScrollArrows();
+
+  // 7. Init smooth page transitions & image fade-in
+  initPageTransitions();
+  initImageFadeIn();
 
   // Listen for real-time updates
   window.addEventListener('storeUpdated', () => {

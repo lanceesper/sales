@@ -2,8 +2,7 @@
    Jumia Design System — Light Theme + Orange Accents
    ============================================ */
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Google Fonts loaded via <link> in HTML for faster first paint */
 
 /* --- CSS Reset --- */
 *,
@@ -17,6 +16,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 img,
@@ -73,6 +73,8 @@ a {
   --radius-md: 8px;
   --radius-lg: 12px;
   --transition: all 0.2s ease;
+  --transition-fast: all 0.15s ease;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* --- Body --- */
@@ -85,6 +87,58 @@ body {
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+}
+
+/* --- Page Entry Animation --- */
+#main-content {
+  animation: pageEnter 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Page Exit (applied via JS before navigation) --- */
+body.page-exit #main-content {
+  animation: pageExit 0.2s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes pageExit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* --- Image Fade-In on Load --- */
+img {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+img.loaded,
+img[src=""],
+img:not([src]) {
+  opacity: 1;
+}
+
+/* Instant-show for images that are already cached / decoded */
+img.no-fade {
+  opacity: 1;
+  transition: none;
 }
 
 #site-header {
@@ -439,3 +493,20 @@ h6 { font-size: 0.875rem; }
    Desktop: 1024px – 1279px
    Wide:    ≥ 1280px
    ---------------------------------------- */
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  img {
+    opacity: 1;
+    transition: none;
+  }
+}

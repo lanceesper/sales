@@ -1,9 +1,11 @@
-import { renderHeader, renderFooter } from '/js/components.js';
+import { renderHeader, renderFooter, initPageTransitions, initImageFadeIn } from '/js/components.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   renderHeader('');
   renderDeliveryPage();
   renderFooter();
+  initPageTransitions();
+  initImageFadeIn();
 });
 
 function renderDeliveryPage() {

@@ -175,39 +175,7 @@
   margin-top: 30px;
 }
 
-.btn {
-  padding: 12px 24px;
-  border-radius: var(--radius-sm);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-primary {
-  background: var(--accent-primary);
-  color: #fff;
-  border: none;
-  box-shadow: 0 4px 12px rgba(246, 139, 30, 0.2);
-}
-
-.btn-primary:hover {
-  background: var(--accent-primary-hover);
-  box-shadow: 0 6px 16px rgba(246, 139, 30, 0.3);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-  background: var(--bg-primary);
-  border-color: var(--text-primary);
-}
+/* btn styles inherited from index.css */
 
 /* Mobile adjustments */
 @media (max-width: 600px) {

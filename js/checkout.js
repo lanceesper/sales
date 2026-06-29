@@ -20,10 +20,12 @@ import {
   renderHeader,
   renderFooter,
   updateCartBadge,
-  showToast
+  showToast,
+  initPageTransitions,
+  initImageFadeIn,
 } from '/js/components.js';
 
-let isMpesaVerified = false;
+
 let selectedCounty = 'Nairobi';
 let selectedFee = 150;
 
@@ -99,6 +101,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   renderCheckoutPage();
   renderFooter();
+  initPageTransitions();
+  initImageFadeIn();
 });
 
 function renderCheckoutPage() {
@@ -107,9 +111,9 @@ function renderCheckoutPage() {
 
   const cart = getCart();
   if (!cart || cart.length === 0) {
-    showToast('Your cart is empty! Redirecting to cart...', 'error');
+    showToast('Your cart is empty! Redirecting...', 'error');
     setTimeout(() => {
-      window.location.href = '/cart.html';
+      window.location.href = '/';
     }, 1500);
     return;
   }
